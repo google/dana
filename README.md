@@ -17,7 +17,7 @@ See [APIs documentation](docs/Apis.md) for details.
 
 ## Have a demo
 
-See [Demo documentation](docs/Demo.md) to know who to setup a Demo dana server on your machine in 3 commands.
+See [Demo documentation](docs/Demo.md) to know who to setup a Demo dana server on your machine in few commands.
 
 ## Setup a server
 
