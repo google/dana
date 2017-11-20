@@ -56,49 +56,47 @@
 					<!-- top tiles -->
 					<div class="row">
 
-            <div class="container" id="formulaire">
-              <div class="row">
-                <div class="col-md-12">
-                  <br>
-                  <br>
-                  <center>
-                    <h1>Edit a project</h1>
-										<h4>Please look to the documentation on how to add pages for this project</h4>
-                  </center>
-                  <br>
-                </div>
-                <div class="col-md-offset-4 col-md-4">
-                  <form action="/admin/saveProject" method="post">
-										<input type="hidden" value="<%=projectId%>" name="projectId"/>
-                    <div class="form-group">
-                      <label>ProjectId</label>
-                      <input type="text" disabled class="form-control" value="<%=projectId%>"/>
-                    </div>
-                    <div class="form-group">
-                      <label>Description</label>
-                      <input type="text" class="form-control" value="<%=project.description%>" name="description"/>
-                    </div>
+						<div class="container" id="formulaire">
+							<div class="row">
+								<div class="col-md-12">
+									<br>
+									<br>
+									<center>
+										<h1>Add a new project</h1>
+										<h4>Please look to the documentation on how to add pages for this new project</h4>
+									</center>
+									<br>
+								</div>
+								<div class="col-md-offset-4 col-md-4">
+									<form action="/admin/addProject" method="post">
+										<div class="form-group">
+											<label>ProjectId</label>
+											<input type="text" class="form-control" name="projectId"/>
+										</div>
+										<div class="form-group">
+											<label>Description</label>
+											<input type="text" class="form-control" name="description"/>
+										</div>
 										<div class="form-group">
 											<label>Default page (if not defined will use <i>statusSeries</i>)</label>
-											<input type="text" class="form-control" value="<%=project.defaultPage%>" name="defaultPage"/>
+											<input type="text" class="form-control" name="defaultPage"/>
 										</div>
-                    <div class="form-group">
-                      <label>Infos</label>
-                      <textarea class="form-control" rows="10" name="infos"><%=project.infos%></textarea>
-                    </div>
-                    <div class="form-group">
-                      <label>Users (one per line)</label>
-											<% var us=project.users.replace(/,/g, "\r\n"); %>
-                      <textarea class="form-control" rows="10" name="users"><%=us%></textarea>
-                    </div>
-                    <center>
-                      <br>
-                      <button class="btn btn-danger btn-block" type="submit" id="submitButton">Save</button>
-                    </center>
-                  </form>
-                </div>
-              </div>
-            </div>
+										<div class="form-group">
+											<label>Infos</label>
+											<textarea class="form-control" rows="10" name="infos"></textarea>
+										</div>
+										<div class="form-group">
+											<label>Users (one per line)</label>
+											<textarea class="form-control" rows="10" name="users"></textarea>
+										</div>
+										<center>
+											<br>
+											<button class="btn btn-danger btn-block" type="submit" id="submitButton">Add Project</button>
+										</center>
+									</form>
+								</div>
+							</div>
+						</div>
 					</div>
 					<br>
 					<br>

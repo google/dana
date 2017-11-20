@@ -1191,45 +1191,58 @@ app.get('/admin/*',
 app.post('/admin/addProject',
   // require('connect-ensure-login').ensureLoggedIn(),
   function(req, res) {
-    console.log(req.body);
     // if (req.user.username !== 'admin') {
     //   appError(req, res, '/bot/addRepository, You must be an administrator');
     //   return;
     // }
-    if (global.projectsConfig[req.body.projectId] !== undefined) {
+    let projectId = req.body.projectId;
+    if (global.projectsConfig[projectId] !== undefined) {
       appError(req, res, '/admin/addProject, project of ' + req.body.projectId + ' already exist');
       return;
     }
     var users = req.body.users.replace(/\r\n/g, ",");
     let dp;
     if (req.body.defaultPage !== '') dp = req.body.defaultPage;
-    global.projectsConfig[req.body.projectId] = {
+    global.projectsConfig[projectId] = {
       description: req.body.description,
       defaultPage: dp,
       infos: req.body.infos,
       users: users,
     }
     global.admin.writeSync('projects', global.projectsConfig);
+
+    global.projects[projectId] = {};
+    if (!fs.existsSync(cwd + '/configs/db/' + projectId)) {
+      fs.mkdirSync(cwd + '/configs/db/' + projectId);
+    }
+    global.projects[projectId].series =
+      new ModuleFiles(cwd + '/configs/db/' + projectId + '/series', 10);
+    global.projects[projectId].comments =
+      new ModuleFiles(cwd + '/configs/db/' + projectId + '/comments', 10);
+    global.projects[projectId].infos =
+      new ModuleFiles(cwd + '/configs/db/' + projectId + '/infos', 200);
+
     res.redirect('/admin/viewProjects');
   });
 
 app.post('/admin/saveProject',
   // require('connect-ensure-login').ensureLoggedIn(),
   function(req, res) {
-    console.log(req.body);
+    if (global.debug) console.log(req.body);
     // if (req.user.username !== 'admin') {
     //   appError(req, res, '/bot/addRepository, You must be an administrator');
     //   return;
     // }
-    if (global.projectsConfig[req.body.projectId] === undefined) {
-      appError(req, res, '/admin/saveProject, project of ' + req.body.projectId + ' doesnt exist');
+    let projectId = req.body.projectId;
+    if (global.projectsConfig[projectId] === undefined) {
+      appError(req, res, '/admin/saveProject, project of ' + projectId + ' doesnt exist');
       return;
     }
 
     var users = req.body.users.replace(/\r\n/g, ",");
     let dp;
     if (req.body.defaultPage !== '') dp = req.body.defaultPage;
-    global.projectsConfig[req.body.projectId] = {
+    global.projectsConfig[projectId] = {
       description: req.body.description,
       defaultPage: dp,
       infos: req.body.infos,
@@ -1242,17 +1255,22 @@ app.post('/admin/saveProject',
 app.post('/admin/deleteProject',
   // require('connect-ensure-login').ensureLoggedIn(),
   function(req, res) {
-    console.log(req.body);
+    if (global.debug) console.log(req.body);
     // if (req.user.username !== 'admin') {
     //   appError(req, res, '/bot/addRepository, You must be an administrator');
     //   return;
     // }
-    if (global.projectsConfig[req.body.projectId] === undefined) {
-      appError(req, res, '/admin/saveProject, project of ' + req.body.projectId + ' doesnt exist');
+    let projectId = req.body.projectId;
+    if (global.projectsConfig[projectId] === undefined) {
+      appError(req, res, '/admin/deleteProject, project of ' + projectId + ' doesnt exist');
       return;
     }
-    delete global.projectsConfig[req.body.projectId];
+    delete global.projectsConfig[projectId];
     global.admin.writeSync('projects', global.projectsConfig);
+    global.projects[projectId].series.deleteSyncAll();
+    global.projects[projectId].comments.deleteSyncAll();
+    global.projects[projectId].infos.deleteSyncAll();
+    ModuleFiles.deleteFolderRecursive(cwd + '/configs/db/' + projectId)
     res.redirect('/admin/viewProjects');
   });
 

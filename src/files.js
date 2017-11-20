@@ -28,6 +28,7 @@ function getFileName(id, sizeCut) {
 
 //Public
 module.exports = dbFile;
+module.exports.deleteFolderRecursive = deleteFolderRecursive;
 
 function dbFile(d, cut) {
   if (debug) console.log('new dbFile', d);
@@ -129,6 +130,24 @@ dbFile.prototype.deleteSync = function deleteSync(id) {
     }
   }
   recurseDelete(n.length);
+}
+
+function deleteFolderRecursive(path) {
+  if (fs.existsSync(path)) {
+    fs.readdirSync(path).forEach(function(file, index) {
+      var curPath = path + "/" + file;
+      if (fs.lstatSync(curPath).isDirectory()) { // recurse
+        deleteFolderRecursive(curPath);
+      } else { // delete file
+        fs.unlinkSync(curPath);
+      }
+    });
+    fs.rmdirSync(path);
+  }
+};
+
+dbFile.prototype.deleteSyncAll = function deleteSyncAll() {
+  deleteFolderRecursive(this.rootDir);
 }
 
 dbFile.prototype.getIds = function getIds() {

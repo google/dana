@@ -63,26 +63,28 @@
                   <br>
                   <center>
                     <h1>Delete a project</h1>
+										<h4>WARNING: all data in this project are going to be physically deleted.</h4>
                   </center>
                   <br>
                 </div>
                 <div class="col-md-offset-4 col-md-4">
                   <form action="/admin/deleteProject" method="post">
+										<input type="hidden" value="<%=projectId%>" name="projectId"/>
                     <div class="form-group">
                       <label>ProjectId</label>
-                      <input type="text" class="form-control" value="<%=projectId%>" name="projectId"/>
+                      <input type="text" disabled class="form-control" value="<%=projectId%>"/>
                     </div>
                     <div class="form-group">
                       <label>Description</label>
-                      <input type="text" class="form-control" value="<%=project.description%>" name="description"/>
+                      <input type="text" disabled class="form-control" value="<%=project.description%>" name="description"/>
                     </div>
 										<div class="form-group">
 											<label>Infos</label>
-											<textarea class="form-control" rows="10" name="infos"><%=project.infos%></textarea>
+											<textarea class="form-control" disabled rows="10" name="infos"><%=project.infos%></textarea>
 										</div>
 										<div class="form-group">
 											<label>Users</label>
-											<textarea class="form-control" rows="10" name="users"><%=project.users%></textarea>
+											<textarea class="form-control" disabled rows="10" name="users"><%=project.users%></textarea>
 										</div>
                     <center>
                       <br>
