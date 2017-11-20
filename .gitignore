@@ -1,0 +1,7 @@
+/configs
+node_modules
+unused
+*.log
+www/views/projects
+www/public/dailyReports
+demo/configs/db
