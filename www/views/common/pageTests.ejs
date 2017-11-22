@@ -99,19 +99,7 @@
           </div>
           <div id="testsContent" class="x_content">
             <table id="testsDatatable" class="table table-striped table-bordered table-condensed">
-              <thead>
-                <tr>
-                  <th style="width: 70px">State</th>
-                  <th>Assignee</th>
-                  <th>Serie Id</th>
-                  <!-- <th>Description</th> -->
-                  <th style="width: 60px">Analysis</th>
-                  <th style="width: 60px">Last passing buildId</th>
-                  <th style="width: 60px">Failing since buildId</th>
-                  <th style="width: 60px">Last executed buildId</th>
-                  <th style="width: 80px" class="no-sort"></th>
-                </tr>
-              </thead>
+              <thead id='table_head'></thead>
               <tbody id='table_content'></tbody>
             </table>
           </div>
@@ -176,7 +164,7 @@
     compares,
     projects;
   var dataTableObject;
-  var defLength = 10;
+  var defLength = 15;
 
   var numTests = 0;
   var numTestsPassing = 0;
@@ -323,19 +311,22 @@
   }
 
   function myGetAssigneeTd(assignee, serieId) {
-    let h = '';
-    h = '<td data-order="' + assignee + '" data-filter="' + assignee + '">';
-    h += '<select name="assignee" onchange="myChangeAssignee(this,\'' + serieId + '\');">';
-    h += '<option value="">None</option>';
-    var k = projects[projectId].users.split(',');
-    for (var ii = 0; ii < k.length; ii++) {
-      h += '<option ';
-      if (assignee === k[ii])
-        h += 'selected ';
-      h += 'value="' + k[ii] + '">' + k[ii] + '</option>';
+    if (!projects[projectId].useBugTracker) {
+      let h = '';
+      h = '<td data-order="' + assignee + '" data-filter="' + assignee + '">';
+      h += '<select name="assignee" onchange="myChangeAssignee(this,\'' + serieId + '\');">';
+      h += '<option value="">None</option>';
+      var k = projects[projectId].users.split(',');
+      for (var ii = 0; ii < k.length; ii++) {
+        h += '<option ';
+        if (assignee === k[ii])
+          h += 'selected ';
+        h += 'value="' + k[ii] + '">' + k[ii] + '</option>';
+      }
+      h += '</select></td>';
+      return (h);
     }
-    h += '</select></td>';
-    return (h);
+    return '';
   }
 
   function changeState(sel, serieId) {
@@ -346,6 +337,10 @@
       // assignee: assignee, stateTarget: stateTarget, comment: comment
     });
     tests[serieId].state = sel.value;
+    if (sel.value==='failingConfirmed') {
+      if (!tests[serieId].bugLink)
+        addBugLink(serieId);
+    }
   }
 
   function getStateTdDesc(serieId, state) {
@@ -364,15 +359,17 @@
         h += 'selected ';
       h += 'value="failingConfirmed">Confirmed</option>'
 
-      h += '<option ';
-      if (state === 'failingAssigned')
-        h += 'selected ';
-      h += 'value="failingAssigned">Assigned</option>'
+      if (!projects[projectId].useBugTracker) {
+        h += '<option ';
+        if (state === 'failingAssigned')
+          h += 'selected ';
+        h += 'value="failingAssigned">Assigned</option>'
 
-      h += '<option ';
-      if (state === 'failingFixed')
-        h += 'selected ';
-      h += 'value="failingFixed">Fixed</option>'
+        h += '<option ';
+        if (state === 'failingFixed')
+          h += 'selected ';
+        h += 'value="failingFixed">Fixed</option>'
+        }
     } else {
       h += '<option ';
       if (state === 'passing')
@@ -394,6 +391,21 @@
     }
 
     var h = '';
+    h+='<tr>';
+    h+='<th style="width: 70px">State</th>';
+    if (!projects[projectId].useBugTracker) {
+      h+='<th>Assignee</th>';
+    }
+    h+='<th>Serie Id</th>';
+    h+='<th style="width: 60px">Analysis</th>';
+    h+='<th style="width: 60px">Last passing buildId</th>';
+    h+='<th style="width: 60px">Failing since buildId</th>';
+    h+='<th style="width: 60px">Last executed buildId</th>';
+    h+='<th style="width: 80px" class="no-sort"></th>';
+    h+='</tr>';
+    $('#table_head').html(h);
+
+    h = '';
     var k = Object.keys(tests);
     for (var ii = 0; ii < k.length; ii++) {
       var s = tests[k[ii]];

@@ -109,15 +109,7 @@
         </div>
         <div id="serieContent" class="x_content">
           <table id="serieDatatable" class="table table-stripped table-bordered table-condensed">
-            <thead>
-              <tr>
-                <th style="width: 70px">State</th>
-                <th>Assignee</th>
-                <th>Serie Id</th>
-                <th style="width: 250px">Graph</th>
-                <th style="width: 40px">Ratio</th>
-                <th style="width: 80px" class="no-sort"></th>
-              </tr>
+            <thead id='table_head'>
             </thead>
             <tbody id='table_content'></tbody>
           </table>
@@ -201,7 +193,7 @@
       var tableMode;
 
       //    alert($(window).height())  if ($(window).height() > 1000)  defLength = 20;
-      var defLength = 10;
+      var defLength = 15;
       var socket = io();
 
       function start(tprojectId, tSerieFilter) {
@@ -567,6 +559,10 @@
             state: sel.value,
           });
           series[serieId].state = sel.value;
+          if (sel.value==='regressionConfirmed') {
+            if (!series[serieId].bugLink)
+              addBugLink(serieId);
+          }
         }
       }
 
@@ -591,16 +587,17 @@
             h += 'selected ';
           h += 'value="regressionConfirmed">Regression confirmed</option>'
 
-          h += '<option ';
-          if (state === 'regressionAssigned')
-            h += 'selected ';
-          h += 'value="regressionAssigned">Assigned</option>'
+          if (!projects[projectId].useBugTracker) {
+            h += '<option ';
+            if (state === 'regressionAssigned')
+              h += 'selected ';
+            h += 'value="regressionAssigned">Assigned</option>'
 
-          h += '<option ';
-          if (state === 'regressionFixed')
-            h += 'selected ';
-          h += 'value="regressionFixed">Fixed</option>'
-
+            h += '<option ';
+            if (state === 'regressionFixed')
+              h += 'selected ';
+            h += 'value="regressionFixed">Fixed</option>'
+          }
           h += '<option ';
           if (state === 'regressionIntended')
             h += 'selected ';
@@ -635,10 +632,12 @@
             h += 'selected ';
           h += 'value="similarNoisy">Noisy similar</option>'
 
-          h += '<option ';
-          if (state === 'similarConfirmed')
-            h += 'selected ';
-          h += 'value="similarConfirmed">Similar confirmed</option>'
+          if (!projects[projectId].useBugTracker) {
+            h += '<option ';
+            if (state === 'similarConfirmed')
+              h += 'selected ';
+            h += 'value="similarConfirmed">Similar confirmed</option>'
+          }
         }
         h += '</select></td>';
 
@@ -684,12 +683,13 @@
           h += '<td>--</td>';
         } else {
           h += getStateTdDesc(serieId, s.state, index);
-          let ass;
-          if (s.assignee)
-            if (s.assignee !== 'none')
-              ass = s.assignee
-          h += myGetAssigneeTd(ass, serieId);
-
+          if (!projects[projectId].useBugTracker) {
+            let ass;
+            if (s.assignee)
+              if (s.assignee !== 'none')
+                ass = s.assignee
+            h += myGetAssigneeTd(ass, serieId);
+          }
           h += '<td><div style="word-wrap: break-word; word-break: break-all; white-space: normal;">' + serieId + '</div></td>';
           h += '<td><div style="height:16px;" id="graphId_' + index + '"><center><i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i></center></div></td>';
           let ttip = "";
@@ -742,6 +742,19 @@
         }
 
         var h = '';
+        h += '<tr>';
+        h += '<th style="width: 70px">State</th>';
+        if (!projects[projectId].useBugTracker) {
+          h += '<th>Assignee</th>';
+        }
+        h += '<th>Serie Id</th>';
+        h += '<th style="width: 250px">Graph</th>';
+        h += '<th style="width: 40px">Ratio</th>';
+        h += '<th style="width: 80px" class="no-sort"></th>';
+        h += '</tr>';
+        $('#table_head').html(h);
+
+        h = '';
         var k = Object.keys(series);
         for (var ii = 0; ii < k.length; ii++) {
           var s = series[k[ii]];
@@ -770,7 +783,8 @@
         }
 
         $('#table_content').html(h);
-
+        var orderColumn=3;
+        if (!projects[projectId].useBugTracker) orderColumn=4;
         dataTableObject = $('#serieDatatable').DataTable({
           "language": {
             "decimal": "."
@@ -783,7 +797,7 @@
             "orderable": false
           }],
           "order": [
-            [4, "desc"]
+            [orderColumn, "desc"]
           ],
           "pageLength": defLength,
           "lengthMenu": [
@@ -809,10 +823,18 @@
               page: 'current'
             }).data();
             for (var ii = 0; ii < data.length; ii++) {
-              var t = data[ii][2];
+              var t;
+              if (!projects[projectId].useBugTracker)
+                t = data[ii][2];
+              else
+                t = data[ii][1];
               var is = t.indexOf('">');
               var ie = t.indexOf('</');
-              var serieId = data[ii][2].substring(is + 2, ie);
+              var serieId;
+              if (!projects[projectId].useBugTracker)
+                serieId = data[ii][2].substring(is + 2, ie);
+              else
+                serieId = data[ii][1].substring(is + 2, ie);
               if (graphs[serieId].serie)
                 continue;
               socket.emit('getOneSerie', {

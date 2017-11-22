@@ -1191,6 +1191,8 @@ app.get('/admin/*',
 app.post('/admin/addProject',
   // require('connect-ensure-login').ensureLoggedIn(),
   function(req, res) {
+    if (global.debug) console.log('/admin/addProject', req.body);
+
     // if (req.user.username !== 'admin') {
     //   appError(req, res, '/bot/addRepository, You must be an administrator');
     //   return;
@@ -1202,12 +1204,15 @@ app.post('/admin/addProject',
     }
     var users = req.body.users.replace(/\r\n/g, ",");
     let dp;
+    let useBugTracker = false;
+    if (req.body.bugtracker === 'bugtracker') useBugTracker = true;
     if (req.body.defaultPage !== '') dp = req.body.defaultPage;
     global.projectsConfig[projectId] = {
       description: req.body.description,
       defaultPage: dp,
       infos: req.body.infos,
       users: users,
+      useBugTracker: useBugTracker
     }
     global.admin.writeSync('projects', global.projectsConfig);
 
@@ -1242,11 +1247,14 @@ app.post('/admin/saveProject',
     var users = req.body.users.replace(/\r\n/g, ",");
     let dp;
     if (req.body.defaultPage !== '') dp = req.body.defaultPage;
+    let useBugTracker = false;
+    if (req.body.bugtracker === 'bugtracker') useBugTracker = true;
     global.projectsConfig[projectId] = {
       description: req.body.description,
       defaultPage: dp,
       infos: req.body.infos,
       users: users,
+      useBugTracker: useBugTracker
     }
     global.admin.writeSync('projects', global.projectsConfig);
     res.redirect('/admin/viewProjects');
