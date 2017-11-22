@@ -80,11 +80,13 @@ When new series are detected in regression, the state is set as **Needs triage**
 
 When the regression disappears (status becomes similar due to work on the software) the regression disappears from the regressions page automatically.
 
-Other states can be set by the user for indication to help him to follow progress and it is up to the user to use it or not. **Assigned** if someone is working on it, **Fixed** if a patch is coming to resolve the case. The user can also add a bug tracker link to follow the progress of work. The UI provides a template to be used in the bug tracker.
+In case the project is not configured as using a bug tracker (in the project configuration), other states can be set by the user for indication to help him to follow progress and it is up to the user to use it or not. **Assigned** if someone is working on it, **Fixed** if a patch is coming to resolve the case.
+
+Each time a regression is set to **Regression confirmed**, the user is invited to add a bug tracker link to follow the progress of work. The UI provides a template to be used in the bug tracker. The user can update the link anytime in the UI.
 
 **Improvement status**
 
-When new series are detected in improvements, the state is set as **Needs triage**. The user can set the state to **Noisy** to indicate it is a false positive due to noise. When the state is set to Noisy Dana will configure automatically the regression analysis for that benchmark for the analysis to be similar. If it is a true positive, the user can set the state to **Intended behavior** and Dana automatically set the regression analysis base to the first buildId of the improvement and the regression status will become similar.
+When new series are detected in improvements, the state is set as **Needs triage**. The user can set the state to **Noisy** to indicate it is a false positive due to noise. When the state is set to Noisy Dana will configure automatically the regression analysis for that benchmark by adjusting automatically the range for the analysis to be similar. If it is a true positive, the user can set the state to **Intended behavior** and Dana automatically set the regression analysis base to the first buildId of the improvement and the regression status will become similar.
 
 ### Compares
 
@@ -94,9 +96,13 @@ Dana provides the user a **state** he can manage.
 
 **Lower status**
 
-When new series are detected lowers, the state is set as **Needs triage**.
+When new series are detected lowers, the state is set as **Needs triage**. The user can set the state to **Lower confirmed** to indicate the lower is confirmed and that someone is working on it. He can set the state to **Intended behavior** to indicate lower is expected.
 
-Other states can be set by the user for indication to help him to follow progress and it is up to the user to use it or not. **Lower confirmed** to indicate someone looked to it and confirmed the scores, **Assigned** if someone is working on it, **Fixed** if a patch is coming to resolve the case, **Intended behavior** for expected lower comparisons. The user can also add a bug tracker link to follow the progress of work. The UI provides a template to be used in the bug tracker.
+When the state is set to Noisy Dana will configure automatically the regression analysis for that benchmark for the analysis to be similar. If it is a true positive, the user can set the state to **Lower confirmed** to indicate that is an unexpected regression or set the state to **Intended behavior** for regressions that are expected.
+
+In case the project is not configured as using a bug tracker (in the project configuration), other states can be set by the user for indication to help him to follow progress and it is up to the user to use it or not. **Assigned** if someone is working on it, **Fixed** if a patch is coming to resolve the case.
+
+Each time a lower is set to **Lower confirmed**, the user is invited to add a bug tracker link to follow the progress of work. The UI provides a template to be used in the bug tracker. The user can update the link anytime in the UI.
 
 **Better status**
 
