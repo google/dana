@@ -4,4 +4,3 @@ unused
 *.log
 www/views/projects
 www/public/dailyReports
-demo/configs/db
