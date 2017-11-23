@@ -24,50 +24,6 @@ const moduleAnalyse = require(cwd + '/src/analyse');
 const moduleHtmlBuilder = require(cwd + '/src/htmlBuilder');
 const moduleSendMail = require(cwd + '/src/sendMail');
 
-// -- add one compare to a projectId
-// compare:  compareId, description, projectId
-// optionnal : buildId
-function addProjectCompare(projectId, compare) {
-  if (projectId === undefined) {
-    console.error('addProjectCompare projectId undefined');
-    return;
-  }
-  if (global.projects[projectId] === undefined) {
-    console.error('addProjectCompare projectId not in projects',
-      projectId);
-    return;
-  }
-  if (compare === undefined) {
-    console.error('addProjectCompare build undefined');
-    return;
-  }
-  // TODO
-  // compare checker
-  if (compare.projectId === undefined) {
-    console.error('addProjectCompare compare.projectId undefined');
-    return;
-  }
-  if (global.projects[compare.projectId] === undefined) {
-    console.error('addProjectCompare compare.projectId not in projects',
-      compare.projectId);
-    return;
-  }
-  if (compare.description === undefined) {
-    console.error('addProjectCompare compare.description undefined');
-    return;
-  }
-  if (compare.compareId === undefined) {
-    console.error('addProjectCompare compare.compareId undefined');
-    return;
-  }
-  let compares = {};
-  if (global.projects[projectId].infos.existsSync('benchmarks.compares')) {
-    compares = global.projects[projectId].infos.readSync('benchmarks.compares');
-  }
-  compares[compare.compareId] = compare;
-  global.projects[projectId].infos.writeSync('benchmarks.compares', compares);
-}
-
 function snapshotAtMidnight() {
   let now = new Date();
   let night = new Date(
@@ -966,6 +922,7 @@ const global = {
   config: require(cwd + '/configs/dana.js'),
   projectsConfig: {},
   projects: {},
+  comparesConfig: {},
   admin: {},
   emailIsEnabled: true,
 };
@@ -1004,6 +961,10 @@ for (let ii = 0; ii < k.length; ii++) {
     new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/infos', 200);
 }
 
+if (global.admin.existsSync('compares')) {
+  global.comparesConfig = global.admin.readSync('compares');
+}
+
 global.version = JSON.parse(fs.readFileSync(cwd + '/package.json')).version;
 
 if (global.config === undefined) {
@@ -1023,13 +984,13 @@ if (global.config.adminUser === undefined) {
 //   useAverage: true
 // });
 
-addProjectCompare('Test', {
-  compareId: 'Compare_with_build_1000',
-  description: 'Compare with build 1000',
-  useBuildId: 1000,
-  projectId: 'Test',
-  useAverage: true
-});
+// addProjectCompare('Test', {
+//   compareId: 'Compare_with_build_1000',
+//   description: 'Compare with build 1000',
+//   useBuildId: 1000,
+//   projectId: 'Test',
+//   useAverage: true
+// });
 
 // Configure the local strategy for use by Passport.
 const passport = require('passport');
@@ -1179,6 +1140,30 @@ app.get('/admin/*',
         title: 'Login',
         user: req.user,
       });
+    } else
+    if (r.indexOf('editCompare') !== -1) {
+      r = r.split('?');
+      let compareId = r[1];
+      console.log(global.comparesConfig[compareId]);
+      res.render('common/admin/editCompare', {
+        compareId: compareId,
+        compare: global.comparesConfig[compareId],
+        global: global,
+        title: 'Login',
+        user: req.user,
+      });
+    } else
+    if (r.indexOf('deleteCompare') !== -1) {
+      r = r.split('?');
+      let compareId = r[1];
+      console.log(global.comparesConfig[compareId]);
+      res.render('common/admin/deleteCompare', {
+        compareId: compareId,
+        compare: global.comparesConfig[compareId],
+        global: global,
+        title: 'Login',
+        user: req.user,
+      });
     } else {
       res.render('common/admin/' + r, {
         global: global,
@@ -1186,6 +1171,170 @@ app.get('/admin/*',
         user: req.user,
       });
     }
+  });
+
+// *compareId
+// description
+// *projectId
+// *filter
+// *useAverage
+// *with_projectId
+// *with_buildId
+// *with_useAverage
+app.post('/admin/addComparator',
+  // require('connect-ensure-login').ensureLoggedIn(),
+  function(req, res) {
+    if (global.debug)
+      console.log('/admin/addComparator', req.body);
+
+    // if (req.user.username !== 'admin') {
+    //   appError(req, res, '/bot/addRepository, You must be an administrator');
+    //   return;
+    // }
+    let compareId = req.body.compareId;
+    if (compareId === '') {
+      appError(req, res, '/admin/addComparator, compareId undefined');
+      return;
+    }
+    if (global.comparesConfig[compareId] !== undefined) {
+      appError(req, res, '/admin/addComparator, comparator ' + compareId + ' already exist');
+      return;
+    }
+
+    let description;
+    if (req.body.description !== '') description = req.body.description;
+
+    let projectId = req.body.projectId;
+    if (projectId === '') {
+      appError(req, res, '/admin/addComparator, projectId undefined');
+      return;
+    }
+
+    let filter;
+    if (req.body.filter !== '') filter = req.body.filter;
+
+    let useAverage = true;
+    if (req.body.useAverage !== 'useAverage') useAverage = false;
+
+    let compareWith = {};
+    compareWith.projectId = req.body.with_projectId;
+    if (compareWith.projectId === '') {
+      appError(req, res, '/admin/addComparator, compareWith.projectId undefined');
+      return;
+    }
+
+    compareWith.buildId = undefined;
+    if (req.body.with_buildId !== 'None') compareWith.buildId = req.body.with_buildId * 1;
+
+    compareWith.useAverage = true;
+    if (req.body.with_useAverage !== 'with_useAverage') compareWith.useAverage = false;
+
+    global.comparesConfig[compareId] = {
+      compareId: compareId,
+      description: description,
+      projectId: projectId,
+      filter: filter,
+      useAverage: useAverage,
+      compareWith: compareWith
+    }
+    global.admin.writeSync('compares', global.comparesConfig);
+
+    res.redirect('/admin/viewCompares');
+  });
+
+// *compareId
+// description
+// *projectId
+// *filter
+// *useAverage
+// *with_projectId
+// *with_buildId
+// *with_useAverage
+app.post('/admin/saveComparator',
+  // require('connect-ensure-login').ensureLoggedIn(),
+  function(req, res) {
+    //if (global.debug)
+    console.log('/admin/saveComparator', req.body);
+
+    // if (req.user.username !== 'admin') {
+    //   appError(req, res, '/bot/addRepository, You must be an administrator');
+    //   return;
+    // }
+    let compareId = req.body.compareId;
+    if (compareId === '') {
+      appError(req, res, '/admin/saveComparator, compareId undefined');
+      return;
+    }
+    if (global.comparesConfig[compareId] === undefined) {
+      appError(req, res, '/admin/saveComparator, comparator ' + compareId + ' doesnt exist');
+      return;
+    }
+
+    let description;
+    if (req.body.description !== '') description = req.body.description;
+
+    let projectId = req.body.projectId;
+    if (projectId === '') {
+      appError(req, res, '/admin/saveComparator, projectId undefined');
+      return;
+    }
+
+    let filter;
+    if (req.body.filter !== '') filter = req.body.filter;
+
+    let useAverage = true;
+    if (req.body.useAverage !== 'useAverage') useAverage = false;
+
+    let compareWith = {};
+    compareWith.projectId = req.body.with_projectId;
+    if (compareWith.projectId === '') {
+      appError(req, res, '/admin/saveComparator, compareWith.projectId undefined');
+      return;
+    }
+
+    compareWith.buildId = undefined;
+    if (req.body.with_buildId !== 'None') compareWith.buildId = req.body.with_buildId * 1;
+
+    compareWith.useAverage = true;
+    if (req.body.with_useAverage !== 'with_useAverage') compareWith.useAverage = false;
+
+    global.comparesConfig[compareId] = {
+      compareId: compareId,
+      description: description,
+      projectId: projectId,
+      filter: filter,
+      useAverage: useAverage,
+      compareWith: compareWith
+    }
+    global.admin.writeSync('compares', global.comparesConfig);
+
+    res.redirect('/admin/viewCompares');
+  });
+
+app.post('/admin/deleteComparator',
+  // require('connect-ensure-login').ensureLoggedIn(),
+  function(req, res) {
+    if (global.debug)
+      console.log('/admin/deleteComparator', req.body);
+
+    // if (req.user.username !== 'admin') {
+    //   appError(req, res, '/bot/addRepository, You must be an administrator');
+    //   return;
+    // }
+    let compareId = req.body.compareId;
+    if (compareId === '') {
+      appError(req, res, '/admin/deleteComparator, compareId undefined');
+      return;
+    }
+    if (global.comparesConfig[compareId] === undefined) {
+      appError(req, res, '/admin/deleteComparator, comparator ' + compareId + ' doesnt exist');
+      return;
+    }
+
+    delete global.comparesConfig[compareId];
+    global.admin.writeSync('compares', global.comparesConfig);
+
+    res.redirect('/admin/viewCompares');
   });
 
 app.post('/admin/addProject',
