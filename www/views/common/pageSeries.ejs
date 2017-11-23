@@ -86,6 +86,10 @@
           <ul class="nav navbar-right panel_toolbox">
             <!-- <li class="dropdown"> <a href="#download"><i class="fa fa-download"></i></a> </li> -->
             <li>
+              <button id='btnShowCommonBuilds' type="button" class="btn btn-danger btn-xs">Show last 50 builds of project</button>
+            </li>
+            &nbsp;&nbsp;&nbsp;
+            <li>
               <button id='btnShowUndefined' type="button" class="btn btn-primary btn-xs">Not available</button>
             </li>
             <li>
@@ -191,6 +195,7 @@
       var numSeriesRegression;
       var numSeriesUndefined;
       var tableMode;
+      var usingAllSameLast50Builds = false;
 
       //    alert($(window).height())  if ($(window).height() > 1000)  defLength = 20;
       var defLength = 15;
@@ -368,6 +373,19 @@
           $('#btnShowUndefined').addClass('active')
           showTable('undefined')
         }
+
+        $('#btnShowCommonBuilds').removeClass('active');
+        $('#btnShowCommonBuilds').click(function() {
+          if (usingAllSameLast50Builds) {
+            usingAllSameLast50Builds = false;
+            $('#btnShowCommonBuilds').removeClass('active')
+          }
+          else {
+            usingAllSameLast50Builds = true;
+            $('#btnShowCommonBuilds').addClass('active')
+          }
+          showTable(tableMode)
+        })
 
         $('#btnShowSimilar').click(function() {
           $('#btnShowImproved').removeClass('active')
@@ -559,11 +577,12 @@
             state: sel.value,
           });
           series[serieId].state = sel.value;
-          if (sel.value==='regressionConfirmed') {
+          if (sel.value === 'regressionConfirmed') {
             if (!series[serieId].bugLink)
               addBugLink(serieId);
           }
         }
+        createSerieGraph(serieId)
       }
 
       function getStateTdDesc(serieId, state, index) {
@@ -783,8 +802,8 @@
         }
 
         $('#table_content').html(h);
-        var orderColumn=3;
-        if (!projects[projectId].useBugTracker) orderColumn=4;
+        var orderColumn = 3;
+        if (!projects[projectId].useBugTracker) orderColumn = 4;
         dataTableObject = $('#serieDatatable').DataTable({
           "language": {
             "decimal": "."
@@ -911,7 +930,7 @@
           labels: [
             '', ''
           ],
-          drawPoints: true,
+          drawPoints: false,
           pointSize: 2,
           highlightCircleSize: 4,
           legend: '',
@@ -934,45 +953,59 @@
         //    globalSetSelectionRaw(graph.data.length - 1);
       }
 
-      var usingAllSameLast50Builds = false;
       socket.on('receiveOneSerie', function(req) {
         if (debug)
           console.log('receiveOneSerie', req);
-        graphs[req.serieId].serieId = req.serieId;
-        graphs[req.serieId].samples = req.serie.samples;
-        if (req.serie.samples) {
+        let serie = req.serie;
+        let serieId = req.serieId;
+        graphs[serieId].serieId = serieId;
+        graphs[serieId].samples = serie.samples;
+        graphs[serieId].serie = serie;
+        createSerieGraph(serieId);
+      });
+
+      function createSerieGraph(serieId) {
+        let serie = graphs[serieId].serie;
+        if (serie.samples) {
+          var k = Object.keys(serie.samples);
+          k.sort(function(a, b) {
+            return b * 1 - a * 1
+          });
           var a = [];
           if (usingAllSameLast50Builds) {
             for (var ii = 0; ii < graphBuilds.length; ii++) {
-              if (req.serie.samples[graphBuilds[ii].buildId])
-                a.push(req.serie.samples[graphBuilds[ii].buildId]);
-              else
-                a.push(null);
+              let v = null;
+              if (serie.samples[graphBuilds[ii].buildId]) {
+                if (serie.analyse.base) {
+                  if (graphBuilds[ii].buildId >= serie.analyse.base)
+                    v = serie.samples[graphBuilds[ii].buildId];
+                } else {
+                  v = serie.samples[graphBuilds[ii].buildId];
+                }
+              }
+              a.push(v);
             }
-            graphs[req.serieId].builds = graphBuilds;
+            graphs[serieId].builds = graphBuilds;
           } else {
-            var k = Object.keys(req.serie.samples);
-            k.sort(function(a, b) {
-              return b * 1 - a * 1
-            });
-            var l = 50;
-            if (k.length < 50)
-              l = k.length;
             var b = [];
-            for (var ii = 0; ii < l; ii++)
-              b.push(builds[k[ii]])
+            for (var ii = 0; ii < k.length; ii++) {
+              if (serie.analyse.base) {
+                if (k[ii] >= serie.analyse.base)
+                  b.push(builds[k[ii]]);
+              } else
+                b.push(builds[k[ii]]);
+            }
             b.reverse();
-            graphs[req.serieId].builds = b;
+            graphs[serieId].builds = b;
             for (var ii = 0; ii < b.length; ii++) {
-              a.push(req.serie.samples[b[ii].buildId])
+              a.push(serie.samples[b[ii].buildId])
             }
           }
-          graphs[req.serieId].serieBuilds = k.reverse();
-          graphs[req.serieId].data = a;
-          graphs[req.serieId].serie = req.serie;
-          drawRawGraph(graphs[req.serieId])
+          graphs[serieId].serieBuilds = k.reverse();
+          graphs[serieId].data = a;
+          drawRawGraph(graphs[serieId])
         }
-      });
+      }
 
       function addBugLink(theSerieId) {
         serieId = theSerieId;
