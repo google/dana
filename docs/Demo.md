@@ -10,7 +10,14 @@ As a requirement, you need to have node.js installed on your machine. [See nodej
 $ npm install
 $ cp -r demo/configs configs
 $ cp -r demo/projects www/views/projects
+```
+
+To start the server, there are two options:
+
+```
 $ node src/server.js
+or
+$ npm start
 ```
 
 ## Feeding fake data

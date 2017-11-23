@@ -44,8 +44,12 @@ You're ready to run the server :)
 
 Note you need to add some pages for the projects. See [adding project pages](Project.md) to know how to add pages to the dashboard for a project).
 
+To start the server, there are two options:
+
 ```
 $ node src/server.js
+or
+$ npm start
 ```
 
 ## Configure email account

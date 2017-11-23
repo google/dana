@@ -39,5 +39,8 @@
   "devDependencies": {
     "eslint": "^4.8.0",
     "eslint-config-google": "^0.9.1"
+  },
+  "scripts": {
+    "start": "node src/server.js"
   }
 }
