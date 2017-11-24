@@ -179,7 +179,7 @@
     <!-- <script src="/js/uilib.js"></script> <script src="/js/uilibOne.js"></script> -->
 
     <script>
-      var debug = false; 
+      var debug = false;
       var serieId,
         projectId,
         serieFilter;
@@ -223,7 +223,7 @@
               graphBuilds.push(builds[k[ii]])
             graphBuilds.reverse();
           }
-          if (req.fileId === 'benchmarks.compares')
+          if (req.fileId === 'compares')
             compares = req.file;
           if (req.fileId === 'benchmarks.series')
             series = req.file;
@@ -248,8 +248,8 @@
           fileId: 'builds'
         });
         socket.emit('getFileInfo', {
-          projectId: projectId,
-          fileId: 'benchmarks.compares'
+          projectId: 'admin',
+          fileId: 'compares'
         });
         socket.emit('getFileInfo', {
           projectId: projectId,

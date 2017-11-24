@@ -29,6 +29,7 @@ const global = {
   projects: {},
   admin: {},
   emailIsEnabled: true,
+  comparesConfig: {},
 };
 
 if (!fs.existsSync(cwd + '/configs/db')) {
@@ -59,6 +60,10 @@ for (let ii = 0; ii < k.length; ii++) {
 if (global.config === undefined) {
   console.log('ERROR Invalid configuration file, undefined');
   process.exit(2);
+}
+
+if (global.admin.existsSync('compares')) {
+  global.comparesConfig = global.admin.readSync('compares');
 }
 
 // serieUpdateAnalyse (projectId, serieId, analyse)
@@ -154,65 +159,58 @@ function serieUpdateAnalyse(req) {
     //
     // Compare management
     //
-    let compares;
-    if (global.projects[projectId].infos.existsSync('benchmarks.compares')) {
-      compares = global.projects[projectId].infos
-        .readSync('benchmarks.compares');
-    }
-    if (compares) {
-      // update
-      let k = Object.keys(compares);
-      for (let ii = 0; ii < k.length; ii++) {
-        let compareId = k[ii];
-        let cp = compares[compareId];
-        let cpProjectId = cp.projectId;
-        if (global.projects[cpProjectId].series) {
-          if (global.projects[cpProjectId].series.existsSync(serieId)) {
-            let cpSerie = global.projects[cpProjectId].series
-              .readSync(serieId);
-            let result = moduleAnalyse.benchmarkCompare(cp, serie, cpSerie);
-            if (result !== undefined) {
+    let k = Object.keys(global.comparesConfig);
+    for (let ii = 0; ii < k.length; ii++) {
+      let compareId = k[ii];
+      let cp = global.comparesConfig[compareId];
+      if (cp.projectId !== projectId) continue;
+      let cpProjectId = cp.projectId;
+      if (global.projects[cpProjectId].series) {
+        if (global.projects[cpProjectId].series.existsSync(serieId)) {
+          let cpSerie = global.projects[cpProjectId].series
+            .readSync(serieId);
+          let result = moduleAnalyse.benchmarkCompare(cp, serie, cpSerie);
+          if (result !== undefined) {
 
-              let st = serie.state.compares[compareId];
-              if (result.status === 'lower') {
+            let st = serie.state.compares[compareId];
+            if (result.status === 'lower') {
+              if (st === undefined)
+                serie.state.compares[compareId] = 'lowerNeedstriage';
+              else if (st.indexOf('lower') === -1)
+                serie.state.compares[compareId] = 'lowerNeedstriage';
+            } else {
+              serie.assignee.compares[compareId] = undefined;
+              if (serie.analyseResult.summary.status === 'better') {
                 if (st === undefined)
-                  serie.state.compares[compareId] = 'lowerNeedstriage';
-                else if (st.indexOf('lower') === -1)
-                  serie.state.compares[compareId] = 'lowerNeedstriage';
+                  serie.state.compares[compareId] = 'betterNeedstriage';
+                else if (st.indexOf('better') === -1)
+                  serie.state.compares[compareId] = 'betterNeedstriage';
               } else {
-                serie.assignee.compares[compareId] = undefined;
-                if (serie.analyseResult.summary.status === 'better') {
-                  if (st === undefined)
-                    serie.state.compares[compareId] = 'betterNeedstriage';
-                  else if (st.indexOf('better') === -1)
-                    serie.state.compares[compareId] = 'betterNeedstriage';
-                } else {
-                  if (st === undefined)
-                    serie.state.compares[compareId] = 'similarNeedstriage';
-                  else if (st.indexOf('similar') === -1)
-                    serie.state.compares[compareId] = 'similarNeedstriage';
-                }
+                if (st === undefined)
+                  serie.state.compares[compareId] = 'similarNeedstriage';
+                else if (st.indexOf('similar') === -1)
+                  serie.state.compares[compareId] = 'similarNeedstriage';
               }
-
-              // serie file
-              if (serie.compares === undefined) serie.compares = {};
-              serie.compares[compareId].result = result;
-
-              // compares file
-              let compare = global.projects[projectId].infos
-                .readSync('benchmarks.compare_' + compareId);
-              if (compare[serieId] === undefined) {
-                let e = 'serieUpdateAnalyse compare[serieId] undefin';
-                console.error(e, projectId, serieId);
-                console.log('serverError', e);
-                return;
-              }
-              compare[serieId].result = result;
-              compare[serieId].state = serie.state.compares[compareId];
-
-              global.projects[projectId].infos
-                .writeSync('benchmarks.compare_' + compareId, compare);
             }
+
+            // serie file
+            if (serie.compares === undefined) serie.compares = {};
+            serie.compares[compareId].result = result;
+
+            // compares file
+            let compare = global.projects[projectId].infos
+              .readSync('benchmarks.compare_' + compareId);
+            if (compare[serieId] === undefined) {
+              let e = 'serieUpdateAnalyse compare[serieId] undefin';
+              console.error(e, projectId, serieId);
+              console.log('serverError', e);
+              return;
+            }
+            compare[serieId].result = result;
+            compare[serieId].state = serie.state.compares[compareId];
+
+            global.projects[projectId].infos
+              .writeSync('benchmarks.compare_' + compareId, compare);
           }
         }
       }

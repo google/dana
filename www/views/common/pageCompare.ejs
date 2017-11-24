@@ -161,7 +161,7 @@ implied. * See the License for the specific language governing permissions and *
         socket.on('receiveFileInfo', function (req) {
           if (debug)
             console.log('receiveFileInfo', req);
-          if (req.fileId === 'benchmarks.compares') {
+          if (req.fileId === 'compares') {
             compares = req.file;
             $('#page_title_description').html(compares[compareId].description + ' <small>Based on latest results</small>');
           } else if (req.fileId === 'builds') {
@@ -189,8 +189,8 @@ implied. * See the License for the specific language governing permissions and *
           fileId: 'builds'
         });
         socket.emit('getFileInfo', {
-          projectId: projectId,
-          fileId: 'benchmarks.compares'
+          projectId: 'admin',
+          fileId: 'compares'
         });
         socket.emit('getFileInfo', {
           projectId: projectId,

@@ -182,7 +182,7 @@
         builds = req.file;
       if (req.fileId === 'tests.series')
         tests = req.file;
-      if (req.fileId === 'benchmarks.compares')
+      if (req.fileId === 'compares')
         compares = req.file;
       if (req.fileId === 'projects')
         projects = req.file;
@@ -207,8 +207,8 @@
       fileId: 'tests.series'
     });
     socket.emit('getFileInfo', {
-      projectId: projectId,
-      fileId: 'benchmarks.compares'
+      projectId: 'admin',
+      fileId: 'compares'
     });
     socket.emit('getFileInfo', {
       projectId: 'admin',

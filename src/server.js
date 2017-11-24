@@ -124,51 +124,47 @@ function createSnapshotProjectId(projectId) {
         .writeSync('benchmarks.statusSeries', statusSeries);
     }
   }
-  if (global.projects[projectId].infos.existsSync('benchmarks.compares')) {
-    let compares = global.projects[projectId].infos
-      .readSync('benchmarks.compares');
 
-    let k = Object.keys(compares);
-    for (let ii = 0; ii < k.length; ii++) {
-      let compareId = k[ii];
-      if (global.projects[projectId].infos
-        .existsSync('benchmarks.compare_' + compareId)) {
-        let compare;
-        compare = global.projects[projectId].infos
-          .readSync('benchmarks.compare_' + compareId);
-        let res = {
-          numSeries: 0,
-          numSeriesBetter: 0,
-          numSeriesLower: 0,
-          numSeriesSimilar: 0,
-          time: nowTime,
-        };
+  let k = Object.keys(global.comparesConfig);
+  for (let ii = 0; ii < k.length; ii++) {
+    let compareId = k[ii];
+    if (global.projects[projectId].infos
+      .existsSync('benchmarks.compare_' + compareId)) {
+      let compare;
+      compare = global.projects[projectId].infos
+        .readSync('benchmarks.compare_' + compareId);
+      let res = {
+        numSeries: 0,
+        numSeriesBetter: 0,
+        numSeriesLower: 0,
+        numSeriesSimilar: 0,
+        time: nowTime,
+      };
 
-        let kk = Object.keys(compare);
-        res.numSeries = kk.length;
-        for (let jj = 0; jj < kk.length; jj++) {
-          let s = compare[kk[jj]];
-          if (s.result.status.indexOf('better') !== -1) {
-            res.numSeriesBetter++;
-          }
-          if (s.result.status.indexOf('lower') !== -1) {
-            res.numSeriesLower++;
-          }
-          if (s.result.status.indexOf('similar') !== -1) {
-            res.numSeriesSimilar++;
-          }
+      let kk = Object.keys(compare);
+      res.numSeries = kk.length;
+      for (let jj = 0; jj < kk.length; jj++) {
+        let s = compare[kk[jj]];
+        if (s.result.status.indexOf('better') !== -1) {
+          res.numSeriesBetter++;
         }
-        let statusCompares = {};
-        if (global.projects[projectId].infos
-          .existsSync('benchmarks.statusCompare_' + compareId)) {
-          statusCompares = global.projects[projectId].infos
-            .readSync('benchmarks.statusCompare_' + compareId);
-        };
-        let id = Object.keys(statusCompares).length;
-        statusCompares[id] = res;
-        global.projects[projectId].infos
-          .writeSync('benchmarks.statusCompare_' + compareId, statusCompares);
+        if (s.result.status.indexOf('lower') !== -1) {
+          res.numSeriesLower++;
+        }
+        if (s.result.status.indexOf('similar') !== -1) {
+          res.numSeriesSimilar++;
+        }
       }
+      let statusCompares = {};
+      if (global.projects[projectId].infos
+        .existsSync('benchmarks.statusCompare_' + compareId)) {
+        statusCompares = global.projects[projectId].infos
+          .readSync('benchmarks.statusCompare_' + compareId);
+      };
+      let id = Object.keys(statusCompares).length;
+      statusCompares[id] = res;
+      global.projects[projectId].infos
+        .writeSync('benchmarks.statusCompare_' + compareId, statusCompares);
     }
   }
 }
@@ -285,69 +281,64 @@ function sendDailyReport(projectId) {
   }
 
   let numBenchmarksComparesNew = 0;
-  if (global.projects[projectId].infos.existsSync('benchmarks.compares')) {
-    let compares = global.projects[projectId].infos
-      .readSync('benchmarks.compares');
+  let k = Object.keys(global.comparesConfig);
+  for (let ii = 0; ii < k.length; ii++) {
+    let compareId = k[ii];
+    if (global.projects[projectId].infos
+      .existsSync('benchmarks.compare_' + compareId)) {
+      let compare;
+      compare = global.projects[projectId].infos
+        .readSync('benchmarks.compare_' + compareId);
+      var dataCompareNew = [];
+      let kk = Object.keys(compare);
+      for (let jj = 0; jj < kk.length; jj++) {
+        let s = compare[kk[jj]];
+        if (s.new === undefined)
+          continue;
+        delete s.new;
 
-    let k = Object.keys(compares);
-    for (let ii = 0; ii < k.length; ii++) {
-      let compareId = k[ii];
-      if (global.projects[projectId].infos
-        .existsSync('benchmarks.compare_' + compareId)) {
-        let compare;
-        compare = global.projects[projectId].infos
-          .readSync('benchmarks.compare_' + compareId);
-        var dataCompareNew = [];
-        let kk = Object.keys(compare);
-        for (let jj = 0; jj < kk.length; jj++) {
-          let s = compare[kk[jj]];
-          if (s.new === undefined)
-            continue;
-          delete s.new;
-
-          let st = s.state;
-          // convert an existing database
-          if (st === 'new') st = 'lowerNeedstriage';
-          if (st !== 'lowerNeedstriage') continue;
-          let p = s.result.diff / s.result.compareValue * 100;
-          dataCompareNew.push({
-            serieId: kk[jj],
-            p: p
-          })
-        }
-        global.projects[projectId].infos
-          .writeSync('benchmarks.compare_' + compareId, compare)
-        numBenchmarksComparesNew += dataCompareNew.length;
-        dataCompareNew.sort(function(a, b) {
-          return a.p - b.p;
-        });
-        moduleHtmlBuilder.bodyH4('New lower comparison for ' + compareId);
-        if (dataCompareNew.length !== 0) {
-          moduleHtmlBuilder.bodyTableStart();
-          moduleHtmlBuilder.bodyTableTh(['Id', 'My value', 'Compare value', 'Ratio', '']);
-          for (let jj = 0; jj < dataCompareNew.length; jj++) {
-            let s = compare[dataCompareNew[jj].serieId];
-            let ratio;
-            let p = dataCompareNew[jj].p;
-            if (s.result.diff == 0)
-              ratio = '0%';
-            if (s.result.diff > 0)
-              ratio = '+' + p.toFixed(2) + '%';
-            if (s.result.diff < 0)
-              ratio = p.toFixed(2) + '%';
-            moduleHtmlBuilder.bodyTableTd([
-              dataCompareNew[jj].serieId,
-              s.result.myValue * 1,
-              s.result.compareValue * 1,
-              ratio,
-              '<a href=' + danaUrl +
-              '/serie?' + projectId + '?' + encodeURI(dataCompareNew[jj].serieId) + '>View</a>'
-            ]);
-          }
-          moduleHtmlBuilder.bodyTableEnd();
-        } else
-          moduleHtmlBuilder.bodyPar('None');
+        let st = s.state;
+        // convert an existing database
+        if (st === 'new') st = 'lowerNeedstriage';
+        if (st !== 'lowerNeedstriage') continue;
+        let p = s.result.diff / s.result.compareValue * 100;
+        dataCompareNew.push({
+          serieId: kk[jj],
+          p: p
+        })
       }
+      global.projects[projectId].infos
+        .writeSync('benchmarks.compare_' + compareId, compare)
+      numBenchmarksComparesNew += dataCompareNew.length;
+      dataCompareNew.sort(function(a, b) {
+        return a.p - b.p;
+      });
+      moduleHtmlBuilder.bodyH4('New lower comparison for ' + compareId);
+      if (dataCompareNew.length !== 0) {
+        moduleHtmlBuilder.bodyTableStart();
+        moduleHtmlBuilder.bodyTableTh(['Id', 'My value', 'Compare value', 'Ratio', '']);
+        for (let jj = 0; jj < dataCompareNew.length; jj++) {
+          let s = compare[dataCompareNew[jj].serieId];
+          let ratio;
+          let p = dataCompareNew[jj].p;
+          if (s.result.diff == 0)
+            ratio = '0%';
+          if (s.result.diff > 0)
+            ratio = '+' + p.toFixed(2) + '%';
+          if (s.result.diff < 0)
+            ratio = p.toFixed(2) + '%';
+          moduleHtmlBuilder.bodyTableTd([
+            dataCompareNew[jj].serieId,
+            s.result.myValue * 1,
+            s.result.compareValue * 1,
+            ratio,
+            '<a href=' + danaUrl +
+            '/serie?' + projectId + '?' + encodeURI(dataCompareNew[jj].serieId) + '>View</a>'
+          ]);
+        }
+        moduleHtmlBuilder.bodyTableEnd();
+      } else
+        moduleHtmlBuilder.bodyPar('None');
     }
   }
 
@@ -735,110 +726,106 @@ function apiAddSample(apiData, hdl) {
       serie.assignee.compares = {};
     }
 
-    let compares;
-    if (global.projects[projectId].infos.existsSync('benchmarks.compares')) {
-      compares = global.projects[projectId].infos
-        .readSync('benchmarks.compares');
-    }
-    if (compares) {
-      // clean old compares
-      if (serie.compares) {
-        let k = Object.keys(serie.compares);
-        for (let ii = 0; ii < k.length; ii++) {
-          if (compares[k[ii]] === undefined) delete serie.compares[k[ii]];
-        }
-      }
-
-      if (serie.state.compares === undefined) {
-        serie.state.compares = {};
-      }
-
-      // update
-      let k = Object.keys(compares);
+    // clean old compares
+    if (serie.compares) {
+      let k = Object.keys(serie.compares);
       for (let ii = 0; ii < k.length; ii++) {
-        let newLower = undefined;
-        let compareId = k[ii];
-        if (serie.state.compares[compareId] === undefined) {
-          serie.state.compares[compareId] = 'none';
-        }
-        let cp = compares[compareId];
-        let cpProjectId = cp.projectId;
-        let cpSerie;
-        if (cpProjectId == projectId) {
-          cpSerie = serie;
+        if (compares[k[ii]] === undefined) delete serie.compares[k[ii]];
+      }
+    }
+
+    if (serie.state.compares === undefined) {
+      serie.state.compares = {};
+    }
+
+    // update
+    let kk = Object.keys(global.comparesConfig);
+    for (let ii = 0; ii < kk.length; ii++) {
+      let compareId = kk[ii];
+      let cp = global.comparesConfig[compareId];
+      if (cp.projectId != projectId) continue;
+
+      if (serie.state.compares[compareId] === undefined) {
+        serie.state.compares[compareId] = 'none';
+      }
+
+      let cpProjectId = cp.compareWith.projectId;
+      let cpSerie;
+      if (cpProjectId == projectId) {
+        cpSerie = serie;
+      } else {
+        if (global.projects[cpProjectId].series)
+          if (global.projects[cpProjectId].series.existsSync(serieId))
+            cpSerie = global.projects[cpProjectId].series.readSync(serieId);
+      }
+      if (cpSerie === undefined) continue;
+      let result = moduleAnalyse.benchmarkCompare(cp, serie, cpSerie);
+      if (global.debug) {
+        console.log('result', result);
+        console.log('serie.state', JSON.stringify(serie.state));
+      }
+      let newLower = undefined;
+      if (result !== undefined) {
+        let st = serie.state.compares[compareId];
+
+        // convert an existing database
+        if (st === 'none') st = undefined;
+        if (st === 'assigned') st = 'lowerAssigned';
+        if (st === 'new') st = 'lowerNeedstriage';
+        if (st === 'wontfix') st = 'lowerIntended';
+
+        if (result.status === 'lower') {
+          if (st === undefined) {
+            serie.state.compares[compareId] = 'lowerNeedstriage';
+            newLower = true;
+          } else if (st.indexOf('lower') === -1) {
+            serie.state.compares[compareId] = 'lowerNeedstriage';
+            newLower = true;
+          }
         } else {
-          if (global.projects[cpProjectId].series)
-            if (global.projects[cpProjectId].series.existsSync(serieId))
-              cpSerie = global.projects[cpProjectId].series.readSync(serieId);
-        }
-        if (cpSerie === undefined) continue;
-        let result = moduleAnalyse.benchmarkCompare(cp, serie, cpSerie);
-        if (global.debug) {
-          console.log('result', result);
-          console.log('serie.state', JSON.stringify(serie.state));
-        }
-        if (result !== undefined) {
-          let st = serie.state.compares[compareId];
-
-          // convert an existing database
-          if (st === 'none') st = undefined;
-          if (st === 'assigned') st = 'lowerAssigned';
-          if (st === 'new') st = 'lowerNeedstriage';
-          if (st === 'wontfix') st = 'lowerIntended';
-
-          if (result.status === 'lower') {
-            if (st === undefined) {
-              serie.state.compares[compareId] = 'lowerNeedstriage';
-              newLower = true;
-            } else if (st.indexOf('lower') === -1) {
-              serie.state.compares[compareId] = 'lowerNeedstriage';
-              newLower = true;
-            }
+          serie.assignee.compares[compareId] = undefined;
+          if (result.status === 'better') {
+            if (st === undefined)
+              serie.state.compares[compareId] = 'betterNeedstriage';
+            else if (st.indexOf('better') === -1)
+              serie.state.compares[compareId] = 'betterNeedstriage';
           } else {
-            serie.assignee.compares[compareId] = undefined;
-            if (serie.analyseResult.summary.status === 'better') {
-              if (st === undefined)
-                serie.state.compares[compareId] = 'betterNeedstriage';
-              else if (st.indexOf('better') === -1)
-                serie.state.compares[compareId] = 'betterNeedstriage';
-            } else {
-              if (st === undefined)
-                serie.state.compares[compareId] = 'similarNeedstriage';
-              else if (st.indexOf('similar') === -1)
-                serie.state.compares[compareId] = 'similarNeedstriage';
-            }
+            if (st === undefined)
+              serie.state.compares[compareId] = 'similarNeedstriage';
+            else if (st.indexOf('similar') === -1)
+              serie.state.compares[compareId] = 'similarNeedstriage';
           }
-
-          if (global.debug) {
-            console.log('serie.state', serie.state.compares[compareId]);
-          }
-          // serie file
-          if (serie.compares === undefined) serie.compares = {};
-          serie.compares[compareId] = {
-            result: result,
-            description: cp.description,
-          };
-          if (serie.url !== undefined)
-            if (serie.url[serie.lastBuildId])
-              serie.compares[compareId].url = serie.url[serie.lastBuildId];
-
-          // compares file
-          let compare = {};
-          if (global.projects[projectId].infos
-            .existsSync('benchmarks.compare_' + compareId)) {
-            compare = global.projects[projectId].infos
-              .readSync('benchmarks.compare_' + compareId);
-          }
-          compare[serieId] = {
-            result: result,
-            description: serie.description,
-            state: serie.state.compares[compareId],
-            assignee: serie.assignee.compares[compareId],
-          };
-          if (newLower) compare[serieId].new = true;
-          global.projects[projectId].infos
-            .writeSync('benchmarks.compare_' + compareId, compare);
         }
+
+        if (global.debug) {
+          console.log('serie.state', serie.state.compares[compareId]);
+        }
+        // serie file
+        if (serie.compares === undefined) serie.compares = {};
+        serie.compares[compareId] = {
+          result: result,
+          description: cp.description,
+        };
+        if (serie.url !== undefined)
+          if (serie.url[serie.lastBuildId])
+            serie.compares[compareId].url = serie.url[serie.lastBuildId];
+
+        // compares file
+        let compare = {};
+        if (global.projects[projectId].infos
+          .existsSync('benchmarks.compare_' + compareId)) {
+          compare = global.projects[projectId].infos
+            .readSync('benchmarks.compare_' + compareId);
+        }
+        compare[serieId] = {
+          result: result,
+          description: serie.description,
+          state: serie.state.compares[compareId],
+          assignee: serie.assignee.compares[compareId],
+        };
+        if (newLower) compare[serieId].new = true;
+        global.projects[projectId].infos
+          .writeSync('benchmarks.compare_' + compareId, compare);
       }
     }
   }
@@ -1774,71 +1761,65 @@ io.on('connection', function(socket) {
       //
       // Compare management
       //
-      let compares;
-      if (global.projects[projectId].infos.existsSync('benchmarks.compares')) {
-        compares = global.projects[projectId].infos
-          .readSync('benchmarks.compares');
-      }
-      if (compares) {
-        // update
-        let k = Object.keys(compares);
-        for (let ii = 0; ii < k.length; ii++) {
-          let compareId = k[ii];
-          let cp = compares[compareId];
-          let cpProjectId = cp.projectId;
-          if (global.projects[cpProjectId].series) {
-            if (global.projects[cpProjectId].series.existsSync(serieId)) {
-              let cpSerie = global.projects[cpProjectId].series
-                .readSync(serieId);
-              let result = moduleAnalyse.benchmarkCompare(cp, serie, cpSerie);
-              if (result !== undefined) {
-                let st = serie.state.compares[compareId];
 
-                // convert an existing database
-                if (st === 'none') st = undefined;
-                if (st === 'assigned') st = 'lowerAssigned';
-                if (st === 'new') st = 'lowerNeedstriage';
-                if (st === 'wontfix') st = 'lowerIntended';
+      let k = Object.keys(global.comparesConfig);
+      for (let ii = 0; ii < k.length; ii++) {
+        let compareId = k[ii];
+        let cp = global.comparesConfig[compareId];
+        if (cp.projectId !== projectId) continue;
+        let cpProjectId = cp.compareWith.projectId;
+        if (global.projects[cpProjectId].series) {
+          if (global.projects[cpProjectId].series.existsSync(serieId)) {
+            let cpSerie = global.projects[cpProjectId].series
+              .readSync(serieId);
+            let result = moduleAnalyse.benchmarkCompare(cp, serie, cpSerie);
+            if (result !== undefined) {
+              let st = serie.state.compares[compareId];
 
-                if (result.status === 'lower') {
+              // convert an existing database
+              if (st === 'none') st = undefined;
+              if (st === 'assigned') st = 'lowerAssigned';
+              if (st === 'new') st = 'lowerNeedstriage';
+              if (st === 'wontfix') st = 'lowerIntended';
+
+              if (result.status === 'lower') {
+                if (st === undefined)
+                  serie.state.compares[compareId] = 'lowerNeedstriage';
+                else if (st.indexOf('lower') === -1)
+                  serie.state.compares[compareId] = 'lowerNeedstriage';
+              } else {
+                serie.assignee.compares[compareId] = undefined;
+                if (result.status === 'better') {
                   if (st === undefined)
-                    serie.state.compares[compareId] = 'lowerNeedstriage';
-                  else if (st.indexOf('lower') === -1)
-                    serie.state.compares[compareId] = 'lowerNeedstriage';
+                    serie.state.compares[compareId] = 'betterNeedstriage';
+                  else if (st.indexOf('better') === -1)
+                    serie.state.compares[compareId] = 'betterNeedstriage';
                 } else {
-                  serie.assignee.compares[compareId] = undefined;
-                  if (serie.analyseResult.summary.status === 'better') {
-                    if (st === undefined)
-                      serie.state.compares[compareId] = 'betterNeedstriage';
-                    else if (st.indexOf('better') === -1)
-                      serie.state.compares[compareId] = 'betterNeedstriage';
-                  } else {
-                    if (st === undefined)
-                      serie.state.compares[compareId] = 'similarNeedstriage';
-                    else if (st.indexOf('similar') === -1)
-                      serie.state.compares[compareId] = 'similarNeedstriage';
-                  }
+                  if (st === undefined)
+                    serie.state.compares[compareId] = 'similarNeedstriage';
+                  else if (st.indexOf('similar') === -1)
+                    serie.state.compares[compareId] = 'similarNeedstriage';
                 }
-
-                // serie file
-                if (serie.compares === undefined) serie.compares = {};
-                serie.compares[compareId].result = result;
-
-                // compares file
-                let compare = global.projects[projectId].infos
-                  .readSync('benchmarks.compare_' + compareId);
-                if (compare[serieId] === undefined) {
-                  let e = 'socket serieUpdateAnalyse compare[serieId] undefin';
-                  console.error(e, projectId, serieId);
-                  socket.emit('serverError', e);
-                  return;
-                }
-                compare[serieId].result = result;
-                compare[serieId].state = serie.state.compares[compareId];
-
-                global.projects[projectId].infos
-                  .writeSync('benchmarks.compare_' + compareId, compare);
               }
+
+              // serie file
+              if (serie.compares === undefined) serie.compares = {};
+              serie.compares[compareId].result = result;
+
+              // compares file
+              let compare = global.projects[projectId].infos
+                .readSync('benchmarks.compare_' + compareId);
+              if (compare[serieId] === undefined) {
+                let e = 'socket serieUpdateAnalyse compare[serieId] undefin';
+                console.error(e, projectId, serieId);
+                socket.emit('serverError', e);
+                return;
+              }
+              compare[serieId].result = result;
+              compare[serieId].state = serie.state.compares[compareId];
+
+              global.projects[projectId].infos
+                .writeSync('benchmarks.compare_' + compareId, compare);
             }
           }
         }
@@ -1975,11 +1956,6 @@ io.on('connection', function(socket) {
       return;
     }
     let serie = global.projects[projectId].series.readSync(serieId);
-    let compares;
-    if (global.projects[projectId].infos.existsSync('benchmarks.compares')) {
-      compares = global.projects[projectId].infos
-        .readSync('benchmarks.compares');
-    } else compares = {};
 
     if (serie.assignee === undefined) {
       serie.assignee = {};
@@ -2029,7 +2005,7 @@ io.on('connection', function(socket) {
         global.projects[projectId].infos.writeSync('tests.series', series);
       }
     } else {
-      if (!compares[compareId]) {
+      if (!global.comparesConfig[compareId]) {
         let e = 'socket serieUpdateAssignee compareId compares doesnt exist ' +
           compareId;
         console.error(e, projectId, serieId);
@@ -2159,17 +2135,8 @@ io.on('connection', function(socket) {
         global.projects[projectId].infos.writeSync('tests.series', series);
       }
     } else {
-      let compares = {};
-      if (global.projects[projectId].infos.existsSync('benchmarks.compares')) {
-        compares = global.projects[projectId].infos.readSync('benchmarks.compares');
-      }
-      if (compares === undefined) {
-        let e = 'socket serieUpdateSeriesState compares undefined';
-        console.error(e, projectId);
-        socket.emit('serverError', e);
-        return;
-      }
-      if (!compares[compareId]) {
+
+      if (!global.comparesConfig[compareId]) {
         let e = 'socket serieUpdateState compareId compares doesnt exist ' +
           compareId;
         console.error(e, projectId, serieId);
@@ -2287,17 +2254,7 @@ io.on('connection', function(socket) {
         global.projects[projectId].infos.writeSync('tests.series', series);
       }
     } else {
-      let compares = {};
-      if (global.projects[projectId].infos.existsSync('benchmarks.compares')) {
-        compares = global.projects[projectId].infos.readSync('benchmarks.compares');
-      }
-      if (compares === undefined) {
-        let e = 'socket serieUpdateBugLink compares undefined';
-        console.error(e, projectId);
-        socket.emit('serverError', e);
-        return;
-      }
-      if (!compares[compareId]) {
+      if (!global.comparesConfig[compareId]) {
         let e = 'socket serieUpdateBugLink compareId compares doesnt exist ' +
           compareId;
         console.error(e, projectId, serieId);

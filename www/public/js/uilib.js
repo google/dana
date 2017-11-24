@@ -447,14 +447,17 @@ function setSocketContext() {
     h += '<button id="btnStatusRaw" class="btn btn-default btn-xs" type="button" hidden>Nocolor</button>';
     h += '<button id="btnStatusRegression" class="btn btn-default btn-xs active" type="button">Analysis</button>';
     for (var ii in kcomp) {
+      if (compares[kcomp[ii]].projectId !== repo.projectId) continue;
       h += '<button id="btnStatusCompare_' + kcomp[ii] + '" class="btn btn-default btn-xs" type="button">' + compares[kcomp[ii]].description + '</button>';
     }
     $('#btnStatusChoices').html(h)
     $('#btnStatusRaw').click(function() {
       $('#btnStatusRaw').addClass('active')
       $('#btnStatusRegression').removeClass('active')
-      for (var ii in kcomp)
-        $("#btnStatusCompare_" + kcomp[ii]).removeClass('active')
+      for (var ii in kcomp) {
+        if (compares[kcomp[ii]].projectId !== repo.projectId) continue;
+        $("#btnStatusCompare_" + kcomp[ii]).removeClass('active');
+      }
       var k = Object.keys(tables);
       for (var zz in k) {
         var tw = tables[k[zz]];
@@ -553,8 +556,8 @@ function getBuilds(projectId) {
     fileId: 'builds'
   });
   socket.emit('getFileInfo', {
-    projectId: projectId,
-    fileId: 'benchmarks.compares'
+    projectId: 'admin',
+    fileId: 'compares'
   });
 }
 

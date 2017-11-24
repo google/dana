@@ -431,6 +431,7 @@
   var compares;
   var statusCompares;
   var someDataShown = false;
+  var numComparesRequired;
   var colors = {
     green: "#5fe468",
     greenDark: "#009900",
@@ -453,9 +454,8 @@
       if (statusTests !== undefined)
         if (statusSeries !== undefined)
           if (compares !== undefined) {
-            var k = Object.keys(compares);
             var k1 = Object.keys(statusCompares);
-            if (k.length === k1.length)
+            if (numComparesRequired === k1.length)
               return true;
             }
 
@@ -478,11 +478,15 @@
         statusTests = req.file;
       if (req.fileId === 'benchmarks.statusSeries')
         statusSeries = req.file;
-      if (req.fileId === 'benchmarks.compares') {
+      if (req.fileId === 'compares') {
         compares = req.file;
         statusCompares = {};
+        numComparesRequired=0;
         var k = Object.keys(compares);
         for (var ii in k) {
+          if (compares[k[ii]].projectId !== projectId)
+            continue;
+            numComparesRequired++;
           socket.emit('getFileInfo', {
             projectId: projectId,
             compareId: k[ii],
@@ -519,8 +523,8 @@
       fileId: 'benchmarks.statusSeries'
     });
     socket.emit('getFileInfo', {
-      projectId: projectId,
-      fileId: 'benchmarks.compares'
+      projectId: 'admin',
+      fileId: 'compares'
     });
   }
 
@@ -847,6 +851,8 @@
     var sumNumSeries = 0;
     var sumSerieLower = 0;
     for (var ii in k) {
+      if (compares[k[ii]].projectId !== projectId)
+        continue;
       var kk = Object.keys(statusCompares[k[ii]]);
       if (kk.length === 0)
         continue;

@@ -478,7 +478,7 @@ function analyse(serie) {
 // cp.useBuildId -- optional
 // cp.useAverage -- optional
 function benchmarkCompare(cp, serie, cpSerie) {
-  let value = undefined;
+  let value;
   let cpValue;
 
   if (cp.useAverage) {
@@ -489,20 +489,64 @@ function benchmarkCompare(cp, serie, cpSerie) {
         }
       }
     }
-    if (value === undefined) {
-      return undefined;
-    }
   } else {
     value = serie.samples[serie.lastBuildId];
   }
-  if (cp.useBuildId) {
-    if (cpSerie.samples[cp.useBuildId]) {
-      cpValue = cpSerie.samples[cp.useBuildId];
-    } else {
-      return undefined;
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (cp.compareWith.useAverage) {
+    if (cpSerie.analyseResult) {
+      if (cpSerie.analyseResult.summary) {
+        if (!cpSerie.analyseResult.summary.error) {
+          if (cp.compareWith.useBuildId) {
+            // find in wich average is located the BuildId
+            // and use its valueinfo
+            let samples = serie.samples;
+            let sortedBuildIds = Object.keys(samples);
+            for (let ii = 0; ii < sortedBuildIds.length; ii++) {
+              sortedBuildIds[ii] = sortedBuildIds[ii] * 1;
+              if (samples[sortedBuildIds[ii]] == undefined) {
+                console.log('analyse -- ERROR samples undefined', ii, sortedBuildIds[ii]);
+                return;
+              }
+            }
+            sortedBuildIds.sort(function(a, b) {
+              return a * 1 - b * 1;
+            });
+
+            let myIndex;
+            for (let ii = 0; ii < sortedBuildIds.length; ii++) {
+              if (sortedBuildIds[ii] === cp.compareWith.useBuildId * 1) {
+                myIndex = ii;
+                break;
+              }
+            }
+            if (myIndex !== undefined) {
+              for (let ii = 0; ii < sortedBuildIds.length; ii++) {
+                if (myIndex <= cpSerie.analyseResult.averages[ii].end) {
+                  cpValue = cpSerie.analyseResult.averages[ii].average;
+                  break;
+                }
+              }
+            }
+          } else {
+            cpValue = cpSerie.analyseResult.summary.current.average;
+          }
+        }
+      }
     }
   } else {
-    cpValue = cpSerie.samples[cpSerie.lastBuildId];
+    if (cp.compareWith.useBuildId) {
+      cpValue = cpSerie.samples[cp.compareWith.useBuildId];
+    } else {
+      cpValue = cpSerie.samples[cpSerie.lastBuildId];
+    }
+  }
+
+  if (cpValue === undefined) {
+    return undefined;
   }
 
   if (serie.analyse === undefined) return undefined;

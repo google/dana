@@ -116,8 +116,8 @@ function uiShowSerie(tpageType, tprojectId, tserieId) {
         fileId: 'builds'
       });
       socket.emit('getFileInfo', {
-        projectId: projectId,
-        fileId: 'benchmarks.compares'
+        projectId: 'admin',
+        fileId: 'compares'
       });
       socket.emit('getFileInfo', {
         projectId: 'admin',
@@ -136,7 +136,7 @@ function uiShowSerie(tpageType, tprojectId, tserieId) {
         projects = req.file;
       if (req.fileId === 'builds')
         builds = req.file;
-      if (req.fileId === 'benchmarks.compares')
+      if (req.fileId === 'compares')
         compares = req.file;
       if ((builds !== undefined) && (compares !== undefined) && (projects !== undefined)) {
         processBuilds();

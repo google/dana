@@ -28,6 +28,7 @@ const global = {
   projects: {},
   admin: {},
   emailIsEnabled: true,
+  comparesConfig: {},
 };
 
 if (global.config === undefined) {
@@ -59,6 +60,10 @@ for (let ii = 0; ii < k.length; ii++) {
     new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/comments', 10);
   global.projects[k[ii]].infos =
     new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/infos', 200);
+}
+
+if (global.admin.existsSync('compares')) {
+  global.comparesConfig = global.admin.readSync('compares');
 }
 
 let projectId, serieId, compareId;
@@ -122,29 +127,24 @@ for (var ii = 0; ii < kProjects.length; ii++) {
   series = global.projects[projectId].infos
     .writeSync('benchmarks.series', series);
 
-  let compares;
-  if (global.projects[projectId].infos.existsSync('benchmarks.compares')) {
-    compares = global.projects[projectId].infos
-      .readSync('benchmarks.compares');
-  }
-  if (compares) {
-    let k = Object.keys(compares);
-    for (let ii = 0; ii < k.length; ii++) {
-      let compareId = k[ii];
-      let compare = global.projects[projectId].infos
-        .readSync('benchmarks.compare_' + compareId);
-      kSeries = Object.keys(compare);
-      for (let ii = 0; ii < kSeries.length; ii++) {
-        serieId = kSeries[ii];
-        if (serieId.indexOf(serieIdFind) !== -1) {
-          let newSerieId = serieId.replace(serieIdFind, serieIdReplace)
-          console.log(projectId, 'Compares Converting', serieId, 'in', newSerieId);
-          compare[newSerieId] = compare[serieId];
-          delete compare[serieId];
-        }
+  let k = Object.keys(global.comparesConfig);
+  for (let ii = 0; ii < k.length; ii++) {
+    let compareId = k[ii];
+    let cp = global.comparesConfig[compareId];
+    if (cp.projectId !== projectId) continue;
+    let compare = global.projects[projectId].infos
+      .readSync('benchmarks.compare_' + compareId);
+    kSeries = Object.keys(compare);
+    for (let ii = 0; ii < kSeries.length; ii++) {
+      serieId = kSeries[ii];
+      if (serieId.indexOf(serieIdFind) !== -1) {
+        let newSerieId = serieId.replace(serieIdFind, serieIdReplace)
+        console.log(projectId, 'Compares Converting', serieId, 'in', newSerieId);
+        compare[newSerieId] = compare[serieId];
+        delete compare[serieId];
       }
-      global.projects[projectId].infos
-        .writeSync('benchmarks.compare_' + compareId, compare);
     }
+    global.projects[projectId].infos
+      .writeSync('benchmarks.compare_' + compareId, compare);
   }
 }
