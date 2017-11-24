@@ -1,0 +1,24 @@
+{
+  "Compare_with_build_1000": {
+    "compareId": "Compare_with_build_1000",
+    "description": "Compare with build 1000",
+    "projectId": "Test",
+    "useAverage": true,
+    "compareWith": {
+      "projectId": "Test",
+      "useAverage": false,
+      "useBuildId": 1000
+    }
+  },
+  "Compare_with_build_1000_avg": {
+    "compareId": "Compare_with_build_1000_avg",
+    "description": "Compare with average of build 1000",
+    "projectId": "Test",
+    "useAverage": true,
+    "compareWith": {
+      "projectId": "Test",
+      "useAverage": true,
+      "useBuildId": 1000
+    }
+  }
+}
