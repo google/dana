@@ -36,7 +36,7 @@
 							</div>
 							<ul class="nav navbar-nav">
 								<h3 id='page-title' class="navbar-text">
-								View compares</h3>
+								View comparators</h3>
 							</ul>
 						</nav>
 					</div>
@@ -65,19 +65,22 @@
 							<div id='rowTable' class="col-md-12 col-sm-12 col-xs-12">
 								<div class="x_panel">
 									<div class="x_title">
-										<h2>Compares
+										<h2>Comparators
 				            </h2>
 										<ul class="nav navbar-right panel_toolbox">
 											<!-- <li class="dropdown">
 				                <a href="#download"><i class="fa fa-download"></i></a>
 				              </li> -->
 											<li>
-												<button id='btnAddOneCompare' type="button" class="btn btn-primary btn-xs active">Add a new compare</button>
+												<button id='btnAddOneCompare' type="button" class="btn btn-primary btn-xs active">Add a new comparator</button>
 											</li>
 										</ul>
 										<div class="clearfix"></div>
 									</div>
-									<div id="comparesContent" class="x_content">
+									<div id="noComparesContent" class="x_content" hidden>
+										<p>No comparators to show</p>
+									</div>
+									<div id="comparesContent" class="x_content" hidden>
 										<table id="comparesDatatable" class="table table-striped table-bordered table-condensed">
 											<thead>
 												<tr>
@@ -172,16 +175,14 @@
 
 						var k = Object.keys(compares);
 						if (k.length === 0) {
-							$('#rowNoDataToShow').show()
+							$('#noComparesContent').show();
+							$('#rowTable').show();
 							return;
 						}
 
-						$(document).ready(function() {
-							$('#topBanner').show();
-							$('#rowTable').show();
-							$('#rowCompares').show();
-						});
 						comparesShowTable();
+						$('#comparesContent').show();
+						$('#rowTable').show();
 					}
 
 					function comparesShowTable(mode) {
