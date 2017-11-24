@@ -182,7 +182,7 @@
 					var b = req.file[k[ii]];
 					var s = b.buildId + ' - ' + b.infos.abbrevHash + ' - ' + b.infos.authorName + ' - ' + b.infos.subject;
 					s = s.substring(0, 90);
-					h+='<option value="'+ii+'">'+s+'</option>'
+					h+='<option value="'+b.buildId+'">'+s+'</option>'
 				}
 				$('#select_with_buildId').html(h);
 			}

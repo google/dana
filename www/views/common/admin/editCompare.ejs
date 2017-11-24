@@ -183,8 +183,8 @@
 		<script>
 		var debug=false;
 		var dumpedOnceBuildids=false;
-		<% if (compare.compareWith.BuildId) {%>
-		var compareWithBuildId= <%= compare.compareWith.BuildId %>;
+		<% if (compare.compareWith.buildId) {%>
+		var compareWithBuildId= <%= compare.compareWith.buildId %>;
 		<% } else { %>
 		var compareWithBuildId;
 		<% } %>
@@ -207,7 +207,7 @@
 						var b = req.file[k[ii]];
 						var s = b.buildId + ' - ' + b.infos.abbrevHash + ' - ' + b.infos.authorName + ' - ' + b.infos.subject;
 						s = s.substring(0, 90);
-						h+='<option value="'+ii+'">'+s+'</option>'
+						h+='<option value="'+b.buildId+'">'+s+'</option>'
 					}
 				} else {
 					var k=Object.keys(req.file);
@@ -222,9 +222,9 @@
 						var s = b.buildId + ' - ' + b.infos.abbrevHash + ' - ' + b.infos.authorName + ' - ' + b.infos.subject;
 						s = s.substring(0, 90);
 						if (compareWithBuildId===b.buildId)
-							h+='<option selected value="'+ii+'">'+s+'</option>'
+							h+='<option selected value="'+b.buildId+'">'+s+'</option>'
 						else
-							h+='<option value="'+ii+'">'+s+'</option>'
+							h+='<option value="'+b.buildId+'">'+s+'</option>'
 					}
 					dumpedOnceBuildids=true;
 				}
