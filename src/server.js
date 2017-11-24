@@ -750,13 +750,22 @@ function apiAddSample(apiData, hdl) {
       }
 
       let cpProjectId = cp.compareWith.projectId;
+
+      if (cp.filter)
+        if (serieId.indexOf(filter) === -1) continue;
+
       let cpSerie;
-      if (cpProjectId == projectId) {
+      let cpSerieId = serieId;
+
+      if (cp.compareWith.replace)
+        cpSerieId = cpSerieId.replace(cp.compareWith.replace.substr, cp.compareWith.replace.newSubStr);
+
+      if ((cpProjectId === projectId) && (cpSerieId = serieId)) {
         cpSerie = serie;
       } else {
         if (global.projects[cpProjectId].series)
-          if (global.projects[cpProjectId].series.existsSync(serieId))
-            cpSerie = global.projects[cpProjectId].series.readSync(serieId);
+          if (global.projects[cpProjectId].series.existsSync(cpSerieId))
+            cpSerie = global.projects[cpProjectId].series.readSync(cpSerieId);
       }
       if (cpSerie === undefined) continue;
       let result = moduleAnalyse.benchmarkCompare(cp, serie, cpSerie);
@@ -1210,6 +1219,19 @@ app.post('/admin/addComparator',
       return;
     }
 
+    let replace;
+    if (req.body.with_useReplace) {
+      if (req.body.with_useReplace_substr === '') {
+        appError(req, res, '/admin/addComparator, substr in empty');
+        return;
+      }
+      replace = {
+        substr: req.body.with_useReplace_substr,
+        newSubStr: req.body.with_useReplace_newSubStr
+      }
+    }
+    compareWith.replace = replace;
+
     compareWith.buildId = undefined;
     if (req.body.with_buildId !== 'None') compareWith.buildId = req.body.with_buildId * 1;
 
@@ -1278,6 +1300,19 @@ app.post('/admin/saveComparator',
       appError(req, res, '/admin/saveComparator, compareWith.projectId undefined');
       return;
     }
+
+    let replace;
+    if (req.body.with_useReplace) {
+      if (req.body.with_useReplace_substr === '') {
+        appError(req, res, '/admin/saveComparator, substr in empty');
+        return;
+      }
+      replace = {
+        substr: req.body.with_useReplace_substr,
+        newSubStr: req.body.with_useReplace_newSubStr
+      }
+    }
+    compareWith.replace = replace;
 
     compareWith.buildId = undefined;
     if (req.body.with_buildId !== 'None') compareWith.buildId = req.body.with_buildId * 1;
@@ -1767,61 +1802,70 @@ io.on('connection', function(socket) {
         let compareId = k[ii];
         let cp = global.comparesConfig[compareId];
         if (cp.projectId !== projectId) continue;
+        if (cp.filter)
+          if (serieId.indexOf(filter) === -1) continue;
+        let cpSerie;
+        let cpSerieId = serieId;
+        if (cp.compareWith.replace)
+          cpSerieId = cpSerieId.replace(cp.compareWith.replace.substr, cp.compareWith.replace.newSubStr);
         let cpProjectId = cp.compareWith.projectId;
-        if (global.projects[cpProjectId].series) {
-          if (global.projects[cpProjectId].series.existsSync(serieId)) {
-            let cpSerie = global.projects[cpProjectId].series
-              .readSync(serieId);
-            let result = moduleAnalyse.benchmarkCompare(cp, serie, cpSerie);
-            if (result !== undefined) {
-              let st = serie.state.compares[compareId];
+        if ((cpProjectId === projectId) && (cpSerieId = serieId)) {
+          cpSerie = serie;
+        } else {
+          if (global.projects[cpProjectId].series)
+            if (global.projects[cpProjectId].series.existsSync(cpSerieId))
+              cpSerie = global.projects[cpProjectId].series.readSync(cpSerieId);
+        }
+        if (cpSerie === undefined) continue;
 
-              // convert an existing database
-              if (st === 'none') st = undefined;
-              if (st === 'assigned') st = 'lowerAssigned';
-              if (st === 'new') st = 'lowerNeedstriage';
-              if (st === 'wontfix') st = 'lowerIntended';
+        let result = moduleAnalyse.benchmarkCompare(cp, serie, cpSerie);
+        if (result !== undefined) {
+          let st = serie.state.compares[compareId];
 
-              if (result.status === 'lower') {
-                if (st === undefined)
-                  serie.state.compares[compareId] = 'lowerNeedstriage';
-                else if (st.indexOf('lower') === -1)
-                  serie.state.compares[compareId] = 'lowerNeedstriage';
-              } else {
-                serie.assignee.compares[compareId] = undefined;
-                if (result.status === 'better') {
-                  if (st === undefined)
-                    serie.state.compares[compareId] = 'betterNeedstriage';
-                  else if (st.indexOf('better') === -1)
-                    serie.state.compares[compareId] = 'betterNeedstriage';
-                } else {
-                  if (st === undefined)
-                    serie.state.compares[compareId] = 'similarNeedstriage';
-                  else if (st.indexOf('similar') === -1)
-                    serie.state.compares[compareId] = 'similarNeedstriage';
-                }
-              }
+          // convert an existing database
+          if (st === 'none') st = undefined;
+          if (st === 'assigned') st = 'lowerAssigned';
+          if (st === 'new') st = 'lowerNeedstriage';
+          if (st === 'wontfix') st = 'lowerIntended';
 
-              // serie file
-              if (serie.compares === undefined) serie.compares = {};
-              serie.compares[compareId].result = result;
-
-              // compares file
-              let compare = global.projects[projectId].infos
-                .readSync('benchmarks.compare_' + compareId);
-              if (compare[serieId] === undefined) {
-                let e = 'socket serieUpdateAnalyse compare[serieId] undefin';
-                console.error(e, projectId, serieId);
-                socket.emit('serverError', e);
-                return;
-              }
-              compare[serieId].result = result;
-              compare[serieId].state = serie.state.compares[compareId];
-
-              global.projects[projectId].infos
-                .writeSync('benchmarks.compare_' + compareId, compare);
+          if (result.status === 'lower') {
+            if (st === undefined)
+              serie.state.compares[compareId] = 'lowerNeedstriage';
+            else if (st.indexOf('lower') === -1)
+              serie.state.compares[compareId] = 'lowerNeedstriage';
+          } else {
+            serie.assignee.compares[compareId] = undefined;
+            if (result.status === 'better') {
+              if (st === undefined)
+                serie.state.compares[compareId] = 'betterNeedstriage';
+              else if (st.indexOf('better') === -1)
+                serie.state.compares[compareId] = 'betterNeedstriage';
+            } else {
+              if (st === undefined)
+                serie.state.compares[compareId] = 'similarNeedstriage';
+              else if (st.indexOf('similar') === -1)
+                serie.state.compares[compareId] = 'similarNeedstriage';
             }
           }
+
+          // serie file
+          if (serie.compares === undefined) serie.compares = {};
+          serie.compares[compareId].result = result;
+
+          // compares file
+          let compare = global.projects[projectId].infos
+            .readSync('benchmarks.compare_' + compareId);
+          if (compare[serieId] === undefined) {
+            let e = 'socket serieUpdateAnalyse compare[serieId] undefin';
+            console.error(e, projectId, serieId);
+            socket.emit('serverError', e);
+            return;
+          }
+          compare[serieId].result = result;
+          compare[serieId].state = serie.state.compares[compareId];
+
+          global.projects[projectId].infos
+            .writeSync('benchmarks.compare_' + compareId, compare);
         }
       }
     }

@@ -67,9 +67,9 @@
 									</center>
 									<br>
 								</div>
-								<div class="col-md-offset-4 col-md-4">
-									<form action="/admin/saveComparator" method="post">
-										<input type="hidden"value="<%=compare.compareId%>"
+								<div class="col-md-offset-2 col-md-8">
+									<form action="/admin/deleteComparator" method="post">
+										<input type="hidden" value="<%=compare.compareId%>"
 											name="compareId"/>
 											<div class="form-group">
 											<label>Comparator Id*</label>
@@ -79,10 +79,12 @@
 										</div>
 										<div class="form-group">
 											<label>Description</label>
-											<input type="text" disabled class="form-control"
+											<input disabled type="text" class="form-control"
 											value="<%=compare.description%>" name="description"/>
 											<p class="help-block">Add a description for that comparator</p>
 										</div>
+								</div>
+								<div class="col-md-offset-2 col-md-4">
 										<div class="form-group">
 											<label>ProjectId of series you want to compare</label>
 											<select disabled class="form-control" name="projectId">
@@ -115,6 +117,8 @@
 											<label>Use regression analysis computed average</label>
 											<p class="help-block">Use the last computed average for series to compare. If not enabled, use the last build sample available</p>
 										</div>
+									</div>
+									<div class="col-md-4">
 										<div class="form-group">
 											<label>ProjectId of series you want to compare with</label>
 											<select disabled id="select_with_projectId" class="form-control" name="with_projectId" onchange="setWithProjectId()">
@@ -125,6 +129,31 @@
 											</select>
 											<p class="help-block">In which projectId are located the series to compare with</p>
 										</div>
+										<div class="form-group">
+											<% if (compare.compareWith.replace) { %>
+												<input disabled id='sw3' class="js-switch" checked type="checkbox" name="with_useReplace" value="with_useReplace">
+												<% } else { %>
+													<input disabled id='sw3' class="js-switch" type="checkbox" name="with_useReplace" value="with_useReplace">
+											<%  } %>
+											<label>Replace strings in serieId</label>
+											<p class="help-block">If enabled, the Id used to identify the series to compare with is computed by replacing the substr with newSubStr below</p>
+												<div class="col-md-6">
+													<label>substr</label>
+													<% if (compare.compareWith.replace) { %>
+														<input disabled type="text" class="form-control" value="<%=compare.compareWith.replace.substr%>" name="with_useReplace_substr"/>
+													<% } else { %>
+														<input disabled type="text" class="form-control" name="with_useReplace_substr"/>
+													<%  } %>
+												</div>
+												<div class="col-md-6">
+													<label>newSubStr</label>
+													<% if (compare.compareWith.replace) { %>
+														<input disabled type="text" class="form-control" value="<%=compare.compareWith.replace.newSubStr%>" name="with_useReplace_newSubStr"/>
+													<% } else { %>
+															<input disabled type="text" class="form-control" name="with_useReplace_newSubStr"/>
+													<%  } %>
+												</div>
+										</div><br><br><br><br>
 										<div class="form-group">
 											<label>BuildId to use for series you want to compare with</label>
 											<select disabled id='select_with_buildId' class="form-control" name="with_buildId">
@@ -140,6 +169,8 @@
 											<label>Use regression analysis computed average</label>
 											<p class="help-block">if enabled use the last computed average for series to compare with (if a buildId is specified, the average containing the buildId is used). If disabled use the last build sample available (if a buildId is specified, the sample of that buildId is used).  </label>
 										</div>
+									</div>
+									<div class="col-md-offset-2 col-md-8">
 										<center>
 											<br>
 											<button class="btn btn-danger btn-block" type="submit" id="submitButton">Delete comparator</button>
@@ -183,8 +214,8 @@
 		<script>
 		var debug=false;
 		var dumpedOnceBuildids=false;
-		<% if (compare.compareWith.BuildId) {%>
-		var compareWithBuildId= <%= compare.compareWith.BuildId %>;
+		<% if (compare.compareWith.buildId) {%>
+		var compareWithBuildId= <%= compare.compareWith.buildId %>;
 		<% } else { %>
 		var compareWithBuildId;
 		<% } %>
@@ -193,6 +224,9 @@
 			var init = new Switchery(elem);
 			elem = document.getElementById('sw2');
 			init = new Switchery(elem);
+			elem = document.getElementById('sw3');
+			init = new Switchery(elem);
+
 		});
 
 		var socket = io();
@@ -207,7 +241,7 @@
 						var b = req.file[k[ii]];
 						var s = b.buildId + ' - ' + b.infos.abbrevHash + ' - ' + b.infos.authorName + ' - ' + b.infos.subject;
 						s = s.substring(0, 90);
-						h+='<option value="'+ii+'">'+s+'</option>'
+						h+='<option value="'+b.buildId+'">'+s+'</option>'
 					}
 				} else {
 					var k=Object.keys(req.file);
@@ -222,9 +256,9 @@
 						var s = b.buildId + ' - ' + b.infos.abbrevHash + ' - ' + b.infos.authorName + ' - ' + b.infos.subject;
 						s = s.substring(0, 90);
 						if (compareWithBuildId===b.buildId)
-							h+='<option selected value="'+ii+'">'+s+'</option>'
+							h+='<option selected value="'+b.buildId+'">'+s+'</option>'
 						else
-							h+='<option value="'+ii+'">'+s+'</option>'
+							h+='<option value="'+b.buildId+'">'+s+'</option>'
 					}
 					dumpedOnceBuildids=true;
 				}
