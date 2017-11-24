@@ -87,7 +87,6 @@ function iAmConnectedToDana() {
           url: "http://url_build_" + 1000 + ii,
         }
       },
-      override: true,
     }
     sendToDana(data);
   }
@@ -101,7 +100,6 @@ function iAmConnectedToDana() {
       analyse: {
         test: {}
       },
-      override: true,
     }
     sendToDana(data);
 
@@ -137,7 +135,6 @@ function iAmConnectedToDana() {
           projectId: 'Test',
           serieId: "test.dummy." + ii,
           sample: sample,
-          override: true,
         });
       }
     }
@@ -147,7 +144,6 @@ function iAmConnectedToDana() {
         projectId: 'Test',
         serieId: "test.dummy." + ii,
         samples: samples,
-        override: true,
       });
     }
   }
@@ -165,7 +161,6 @@ function iAmConnectedToDana() {
           trend: "higher"
         }
       },
-      override: true,
     }
     sendToDana(data);
 
@@ -206,7 +201,6 @@ function iAmConnectedToDana() {
           projectId: 'Test',
           serieId: "serie.dummy." + ii,
           sample: sample,
-          override: true,
         });
       }
     }
@@ -216,7 +210,6 @@ function iAmConnectedToDana() {
         projectId: 'Test',
         serieId: "serie.dummy." + ii,
         samples: samples,
-        override: true,
       });
     }
   }
