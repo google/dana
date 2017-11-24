@@ -410,6 +410,16 @@ function benchmarkAnalyse(serie, sortedBuildIds, indexStart, indexStop) {
     },
     averages: theRegressions,
   };
+
+  let reduceBaseTo;
+  if (serie.analyseResult.summary.status === 'similar') {
+    if (serie.analyseResult.averages.length === 1) {
+      if (sortedBuildIds.length > 50) {
+        reduceBaseTo = sortedBuildIds[sortedBuildIds.length - 50];
+      }
+    }
+  }
+  serie.analyseResult.summary.reduceBaseTo = reduceBaseTo;
 }
 
 function analyse(serie) {
@@ -446,6 +456,7 @@ function analyse(serie) {
   // adjust indexStart according to base
   let analyse = serie.analyse;
   if (analyse.base != undefined) {
+    console.log('analyse.base found to', analyse.base, serie)
     // set new indexStart
     let youngerBuildId = sortedBuildIds[sortedBuildIds.length - 1] * 1;
     let startBuildId;

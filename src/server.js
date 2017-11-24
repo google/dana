@@ -665,6 +665,11 @@ function apiAddSample(apiData, hdl) {
       // analysis
       moduleAnalyse.analyse(serie);
 
+      if (serie.analyseResult.summary.reduceBaseTo) {
+        serie.analyse.base = serie.analyseResult.summary.reduceBaseTo;
+        console.log('Reset base to', serie.analyseResult.summary.reduceBaseTo, serieId)
+      }
+
       let st = serie.state.analyse;
 
       // convert an existing database
