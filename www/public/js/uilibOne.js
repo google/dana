@@ -1367,7 +1367,7 @@ function dumpComparesTable() {
     h += '<td><center>';
     h += '<div class="btn-group">';
 
-    if (compares[k[ii]].projectId !== projectId)
+    if (compares[k[ii]].compareWith.projectId !== projectId)
       h += '<button type="button" onclick="openEditCompareSerie(\'' + k[ii] + '\')" class="btn btn-danger btn-xs"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
     else
       h += '<button type="button" disabled class="btn btn-danger btn-xs"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
@@ -1392,7 +1392,7 @@ function dumpComparesTable() {
 }
 
 function openEditCompareSerie(compareId) {
-  window.open('/serie?' + compares[compareId].projectId + '?' + serieId);
+  window.open('/serie?' + compares[compareId].compareWith.projectId + '?' + serieId);
 }
 
 function showOpenBugLink(compareId) {
