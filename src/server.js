@@ -735,7 +735,7 @@ function apiAddSample(apiData, hdl) {
     if (serie.compares) {
       let k = Object.keys(serie.compares);
       for (let ii = 0; ii < k.length; ii++) {
-        if (compares[k[ii]] === undefined) delete serie.compares[k[ii]];
+        if (serie.compares[k[ii]] === undefined) delete serie.compares[k[ii]];
       }
     }
 
