@@ -54,4 +54,4 @@ $ npm start
 
 ## Configure email account
 
-Dana provides a way to use a gmail account to send emails using Gmail APIs. Follow [these steps](http://pcarion.com/2015/12/06/How-to-send-a-mail-in-node-using-the-gmail-API.html) to get **clientsecret.json_** and **gmail-credentials.json**. Then put these 2 files in **configs/** directory and restart Dana server.
+Dana provides a way to use a gmail account to send emails using Gmail APIs. Follow [these steps](http://pcarion.com/2015/12/06/How-to-send-a-mail-in-node-using-the-gmail-API.html) to get **clientsecret.json** and **gmail-credentials.json**. Then put these 2 files in **configs/** directory and restart Dana server.
