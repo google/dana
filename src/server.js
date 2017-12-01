@@ -757,20 +757,24 @@ function apiAddSample(apiData, hdl) {
       let cpProjectId = cp.compareWith.projectId;
 
       if (cp.filter)
-        if (serieId.indexOf(filter) === -1) continue;
+        if (serieId.indexOf(cp.filter) === -1) continue;
 
       let cpSerie;
       let cpSerieId = serieId;
 
-      if (cp.compareWith.replace)
+      if (cp.compareWith.replace) {
         cpSerieId = cpSerieId.replace(cp.compareWith.replace.substr, cp.compareWith.replace.newSubStr);
+      }
 
-      if ((cpProjectId === projectId) && (cpSerieId = serieId)) {
+      if ((cpProjectId === projectId) && (cpSerieId === serieId)) {
         cpSerie = serie;
       } else {
-        if (global.projects[cpProjectId].series)
-          if (global.projects[cpProjectId].series.existsSync(cpSerieId))
+        if (global.projects[cpProjectId]) {
+          if (global.projects[cpProjectId].series.existsSync(cpSerieId)) {
             cpSerie = global.projects[cpProjectId].series.readSync(cpSerieId);
+            if (cpSerie === undefined) console.log('cpSerie undefined');
+          }
+        }
       }
       if (cpSerie === undefined) continue;
       let result = moduleAnalyse.benchmarkCompare(cp, serie, cpSerie);
@@ -1808,18 +1812,21 @@ io.on('connection', function(socket) {
         let cp = global.comparesConfig[compareId];
         if (cp.projectId !== projectId) continue;
         if (cp.filter)
-          if (serieId.indexOf(filter) === -1) continue;
+          if (serieId.indexOf(cp.filter) === -1) continue;
         let cpSerie;
         let cpSerieId = serieId;
         if (cp.compareWith.replace)
           cpSerieId = cpSerieId.replace(cp.compareWith.replace.substr, cp.compareWith.replace.newSubStr);
         let cpProjectId = cp.compareWith.projectId;
-        if ((cpProjectId === projectId) && (cpSerieId = serieId)) {
+        if ((cpProjectId === projectId) && (cpSerieId === serieId)) {
           cpSerie = serie;
         } else {
-          if (global.projects[cpProjectId].series)
-            if (global.projects[cpProjectId].series.existsSync(cpSerieId))
+          if (global.projects[cpProjectId]) {
+            if (global.projects[cpProjectId].series.existsSync(cpSerieId)) {
               cpSerie = global.projects[cpProjectId].series.readSync(cpSerieId);
+              if (cpSerie === undefined) console.log('cpSerie undefined');
+            }
+          }
         }
         if (cpSerie === undefined) continue;
 
