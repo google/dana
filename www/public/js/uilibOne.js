@@ -976,15 +976,17 @@ function testsGetStateTdDesc(state) {
       h += 'selected ';
     h += 'value="failingConfirmed">Confirmed</option>'
 
-    h += '<option ';
-    if (state === 'failingAssigned')
-      h += 'selected ';
-    h += 'value="failingAssigned">Assigned</option>'
+    if (!projects[projectId].useBugTracker) {
+      h += '<option ';
+      if (state === 'failingAssigned')
+        h += 'selected ';
+      h += 'value="failingAssigned">Assigned</option>'
 
-    h += '<option ';
-    if (state === 'failingFixed')
-      h += 'selected ';
-    h += 'value="failingFixed">Fixed</option>'
+      h += '<option ';
+      if (state === 'failingFixed')
+        h += 'selected ';
+      h += 'value="failingFixed">Fixed</option>'
+    }
   } else {
     h += '<option ';
     if (state === 'passing')
@@ -1018,15 +1020,17 @@ function seriesGetStateTdDesc(state) {
       h += 'selected ';
     h += 'value="regressionConfirmed">Regression confirmed</option>'
 
-    h += '<option ';
-    if (state === 'regressionAssigned')
-      h += 'selected ';
-    h += 'value="regressionAssigned">Assigned</option>'
+    if (!projects[projectId].useBugTracker) {
+      h += '<option ';
+      if (state === 'regressionAssigned')
+        h += 'selected ';
+      h += 'value="regressionAssigned">Assigned</option>'
 
-    h += '<option ';
-    if (state === 'regressionFixed')
-      h += 'selected ';
-    h += 'value="regressionFixed">Fixed</option>'
+      h += '<option ';
+      if (state === 'regressionFixed')
+        h += 'selected ';
+      h += 'value="regressionFixed">Fixed</option>'
+    }
 
     h += '<option ';
     if (state === 'regressionIntended')
@@ -1088,15 +1092,17 @@ function comparesGetStateTdDesc(state, compareId) {
       h += 'selected ';
     h += 'value="lowerConfirmed">Lower confirmed</option>'
 
-    h += '<option ';
-    if (state === 'lowerAssigned')
-      h += 'selected ';
-    h += 'value="lowerAssigned">Assigned</option>'
+    if (!projects[projectId].useBugTracker) {
+      h += '<option ';
+      if (state === 'lowerAssigned')
+        h += 'selected ';
+      h += 'value="lowerAssigned">Assigned</option>'
 
-    h += '<option ';
-    if (state === 'lowerFixed')
-      h += 'selected ';
-    h += 'value="lowerFixed">Fixed</option>'
+      h += '<option ';
+      if (state === 'lowerFixed')
+        h += 'selected ';
+      h += 'value="lowerFixed">Fixed</option>'
+    }
 
     h += '<option ';
     if (state === 'lowerIntended')
@@ -1139,7 +1145,9 @@ function dumpRegressionTable() {
     h += '<tr>';
     //h += '<th>Regression analysis</th>';
     h += '<th style="width: 90px">State</th>'
-    h += '<th>Assignee</th>';
+    if (!projects[projectId].useBugTracker) {
+      h += '<th>Assignee</th>';
+    }
     h += '<th>Analysis</th>';
     h += '<th>BuildId</th>';
     h += '<th>Base</th>';
@@ -1155,7 +1163,9 @@ function dumpRegressionTable() {
 
     if (s.error) {
       h += '<td></td>';
-      h += '<td></td>';
+      if (!projects[projectId].useBugTracker) {
+        h += '<td></td>';
+      }
       h += '<td class="orange"><b>Not available</b></td>';
       h += '<td><a target="_blank" href="' + builds[s.lastBuildId].infos.url + '"' + builds[s.lastBuildId].infos.hash + '">' + s.lastBuildId + '</a></td>';
       h += '<td></td>';
@@ -1179,7 +1189,9 @@ function dumpRegressionTable() {
       if (serie.assignee)
         if (serie.assignee.analyse)
           ass = serie.assignee.analyse
-      h += getAssigneeTd(ass);
+      if (!projects[projectId].useBugTracker) {
+        h += getAssigneeTd(ass);
+      }
 
       if (serie.state.analyse.indexOf('similar') !== -1)
         h += '<td class="green"><b>Similar</b></td>';
@@ -1232,7 +1244,9 @@ function dumpRegressionTable() {
     h += '<thead>';
     h += '<tr>';
     h += '<th style="width: 90px">State</th>';
-    h += '<th>Assignee</th>';
+    if (!projects[projectId].useBugTracker) {
+      h += '<th>Assignee</th>';
+    }
     h += '<th >Analysis</th>';
     h += '<th >Last passing buildId</th>';
     h += '<th >Failing since buildId</th>';
@@ -1248,7 +1262,9 @@ function dumpRegressionTable() {
     if (serie.assignee)
       if (serie.assignee.analyse)
         ass = serie.assignee.analyse
-    h += getAssigneeTd(ass);
+    if (!projects[projectId].useBugTracker) {
+      h += getAssigneeTd(ass);
+    }
 
     if (s.isPassing)
       h += '<td class="green"><b>Passing</b></td>';
@@ -1306,9 +1322,23 @@ function showOpenSpongelinkBuild(buildId) {
 
 function dumpComparesTable() {
   var h = '';
-  $('#table_uilibone_compares').html(h);
-
   if (serie.compares === undefined) return;
+
+  h += '<thead>';
+  h += '<tr>';
+  h += '<th >Comparator</th>';
+  h += '<th style="width: 90px">State</th>';
+  if (!projects[projectId].useBugTracker) {
+    h += '<th >Assignee</th>';
+  }
+  h += '<th >Analysis</th>';
+  h += '<th >My value</th>';
+  h += '<th >Compare value</th>';
+  h += '<th >Diff</th>';
+  h += '<th >Ratio</th>';
+  h += '<th style="width: 90px"></th>';
+  h += '</tr>';
+  h += '</thead><tbody>';
 
   var k = Object.keys(serie.compares);
   for (var ii = 0; ii < k.length; ii++) {
@@ -1336,18 +1366,9 @@ function dumpComparesTable() {
       if (serie.assignee.compares)
         if (serie.assignee.compares[k[ii]])
           ass = serie.assignee.compares[k[ii]]
-    h += getAssigneeTd(ass, k[ii]);
-
-    /*if (pageType === 'showOneSerie')
-      h += '<td onclick="openSetAssigneeModal(\'' + k[ii] + '\');">';
-    else
-      h += '<td>';
-    var ass = 'none';
-    if (serie.assignee)
-      if (serie.assignee.compares)
-        if (serie.assignee.compares[k[ii]])
-          ass = serie.assignee.compares[k[ii]]
-    h += ass + '</td>'*/
+    if (!projects[projectId].useBugTracker) {
+      h += getAssigneeTd(ass, k[ii]);
+    }
     if (stateCompare.indexOf('better') !== -1)
       h += '<td class="green"><b>Better</b></td>'
     if (stateCompare.indexOf('similar') !== -1)
@@ -1384,6 +1405,7 @@ function dumpComparesTable() {
     h += '</center></td>';
     h += '</tr>';
   }
+  h += '</tbody>';
   $('#table_uilibone_compares').html(h);
   $('#compares').show();
 }
