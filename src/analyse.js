@@ -456,7 +456,7 @@ function analyse(serie) {
   // adjust indexStart according to base
   let analyse = serie.analyse;
   if (analyse.base != undefined) {
-    console.log('analyse.base found to', analyse.base, serie)
+    if (global.debug) console.log('analyse.base found to', analyse.base, serie)
     // set new indexStart
     let youngerBuildId = sortedBuildIds[sortedBuildIds.length - 1] * 1;
     let startBuildId;
