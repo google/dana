@@ -666,8 +666,8 @@ function apiAddSample(apiData, hdl) {
       moduleAnalyse.analyse(serie);
 
       if (serie.analyseResult.summary.reduceBaseTo) {
+        if (global.debug) console.log('Reset base to', serie.analyseResult.summary.reduceBaseTo, serieId)
         serie.analyse.base = serie.analyseResult.summary.reduceBaseTo;
-        console.log('Reset base to', serie.analyseResult.summary.reduceBaseTo, serieId)
       }
 
       let st = serie.state.analyse;
