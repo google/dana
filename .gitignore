@@ -4,3 +4,7 @@ unused
 *.log
 www/views/projects
 www/public/dailyReports
+dana-bot/configs
+dana-bot/project
+dana-bot/tmp
+dana-bot/www/public/sponge

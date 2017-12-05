@@ -1,0 +1,148 @@
+<!--
+/*
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<% include ../common/head %>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css">
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+</head>
+
+<body>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/js/buildPanel.js"></script>
+
+	<% include ../common/navbar %>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<br>
+				<span id="build"></span>
+				<% var k=Object.keys(tests); %>
+				<% if (k.length !== 0) { %>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<% if (mode === 'failed') { %>
+								<h3 class="panel-title"><%=k.length%> failed tests :(</h3>
+							<% } %>
+							<% if (mode === 'success') { %>
+								<h3 class="panel-title"><%=k.length%> successful tests :)</h3>
+							<% } %>
+							<% if (mode === 'all') { %>
+								<h3 class="panel-title"><%=k.length%> tests</h3>
+							<% } %>
+							<a href="/bot/buildcsv?<%=build.task%>?<%=build.buildId%>?<%=mode%>">Csv</a>
+						</div>
+						<div class="panel-body" id="series">
+							<table id="table" data-toggle="table" data-pagination="true" data-search="true" data-height="600">
+								<thead>
+									<tr>
+										<th>Description</th>
+										<th>Options</th>
+										<th data-sortable="true">State</th>
+										<th data-sortable="true">Value</th>
+										<th>Logs</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% for (var ii=0; ii<k.length; ii++) { %>
+										<% var t=tests[k[ii]]; %>
+										<tr>
+											<td>
+												<% var kk = Object.keys(t.desc); %>
+												<% for (var jj=0; jj<kk.length; jj++) { %>
+													<% if (kk[jj] === 'options' ) continue; %>
+													<%=kk[jj]%>:
+													<%=t.desc[kk[jj]]%>
+													<br>
+												<% } %>
+											</td>
+											<td>
+											<% var o %>
+											<% if (t.options) { %>
+												<% o=t.options %>
+											<% } else { %>
+												<% o=t.desc.options %>
+											<% } %>
+											<% var kk = Object.keys(o); %>
+											<% for (var jj=0; jj<kk.length; jj++) { %>
+												<%=kk[jj]%>:
+												<%=o[kk[jj]]%>
+												<br>
+											<% } %>
+											</td>
+											<td>
+												<% if (t.state.passing) { %>
+													<i style="color:#60bf60" class="fa fa-square fa-2x"></i>
+												<% } else { %>
+													<i style="color:#ff4b4b" class="fa fa-square fa-2x"></i>
+												<% } %>
+											</td>
+											<td>
+												<% if (t.result.sample===undefined) { %>
+													<% for (var zz=0; zz<t.result.length; zz++) { %>
+														<%= t.result[zz].sample.value %>
+														<br>
+													<% } %>
+												<% } else { %>
+													<%= t.result.sample.value %>
+												<% } %>
+											</td>
+											<td>
+												<% if (!t.state.passing) { %>
+													<a href="/sponge/<%=build.spongeTag%>/<%=t.exec.QId%>.txt">View</a>
+												<% } %>
+											</td>
+										</tr>
+									<% } %>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				<% } %>
+			</div>
+		</div>
+	</div>
+	<script>
+		var build = <%-JSON.stringify(build)%>;
+		var tests = <%-JSON.stringify(tests)%>;
+		var debug = false;
+
+		function updateBuild(build) {
+			var eltBuildPanel = document.createElement('span');
+			var eltBuild = document.getElementById("build");
+			eltBuild.insertBefore(eltBuildPanel, eltBuild.firstChild);
+			eltBuildPanel.innerHTML = getBuildPanel(build);
+
+			var eltBuildPanelBadge = document.getElementById('buildBadges_' + build.buildId);
+			var eltBuildBadge = document.getElementById('build_' + build.buildId + '_' + build.task);
+			if (!eltBuildBadge) {
+				eltBuildBadge = document.createElement('span');
+				eltBuildBadge.id = 'build_' + build.buildId + '_' + build.task;
+				eltBuildPanelBadge.insertBefore(eltBuildBadge, eltBuildPanelBadge.firstChild);
+			}
+			eltBuildBadge.innerHTML = getBuildBadge(build);
+		}
+		updateBuild(build);
+	</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!--
+/*
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../common/head %>
+        <link href="/css/signin.css" rel="stylesheet">
+</head>
+
+<body>
+    <% include ../common/navbar %>
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h3>
+            <%
+            // /sponge/tag/ -> [0]='', [1]='sponge', [2]='tag'
+            var split=directory.split('/');
+            var baseFull=cwd+'/www/public'; %>
+            <% if (split.length==3) { %>
+              Sponge
+            <% } %>
+            <% if (split.length==4) { %>
+              <a href='/sponge/'>Sponge</a> <%=split[2]%>
+            <% } %>
+          </h3>
+        <% if (list.length>0) { %>
+        <table class="table table-striped">
+            <tbody>
+                <%
+            // cwd: cwd,
+            // directory: req.originalUrl,
+            // list: list
+
+            var fullPath=cwd+'/www/public'+directory;
+            var relativePath=directory;
+            var icone,href;
+            for (var ii = 0; ii < list.length; ii++) {
+              href=relativePath+list[ii].name;
+              %>
+                    <tr>
+                        <td>
+                          <% if (list[ii].isDirectory) { %>
+                            <i class="fa fa-folder-o" aria-hidden="true"></i>
+                          <% } else { %>
+                            <i class="fa fa-file-o" aria-hidden="true"></i>
+                          <% } %>
+                        <!-- </td>
+                        <td> -->
+                            &nbsp;&nbsp;<a href="<%= href%>"><%= list[ii].name %></a>
+                        </td>
+                    </tr>
+                    <% } %>
+            </tbody>
+        </table>
+        <% } else { %>
+            <p>No Files</p>
+            <% } %>
+
+          </div>
+      </div>
+    </div>
+</body>
+
+</html>

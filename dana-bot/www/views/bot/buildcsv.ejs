@@ -1,0 +1,72 @@
+<!--
+/*
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+
+Description, Options, State, Value
+<br>
+
+<% var k=Object.keys(tests); %>
+<% if (k.length !== 0) { %>
+
+<% for (var ii=0; ii<k.length; ii++) { %>
+	<% var t=tests[k[ii]]; %>
+
+	<% var kk = Object.keys(t.desc); %>
+	<% for (var jj=0; jj<kk.length; jj++) { %>
+		<% if (kk[jj] === 'options' ) continue; %>
+		<%=kk[jj]%>:
+		<%=t.desc[kk[jj]]%>
+		<% if (jj !== kk.length-1) { %>
+			&nbsp;-&nbsp;
+		<% } %>
+	<% } %>
+	,
+	<% var o %>
+	<% if (t.options) { %>
+		<% o=t.options %>
+	<% } else { %>
+		<% o=t.desc.options %>
+	<% } %>
+	<% var kk = Object.keys(o); %>
+	<% for (var jj=0; jj<kk.length; jj++) { %>
+		<%=kk[jj]%>:
+		<%=o[kk[jj]]%>
+		<% if (jj !== kk.length-1) { %>
+			&nbsp;-&nbsp;
+		<% } %>
+	<% } %>
+	,
+	<% if (t.state.passing) { %>
+		Passing
+	<% } else { %>
+		Failed
+	<% } %>
+	,
+	<% if (t.result.sample===undefined) { %>
+		<% for (var zz=0; zz<t.result.length; zz++) { %>
+			<%= t.result[zz].sample.value %>
+			<% if (zz !== t.result.length-1) { %>
+			&nbsp;-&nbsp;
+			<% } %>
+
+		<% } %>
+	<% } else { %>
+		<%= t.result.sample.value %>
+	<% } %>
+	<br>
+<% } %>
+<% } %>

@@ -1,0 +1,221 @@
+<!--
+/*
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<% include ../common/head %>
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.css">
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.11.0/bootstrap-table.min.js"></script>
+</head>
+
+<body>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/js/buildPanel.js"></script>
+
+	<% include ../common/navbar %>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-6">
+				<br>
+				<% var k=Object.keys(builds); %>
+				<% if (k.length !== 0) { %>
+					<div id="divLeft" style='overflow:auto;'>
+								<table class="table">
+								<thead>
+									<tr>
+										<th data-field="name" data-sortable="true">buildId</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% for (var ii=0; ii<k.length; ii++) { %>
+										<% var t=builds[k[ii]]; %>
+										<tr>
+											<td>
+												<%=t.buildId%>
+											</td>
+										</tr>
+									<% } %>
+								</tbody>
+							</table>
+							</div>
+				<% } %>
+			</div>
+		<div class="col-md-6">
+			<br>
+			<% var k=Object.keys(tests); %>
+			<% if (k.length !== 0) { %>
+					<div id="divtRightUp" style='overflow:auto;'>
+						<!-- <table id="table" data-toggle="table" data-pagination="true" data-search="true" > -->
+							<table class='table' >
+							<thead>
+								<tr>
+									<!-- <th data-sortable="true">Type</th> -->
+									<th>Description</th>
+									<th>Options</th>
+									<th data-sortable="true">State</th>
+									<th data-sortable="true">Value</th>
+									<th>Logs</th>
+								</tr>
+							</thead>
+							<tbody>
+								<% for (var ii=0; ii<k.length; ii++) { %>
+									<% var t=tests[k[ii]]; %>
+									<tr>
+										<td>
+											<% var kk = Object.keys(t.desc); %>
+											<% for (var jj=0; jj<kk.length; jj++) { %>
+												<%=kk[jj]%>:
+												<%=t.desc[kk[jj]]%>
+												<br>
+											<% } %>										</td>
+										<td>
+											<% var kk = Object.keys(t.options); %>
+											<% for (var jj=0; jj<kk.length; jj++) { %>
+												<%=kk[jj]%>:
+												<%=t.options[kk[jj]]%>
+												<br>
+											<% } %>
+										</td>
+										<td>
+											<% if (t.state.passing) { %>
+												<i style="color:#60bf60" class="fa fa-square fa-2x"></i>
+											<% } else { %>
+												<i style="color:#ff4b4b" class="fa fa-square fa-2x"></i>
+											<% } %>
+										</td>
+										<td>
+											<% if (t.result.sample===undefined) { %>
+												<% for (var zz=0; zz<t.result.length; zz++) { %>
+													<%= t.result[zz].sample.value %>
+													<br>
+												<% } %>
+											<% } else { %>
+												<%= t.result.sample.value %>
+											<% } %>
+										</td>
+										<td>
+											<% if (!t.state.passing) { %>
+												<a href="/sponge/<%=build.spongeTag%>/<%=t.exec.QId%>.txt">View</a>
+											<% } %>
+										</td>
+									</tr>
+								<% } %>
+							</tbody>
+						</table>
+					</div>
+					<div id="divtRightDown" style='overflow:auto;'>
+						<!-- <table id="table" data-toggle="table" data-pagination="true" data-search="true" > -->
+							<table class='table' >
+							<thead>
+								<tr>
+									<!-- <th data-sortable="true">Type</th> -->
+									<th>Description</th>
+									<th>Options</th>
+									<th data-sortable="true">State</th>
+									<th data-sortable="true">Value</th>
+									<th>Logs</th>
+								</tr>
+							</thead>
+							<tbody>
+								<% for (var ii=0; ii<k.length; ii++) { %>
+									<% var t=tests[k[ii]]; %>
+									<tr>
+										<td>
+											<% var kk = Object.keys(t.desc); %>
+											<% for (var jj=0; jj<kk.length; jj++) { %>
+												<%=kk[jj]%>:
+												<%=t.desc[kk[jj]]%>
+												<br>
+											<% } %>
+										</td>
+										<td>
+											<% var kk = Object.keys(t.options); %>
+											<% for (var jj=0; jj<kk.length; jj++) { %>
+												<%=kk[jj]%>:
+												<%=t.options[kk[jj]]%>
+												<br>
+											<% } %>
+										</td>
+										<td>
+											<% if (t.state.passing) { %>
+												<i style="color:#60bf60" class="fa fa-square fa-2x"></i>
+											<% } else { %>
+												<i style="color:#ff4b4b" class="fa fa-square fa-2x"></i>
+											<% } %>
+										</td>
+										<td>
+											<% if (t.result.sample===undefined) { %>
+												<% for (var zz=0; zz<t.result.length; zz++) { %>
+													<%= t.result[zz].sample.value %>
+													<br>
+												<% } %>
+											<% } else { %>
+												<%= t.result.sample.value %>
+											<% } %>
+										</td>
+										<td>
+											<% if (!t.state.passing) { %>
+												<a href="/sponge/<%=build.spongeTag%>/<%=t.exec.QId%>.txt">View</a>
+											<% } %>
+										</td>
+									</tr>
+								<% } %>
+							</tbody>
+						</table>
+					</div>
+			<% } %>
+		</div>
+	</div>
+	</div>
+	<script>
+		var build = <%-JSON.stringify(build)%>;
+		var tests = <%-JSON.stringify(tests)%>;
+		var debug = false;
+
+		function updateBuild(build) {
+			var eltBuildPanel = document.createElement('span');
+			var eltBuild = document.getElementById("build");
+			eltBuild.insertBefore(eltBuildPanel, eltBuild.firstChild);
+			eltBuildPanel.innerHTML = getBuildPanel(build);
+
+			var eltBuildPanelBadge = document.getElementById('buildBadges_' + build.buildId);
+			var eltBuildBadge = document.getElementById('build_' + build.buildId + '_' + build.task);
+			if (!eltBuildBadge) {
+				eltBuildBadge = document.createElement('span');
+				eltBuildBadge.id = 'build_' + build.buildId + '_' + build.task;
+				eltBuildPanelBadge.insertBefore(eltBuildBadge, eltBuildPanelBadge.firstChild);
+			}
+			eltBuildBadge.innerHTML = getBuildBadge(build);
+		}
+		//updateBuild(build);
+		//
+		$(document).ready(function(){
+			var windowHeight = $(window).height() - 110;
+			windowHeight = windowHeight-5 ;
+	   	$('#divLeft').height(windowHeight+"px");
+			$('#divtRightUp').height(windowHeight/2+"px");
+			$('#divtRightDown').height(windowHeight/2+"px");
+			// $('#table').height("200px");
+		});
+	</script>
+</body>
+</html>

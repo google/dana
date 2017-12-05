@@ -1,0 +1,156 @@
+<!--
+/*
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<% include ../common/head %>
+	</head>
+
+	<body>
+
+		<% include ../common/navbar %>
+
+		<%
+		var guest=true;
+		if (user!==undefined) {
+			if (user.username=='admin') {
+				guest=false;
+			}
+		}
+		var k = Object.keys(globalBot.tasks);
+		ttasks = [];
+		for (var ii=0; ii<k.length; ii++) {
+			ttasks.push(k[ii]);
+		}
+		var k = Object.keys(globalBot.repositories);
+		trepos = [];
+		for (var ii=0; ii<k.length; ii++) {
+			trepos.push(k[ii]);
+		}
+		var k = Object.keys(globalBot.projectBot.userCommands);
+		tcommands = [];
+		for (var ii=0; ii<k.length; ii++) {
+			tcommands.push(k[ii]);
+		}
+		%>
+		<div class="container" id="formulaire">
+			<div class="row">
+				<div class="col-md-12">
+					<br>
+					<br>
+					<center>
+						<h1>Add a new task</h1>
+					</center>
+					<br>
+				</div>
+				<div class="col-md-offset-2 col-md-4">
+					<form action="/bot/addTask" method="post">
+						<div class="form-group">
+							<div class="form-group">
+								<label>Task name</label>
+								<input type="text" class="form-control" placeholder="DontUseSpacesOrSlashes" name="taskName"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label>Repository</label>
+							<select class="form-control" name="repository">
+								<%	for (var ii=0; ii<trepos.length; ii++) { %>
+									<option><%=trepos[ii]%></option>
+								<%  } %>
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Branch</label>
+							<input type="text" class="form-control" placeholder="DontUseSpacesOrSlashes" name="branch"/>
+						</div>
+						<div class="form-group">
+							<label>Command</label>
+							<select class="form-control" name="command">
+								<%	for (var ii=0; ii<tcommands.length; ii++) { %>
+									<option><%=tcommands[ii]%></option>
+								<%  } %>
+							</select>
+						</div>
+						<!--
+						<div class="form-group">
+							<label>Command to run</label>
+							globalBot.projectBot.userCommands
+							<input type="text" class="form-control" placeholder="DontUseSpacesOrSlashes" name="command"/>
+						</div>
+					-->
+						<div class="form-group">
+							<label>Active</label>
+							<select class="form-control" name="active">
+								<option selected>Yes</option>
+								<option>No</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group">
+							<label>Priority</label>
+							<select class="form-control" name="priority">
+								<option>1</option>
+								<option selected>5</option>
+								<option>9</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Monitoring mode</label>
+							<select class="form-control" name="monitoringMode">
+								<option selected>Patch level</option>
+								<option>Patch set level </option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Activation Mode</label>
+							<select class="form-control" name="periodMode">
+								<option selected>Tick</option>
+								<option selected>FixedTime</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label>Tick Value</label>
+							<input type="text" placeholder="Number of minutes to relaunch the task" class="form-control" name="periodValue"/>
+						</div>
+						<div class="form-group">
+							<label>Fixed Time Value</label>
+							<input type="text" placeholder="Fixed Time (hour:minute) to relaunch the task (i.e. 14:15)" class="form-control" name="fixedTimeValue"/>
+						</div>
+						<div class="form-group">
+							<label>Base</label>
+							<input type="text" class="form-control" name="base"/>
+						</div>
+					</div>
+					<div class="col-md-offset-2 col-md-8">
+						<div class="form-group">
+							<label>Notify</label>
+							<textarea class="form-control" rows="5" name="notify"></textarea>
+						</div>
+						<center>
+							<br>
+							<button class="btn btn-danger btn-block" type="submit" id="submitButton">Add Task</button>
+						</center>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

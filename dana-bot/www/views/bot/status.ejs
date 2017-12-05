@@ -1,0 +1,378 @@
+<!--
+/*
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<% include ../common/head %>
+</head>
+
+<body>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="/js/buildPanel.js"></script>
+
+	<% include ../common/navbar %>
+
+		<%
+		var guest=true;
+		if (user!==undefined) {
+			if (user.username=='admin') {
+				guest=false;
+			}
+		}
+
+		var botIsInactive;
+		if (globalBot.state==='inactive') botIsInactive=true;
+		else botIsInactive=false;
+
+		%>
+		<script>
+			var guest = <%=guest%>;
+			var botIsInactive = <%=botIsInactive%>;
+			var debug = false;
+			var socket = io();
+
+			socket.on('updateIsAvailable', function() {
+				if (debug) console.log('updateIsAvailable');
+					$("#updateIsAvailable").show();
+				});
+
+			socket.on('botIsStopped', function() {
+				if (debug) console.log('botIsStopped');
+				window.location.href = '/';
+			});
+
+			socket.on('startingBuild', function(build) {
+				if (debug) console.log('startingBuild', build)
+				updateBuild(repositories, build);
+			});
+
+			socket.on('stoppingBuild', function(build) {
+				if (debug) console.log('stoppingBuild', build)
+				var builds = document.getElementById("builds");
+				builds.innerHTML = "";
+			});
+
+			socket.on('updatingBuild', function(build) {
+				if (debug) console.log('updatingBuild', build)
+				updateBuild(repositories, build);
+				if (build.state.running===false) {
+					var builds = document.getElementById("builds");
+					builds.innerHTML = "";
+				}
+			});
+
+			socket.on('updateQueue', function(msgQ) {
+				if (debug) console.log('updateQueue', msgQ);
+				Q = msgQ;
+				dumpQueue();
+			});
+
+			socket.on('updateTasks', function(msgTasks) {
+				if (debug) console.log('updateTasks', msgTasks);
+				tasks = msgTasks;
+				dumpTasks();
+			});
+
+			socket.on('updateRepositories', function(msgRepositories) {
+				if (debug) console.log('updateRepositories', msgRepositories);
+				repositories = msgRepositories;
+				dumpRepositories();
+			});
+
+			function dumpRepositories() {
+				var h = "";
+				var keys = Object.keys(repositories);
+				if (keys.length > 0) {
+					for (var ii in keys) {
+						h += '<div class="panel panel-default">';
+						h += '<div class="panel-heading">';
+						h += '<h3 class="panel-title">';
+						h += '<b>' + repositories[keys[ii]].name + '</b>';
+						if ((!guest) && (botIsInactive)) {
+							h += '<span class="pull-right">';
+							h += '<a href="/bot/editRepository?' + repositories[keys[ii]].name + '">';
+							h += '<button type="button" class="btn btn-xs btn-danger">Edit</button>';
+							h += '</a>&nbsp;';
+							h += '<a href="/bot/deleteRepository?' + repositories[keys[ii]].name + '">';
+							h += '<button type="button" class="btn btn-xs btn-danger">Delete</button>';
+							h += '</a>';
+							h += '</span>';
+						}
+						h += '</h3>';
+						h += '</div>';
+						h += '<div class="panel-body">';
+						h += '<dl class="dl-horizontal">';
+						h += '<dt>Git url</dt>';
+						h += '<dd>';
+						h += repositories[keys[ii]].git.url;
+						h += '</dd>';
+						h += '</dl>';
+						h += '</div>';
+						h += '</div>';
+					}
+				} else {
+					h += '<h4>No repositories to monitor</h4>';
+				}
+				document.getElementById('repositories').innerHTML = h;
+			}
+
+			function dumpTasks() {
+				var h = ""
+				var keys = Object.keys(tasks);
+				if (keys.length > 0) {
+					for (var ii in keys) {
+						h += '<div class="panel panel-default">';
+						h += '<div class="panel-heading">';
+						h += '<h3 class="panel-title">';
+						h += '<b>' + keys[ii] + '</b>';
+						if ((!guest) && (botIsInactive)) {
+							h += '<span class="pull-right">';
+							h += '<a href="/bot/editTask?' + keys[ii] + '">';
+							h += '<button type="button" class="btn btn-xs btn-danger">Edit</button>';
+							h += '</a>&nbsp;';
+							h += '<a href="/bot/deleteTask?' + keys[ii] + '">';
+							h += '<button type="button" class="btn btn-xs btn-danger">';
+							h += 'Delete</button>';
+							h += '</a>';
+							h += '</span>';
+						}
+						h += '</h3> </div> <div class = "panel-body" >';
+						var tName = keys[ii];
+						var t = tasks[tName];
+						var p = 'Undefined';
+						if (t.period.tick !== undefined) {
+							p = 'every ' + t.period.tick + ' tick';
+							if (t.period.tick > 1)
+								p += 's';
+						}
+						if (t.period.fixedTime !== undefined) {
+							p = 'fixed hour ' + t.period.fixedTime;
+						}
+
+						h += '<dl class="dl-horizontal">';
+						h += '<dt>Repository</dt>';
+						h += '<dd>';
+						h += t.repository;
+						h += '</dd>';
+						h += '<dt>Branch</dt>';
+						h += '<dd>';
+						h += t.branch;
+						h += '</dd>';
+						h += '<dt>Run name</dt>';
+						h += '<dd>';
+						h += t.command;
+						h += '</dd>';
+						h += '<dt>Priority</dt>';
+						h += '<dd>';
+						h += t.priority;
+						h += '</dd>';
+						h += '<dt>Active</dt>';
+						h += '<dd>';
+						h += t.active;
+						h += '</dd>';
+						h += '<dt>Mode</dt>';
+						h += '<dd>';
+						h += t.mode;
+						h += '</dd>';
+						h += '<dt>Period</dt>';
+						h += '<dd>';
+						h += p;
+						h += '</dd>';
+						h += '<dt>Current base</dt>';
+						h += '<dd>';
+						h += t.base;
+						h += '</dd>';
+						h += '<dt>Notify</dt>';
+						h += '<dd>';
+						h += t.notify;
+						h += '</dd>';
+						h += '</dl>';
+						h += '</div>';
+						h += '</div>';
+					}
+				} else {
+					h += '<h4>No tasks to monitor</h4>';
+				}
+				document.getElementById('tasks').innerHTML = h;
+			}
+
+			function dumpQueue() {
+				var keysSorted = Object.keys(Q).sort(function(a, b) {
+					var v = tasks[Q[b].task].priority - tasks[Q[a].task].priority;
+					if (v === 0) {
+						v = tasks[Q[a].task].buildId - tasks[Q[b].task].buildId;
+					}
+					return v;
+				});
+				var h = ""
+				h += '<div class="panel panel-default">';
+				h += '<div class="panel-heading">';
+				h += '<h3 class="panel-title">';
+				h += 'dana-bot Queue';
+				if ((!guest) && (botIsInactive)) {
+					h += '<span class="pull-right">';
+					h += '<a href="/bot/addToQueue">';
+					h += '<button type="button" class="btn btn-xs btn-danger">Add a task to the Queue</button>';
+					h += '</a>';
+					h += '</span>';
+				}
+				h += '</h3></div>';
+				h += '<div class="panel-body">';
+				if (keysSorted.length > 0) {
+					h += '<table class=table table - bordered';
+					h += '<thead>';
+					h += '<th>Id</th>';
+					h += '<th>Task</th>';
+					h += '<th>BuildId</th>';
+					h += '<th>abbrevHash</th>';
+					h += '<th>Subject</th>';
+					h += '<th>Author</th>';
+					if ((!guest) && (botIsInactive)) {
+						h += '<th></th>';
+					}
+					h += '</thead>';
+					h += '<tbody>';
+					for (var ii in keysSorted) {
+						h += '<tr>';
+						h += '<td>';
+						h += keysSorted[ii];
+						h += '</td>';
+						h += '<td>';
+						h += Q[keysSorted[ii]].task;
+						h += '</td>';
+						h += '<td>';
+						h += Q[keysSorted[ii]].buildId;
+						h += '</td>';
+						h += '<td>';
+						h += Q[keysSorted[ii]].infos[0].abbrevHash;
+						h += '</td>';
+						h += '<td>';
+						h += Q[keysSorted[ii]].infos[0].subject;
+						h += '</td>';
+						h += '<td>';
+						h += Q[keysSorted[ii]].infos[0].authorEmail;
+						h += '</td>';
+						if ((!guest) && (botIsInactive)) {
+							h += '<td>';
+							h += '<a href="/bot/removeFromQ?' + keysSorted[ii] + '">'
+							h += '<button type="button" class="btn btn-xs btn-danger">'
+							h += 'Remove</button></a>';
+							h += '</td>';
+						}
+						h += '</tr>';
+					}
+					h += '</tbody>';
+					h += '</table>';
+				} else {
+					h += 'Nothing in queue';
+				}
+				h += '</div>';
+				h += '</div>';
+				document.getElementById('queue').innerHTML = h;
+			}
+		</script>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+					<br>
+					<% if (globalBot.state === "inactive") { %>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h3 class="panel-title">
+									Bot is inactive
+									<% if (!guest) { %>
+										<span class='pull-right'>
+											<a href="/bot/botStart">
+												<button type="button" class="btn btn-xs btn-danger">
+													Start Bot</button>
+											</a>
+										</span>
+									<% } %>
+								</h3>
+							</div>
+						</div>
+						<%  } %>
+						<% if (globalBot.state === "active") { %>
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title">
+										<i class="fa fa-refresh fa-spin fa-1x fa-fw"></i>
+										Bot is active
+										<% if (!guest) { %>
+											<span class='pull-right'>
+												<a href="/bot/botStop">
+													<button type="button" class="btn btn-xs btn-danger">
+														Stop Bot
+													</button>
+												</a>
+											</span>
+										<% } %>
+									</h3>
+								</div>
+							</div>
+						<%  } %>
+						<% if (globalBot.state === "stopping") { %>
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h3 class="panel-title">
+										<i class="fa fa-refresh fa-spin fa-1x fa-fw"></i>
+										Stopping bot in progress, need to wait the end of the current run -- please wait...
+									</h3>
+								</div>
+							</div>
+						<%  } %>
+					<span id="builds"></span>
+					<span id="queue"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h3>Repositories
+					<% if ((!guest) && (botIsInactive)) { %>
+						<span class='pull-right'>
+							<a href="/bot/addRepository">
+								<button type="button" class="btn btn-xs btn-danger">
+									Add new repository</button>
+							</a>
+						</span>
+					<% } %>
+					</h3>
+					<span id="repositories"></span>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<h3>Tasks
+					<% if ((!guest)&&(botIsInactive)) { %>
+						<span class='pull-right'>
+							<a href="/bot/addTask">
+								<button type="button" class="btn btn-xs btn-danger">
+									Add new task</button>
+							</a>
+						</span>
+					<% } %>
+					</h3>
+					<span id="tasks"></span>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

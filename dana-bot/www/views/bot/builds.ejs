@@ -1,0 +1,333 @@
+<!--
+/*
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+
+	<head>
+		<% include ../common/head
+			%>
+	</head>
+
+	<body>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/js/buildPanel.js"></script>
+
+		<% include ../common/navbar %>
+
+		<script>
+			var tasks;
+			var repositories;
+			var currentTasks = {};
+			var currentNumTasks = 0;
+			var ignoreTaskBuilds = true;
+			var debug = false;
+			var socket = io();
+			var runningBuild;
+			socket.on('updateIsAvailable', function () {
+				if (debug)
+					console.log('updateIsAvailable');
+				$("#updateIsAvailable").show();
+			});
+
+			socket.on('updatingBuild', function (build) {
+				if (debug)
+					console.log('updatingBuild', build);
+
+				//console.log(Object.keys(currentTasks).length, currentNumberBuildsReceived)
+				if (currentNumTasks !== currentNumberBuildsReceived)
+					return;
+				runningBuild = build;
+				if (currentTasks[build.task] !== undefined)
+					updateBuild(repositories, build);
+				}
+			);
+
+			socket.on('updateQueue', function (msgQ) {
+				if (debug)
+					console.log('updateQueue', msgQ);
+					//Q = msgQ; dumpQueue();
+				}
+			);
+
+			socket.on('updateTasks', function (msgTasks) {
+				if (debug)
+					console.log('updateTasks', msgTasks);
+				tasks = msgTasks;
+				if (repositories !== undefined)
+					refreshBuildSelector();
+				}
+			);
+
+			socket.on('updateRepositories', function (msgRepositories) {
+				if (debug)
+					console.log('updateRepositories', msgRepositories);
+				repositories = msgRepositories;
+				if (tasks !== undefined)
+					refreshBuildSelector();
+				}
+			);
+
+			socket.on('taskBuilds', function (msgTaskBuilds) {
+				if (debug)
+					console.log('taskBuilds', msgTaskBuilds);
+				if (!ignoreTaskBuilds)
+					if (isInCurrentTask(msgTaskBuilds.taskName)) {
+						insertInCurrentTask(msgTaskBuilds.taskName, msgTaskBuilds.builds)
+						currentNumberBuildsReceived++;
+						if (debug) {
+							console.log('currentNumberBuildsReceived', currentNumberBuildsReceived);
+							console.log('currentNumTasks', currentNumTasks);
+						}
+						if (currentNumTasks === currentNumberBuildsReceived) {
+							dumpCurrentTaskBuilds();
+							ignoreTaskBuilds = true;
+						}
+					}
+				});
+
+			/*			socket.on('taskBuilds', function(msgTaskBuilds) {
+				if (debug) console.log('taskBuilds', msgTaskBuilds);
+				dumpCurrentTaskBuilds(msgTaskBuilds.builds);
+				currentNumberBuildsReceived++;
+			});
+*/
+			function refreshBuildSelector() {
+				var HSelTask = '';
+				var useBarSelector = false;
+				if (useBarSelector) {
+
+					var r = {};
+					var k = Object.keys(tasks);
+					for (var ii = 0; ii < k.length; ii++) {
+						HSelTask += '<li><a onclick="dumpTaskBuilds(\'' + k[ii] + '\')" href="#">' + k[ii] + '</a></li>';
+						if (r[tasks[k[ii]].repository] === undefined)
+							r[tasks[k[ii]].repository] = {
+								branches: {}
+							};
+						r[tasks[k[ii]].repository].branches[tasks[k[ii]].branch] = {};
+					}
+					document.getElementById('dropdown-menu-tasks').innerHTML = HSelTask;
+
+					HSelTask = '';
+					var k = Object.keys(r);
+					for (var ii = 0; ii < k.length; ii++) {
+						HSelTask += '<li class="dropdown-header">' + k[ii] + '</li>';
+						var kk = Object.keys(r[k[ii]].branches);
+						for (var jj = 0; jj < kk.length; jj++) {
+							console.log('dumpBranchBuilds', k[ii] , kk[jj] );
+							HSelTask += '<li><a onclick="dumpBranchBuilds(\'' + k[ii] + '\',\'' + kk[jj] + '\')" href="#">' + kk[jj] + '</a></li>';
+						}
+					}
+					document.getElementById('dropdown-menu-branches').innerHTML = HSelTask;
+				} else {
+					var HSelTaskBottom;
+					HSelTaskBottom = '<div class="list-group">';
+
+					HSelTaskBottom +='<a href="#" class="list-group-item disabled"><h4>Builds by tasks</h4></a>';
+					var r = {};
+					var k = Object.keys(tasks);
+					for (var ii = 0; ii < k.length; ii++) {
+						HSelTaskBottom += '<a class="list-group-item" onclick="dumpTaskBuilds(\'' + k[ii] + '\')" href="#">' + k[ii] + '</a>';
+						if (r[tasks[k[ii]].repository] === undefined)
+							r[tasks[k[ii]].repository] = {
+								branches: {}
+							};
+						r[tasks[k[ii]].repository].branches[tasks[k[ii]].branch] = {};
+					}
+					HSelTaskBottom +='</div>';
+
+					HSelTask = '<div class="list-group">';
+
+					HSelTask +='<a href="#" class="list-group-item disabled"><h4>Builds by branches</h4></a>';
+
+					var k = Object.keys(r);
+					for (var ii = 0; ii < k.length; ii++) {
+						HSelTask +='<a href="#" class="list-group-item disabled">'+k[ii]+'</a>'
+						var kk = Object.keys(r[k[ii]].branches);
+						for (var jj = 0; jj < kk.length; jj++) {
+							console.log('dumpBranchBuilds', k[ii] , kk[jj] );
+							HSelTask += '<a class="list-group-item" onclick="dumpBranchBuilds(\'' + k[ii] + '\',\'' + kk[jj] + '\')" href="#">' + kk[jj] + '</a>';
+						}
+					}
+					HSelTask +='</div>';
+
+					HSelTask+=HSelTaskBottom;
+
+					document.getElementById('buildsSelection').innerHTML = HSelTask;
+
+				}
+
+				var repoName;
+				var branchName;
+				var k = Object.keys(r);
+				if (k.length > 0) {
+					repoName = k[0];
+					var kk = Object.keys(r[k[0]].branches);
+					if (kk.length > 0) {
+						branchName = kk[0];
+					}
+				}
+				if ((repoName !== undefined) && (branchName !== undefined))
+					dumpBranchBuilds(repoName, branchName)
+			}
+
+			function dumpTaskBuilds(taskName) {
+				document.getElementById('buildSelection').innerHTML = 'Task <b>' + taskName + '</b>';
+				currentTasks = {};
+				currentTasks[taskName] = {};
+				currentNumTasks = 1;
+				currentNumberBuildsReceived = 0;
+				clearBuild();
+				getBuilds();
+			}
+
+			function dumpBranchBuilds(repoName, branchName) {
+				document.getElementById('buildSelection').innerHTML = 'Repository <b>' + repoName + '</b>&nbsp;Branch <b>' + branchName + '</b>';
+				currentTasks = {};
+				currentNumTasks = 0;
+				var k = Object.keys(tasks);
+				for (var ii = 0; ii < k.length; ii++) {
+					if ((tasks[k[ii]].branch === branchName)&&(tasks[k[ii]].repository===repoName)) {
+						currentTasks[k[ii]] = {};
+						currentNumTasks++;
+					}
+				}
+				currentNumberBuildsReceived = 0;
+				clearBuild();
+				getBuilds();
+			}
+
+			function getBuilds() {
+				ignoreTaskBuilds = false;
+				var k = Object.keys(currentTasks);
+				for (var ii = 0; ii < k.length; ii++) {
+					socket.emit('getTaskBuilds', k[ii]);
+				}
+			}
+
+			function insertInCurrentTask(taskName, builds) {
+				currentTasks[taskName].builds = builds;
+			}
+
+			function dumpCurrentTaskBuilds() {
+				if (debug)
+					console.log('dumpCurrentTaskBuilds');
+
+				var buildsKeyMerge = {};
+				var tasksInSystem = currentTasks;
+				var ks = Object.keys(tasksInSystem);
+				if (ks.length != 0) {
+					for (var jj = 0; jj < ks.length; jj++) {
+						var buildsInTask = tasksInSystem[ks[jj]].builds;
+						var kb = Object.keys(buildsInTask);
+						for (var jjj = 0; jjj < kb.length; jjj++) {
+							buildsKeyMerge[kb[jjj]] = {};
+						}
+					}
+				}
+
+				var bkm = Object.keys(buildsKeyMerge);
+				if (debug)
+					console.log('Number of Builds received', bkm.length);
+				var keysSorted = Object.keys(buildsKeyMerge).sort(function (a, b) {
+					var v = b * 1 - a * 1;
+					return v;
+				});
+				var finalMerge = [];
+				for (var ii = 0; ii < keysSorted.length; ii++) {
+					if (ii < 20) {
+						finalMerge.push(keysSorted[ii]);
+					} else
+						break;
+					}
+				finalMerge.reverse();
+				for (var zz = 0; zz < finalMerge.length; zz++) {
+					var buildKey = finalMerge[zz];
+					var k = Object.keys(currentTasks);
+					var ks = Object.keys(currentTasks);
+					if (ks.length != 0) {
+						for (var jj = 0; jj < ks.length; jj++) {
+							var buildsInTask = tasksInSystem[ks[jj]].builds;
+							if (buildsInTask[buildKey] !== undefined) {
+								updateBuild(repositories, buildsInTask[buildKey]);
+							}
+						}
+					}
+				}
+			}
+
+			function isInCurrentTask(taskName) {
+				if (debug) {
+					console.log('isInCurrentTask currentTasks', currentTasks);
+					console.log('taskName', taskName);
+				}
+				if (currentTasks[taskName] !== undefined)
+					return true;
+				else
+					return false;
+				}
+		</script>
+		<!--
+		<nav class="navbar navbar-default navbar-fixed-bottom">
+			<div class="container-fluid">
+				<div class="navbar-header">
+					<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2" aria-expanded="false">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="navbar-brand">Builds selection</a>
+				</div>
+				<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+					<ul class="nav navbar-nav">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">By branch<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu" id="dropdown-menu-branches"></ul>
+						</li>
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">By task<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu" id="dropdown-menu-tasks"></ul>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</nav>
+-->
+		<div class="container-global">
+			<div class="row">
+				<div class="col-md-2">
+					<br>
+					<span id="buildsSelection"></span>
+				</div>
+				<div class="col-md-10">
+					<br>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title" id="buildSelection"></h3>
+						</div>
+						<div class="panel-body" id="builds"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+
+</html>
