@@ -19,6 +19,7 @@
 /* eslint guard-for-in: "off" */
 
 var os = require('os');
+var fs = require('fs');
 var childProcess = require('child_process');
 var exec = childProcess.execFile;
 var execSync = childProcess.execFileSync;
@@ -39,6 +40,12 @@ module.exports.exec = function(cmd, args, cwd, hdl) {
 
   if (lowLevelDebug) console.log('exec (', cmd, args, cwd, ')');
 
+  if (cwd && !fs.existsSync(cwd)) {
+    console.log("exec -- ERROR: directory '" + cwd + "' does not exist");
+    hdl("exec -- ERROR: directory '" + cwd + "' does not exist", "", "")
+    return;
+  }
+
   exec(
     cmd,
     args, {
@@ -56,6 +63,17 @@ module.exports.exec = function(cmd, args, cwd, hdl) {
 
 module.exports.execSync = function(cmd, args, cwd) {
   if (lowLevelDebug) console.log('execSync (', cmd, args, cwd, ')');
+
+  if (cwd && !fs.existsSync(cwd)) {
+    console.log("exec -- ERROR: directory '" + cwd + "' does not exist");
+    return {
+      err : true,
+      stdout : "",
+      stderr : "",
+      status : -1,
+      output : "exec -- ERROR: directory '" + cwd + "' does not exist"
+    };
+  }
 
   var cmdout = {};
   var out;
@@ -127,6 +145,12 @@ module.exports.execRedirect = function(cmd, args, cwd, hdl) {
   }
 
   if (lowLevelDebug) console.log('execRedirect (', cmd, args, cwd, ')');
+
+  if (cwd && !fs.existsSync(cwd)) {
+    console.log("exec -- ERROR: directory '" + cwd + "' does not exist");
+    hdl("exec -- ERROR: directory '" + cwd + "' does not exist")
+    return;
+  }
 
   var proc = spawn(
     cmd,
