@@ -613,9 +613,6 @@ function apiAddSample(apiData, hdl) {
       if (typeof(sample.value) !== 'number') {
         return hdl('Invalid data - sample.value is not a number');
       }
-      if (sample.value === 0) {
-        return hdl('Invalid data - sample.value is zero');
-      }
       //
       // Serie analysis for benchmark
       //
