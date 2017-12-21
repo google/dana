@@ -634,7 +634,7 @@ function showHeader() {
       var v = serieData[serieData.length - 1];
       if ((serieData.length - 2) >= 0) {
         var previousV = serieData[serieData.length - 2];
-        var diff = (v - previousV);
+        var diff = (v - previousV).toFixed(2);
         var p = diff / previousV * 100;
         if (diff > 0) diff = '+' + diff;
         if (p > 0)
@@ -642,7 +642,7 @@ function showHeader() {
         else
           $('#topBanner_lastBuildPourcent').html(p.toFixed(2) + '%');
 
-        $('#topBanner_lastBuildDiff').html('Diff ' + diff.toFixed(2));
+        $('#topBanner_lastBuildDiff').html('Diff ' + diff);
         $('#topBanner_lastBuild').show();
       }
     }
