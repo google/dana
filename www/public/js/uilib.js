@@ -58,7 +58,7 @@ function globalSetSelection(idx) {
           if (previousV === null) {
             e.innerHTML = '<center><b>' + v + '<br>---</b></center>';
           } else {
-            var diff = (v - previousV);
+            var diff = (v - previousV).toFixed(2);
             if (diff > 0) {
               //e.innerHTML = '<center><b>' + v + ' ( +' + diff + ' )</b></center>';
               e.innerHTML = '<center><b>' + v + '<br>( +' + diff + ' )</b></center>';

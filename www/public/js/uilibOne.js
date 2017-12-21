@@ -336,9 +336,9 @@ function drawRawGraph() {
           if (diff !== 0)
             p = diff / previousV * 100;
           if (p > 0)
-            h += v + ' (+' + diff + ' +' + p.toFixed(2) + '%)';
+            h += v + ' (+' + diff.toFixed(2) + ' +' + p.toFixed(2) + '%)';
           else
-            h += v + ' (' + diff + ' ' + p.toFixed(2) + '%)';
+            h += v + ' (' + diff.toFixed(2) + ' ' + p.toFixed(2) + '%)';
         }
       }
     }
@@ -642,7 +642,7 @@ function showHeader() {
         else
           $('#topBanner_lastBuildPourcent').html(p.toFixed(2) + '%');
 
-        $('#topBanner_lastBuildDiff').html('Diff ' + diff);
+        $('#topBanner_lastBuildDiff').html('Diff ' + diff.toFixed(2));
         $('#topBanner_lastBuild').show();
       }
     }
@@ -1505,9 +1505,9 @@ function globalSetSelectionRegression(idx) {
     if (diff === 0)
       h += '(0)';
     if (diff > 0)
-      h += '(+' + diff + ' +' + p.toFixed(2) + '%)';
+      h += '(+' + diff.toFixed(2) + ' +' + p.toFixed(2) + '%)';
     if (diff < 0)
-      h += '(' + diff + ' ' + p.toFixed(2) + '%)';
+      h += '(' + diff.toFixed(2) + ' ' + p.toFixed(2) + '%)';
     h += '</b> ';
 
     if ((idxAvg - 1) > 0) {
@@ -1518,9 +1518,9 @@ function globalSetSelectionRegression(idx) {
       if (diff === 0)
         h += '(0)';
       if (diff > 0)
-        h += '(+' + diff + ' +' + p.toFixed(2) + '%)';
+        h += '(+' + diff.toFixed(2) + ' +' + p.toFixed(2) + '%)';
       if (diff < 0)
-        h += '(' + diff + ' ' + p.toFixed(2) + '%)';
+        h += '(' + diff.toFixed(2) + ' ' + p.toFixed(2) + '%)';
       h += '</b> ';
     }
     //h += '</center>';
