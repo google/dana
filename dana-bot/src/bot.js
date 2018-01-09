@@ -999,7 +999,7 @@ function userRunEnd(msg) {
               console.log('stderr: ', stderr);
             }
           } else {
-            console.log("Done exporting'" + b.buildId + "'...");
+            console.log("Done exporting'" + b.buildId + "'");
           }
         }
     )
