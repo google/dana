@@ -26,6 +26,8 @@ var AsciiTable = require('ascii-table');
 var htmlBuilder = require(cwd + '/src/htmlBuilder');
 var www = require(cwd + '/src/www');
 var logger = require(cwd + '/src/logger').getLogger();
+var moduleRun = require('./run')
+
 
 var globalBot = {
   version: undefined,
@@ -982,6 +984,26 @@ function userRunEnd(msg) {
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun.allSeries));
   var f = globalBot.buildPath + '/' + g.running.task + '/' + b.buildId + '.full.json';
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun));
+
+  var exportCmd = globalBot.config.configBot.runners[
+    Object.keys(globalBot.config.configBot.runners)[0]].env.exportCmd;
+
+  if (exportCmd !== undefined) {
+    console.log("Exporting build '" + b.buildId + "'...");
+    moduleRun.exec(exportCmd[0], exportCmd.slice(1), cwd,
+        function(err, stdout, stderr) {
+          if (err) {
+            console.log("Couldn't export build '" + b.buildId + "'");
+            if (globalBot.debug) {
+              console.log('stdout: ', stdout);
+              console.log('stderr: ', stderr);
+            }
+          } else {
+            console.log("Done exporting'" + b.buildId + "'...");
+          }
+        }
+    )
+  }
 
   www.stoppingBuild();
 
