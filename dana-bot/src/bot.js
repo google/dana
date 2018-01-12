@@ -985,12 +985,11 @@ function userRunEnd(msg) {
   var f = globalBot.buildPath + '/' + g.running.task + '/' + b.buildId + '.full.json';
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun));
 
-  var exportCmd = globalBot.config.configBot.runners[
-    Object.keys(globalBot.config.configBot.runners)[0]].env.exportCmd;
+  var exportCmd = globalBot.config.configBot.exportCmd;
 
   if (exportCmd !== undefined) {
     console.log("Exporting build '" + b.buildId + "'...");
-    moduleRun.exec(exportCmd[0], exportCmd.slice(1), cwd,
+    moduleRun.exec(exportCmd.exec, exportCmd.args, cwd,
         function(err, stdout, stderr) {
           if (err) {
             console.log("Couldn't export build '" + b.buildId + "'");
