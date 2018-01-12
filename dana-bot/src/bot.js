@@ -985,20 +985,20 @@ function userRunEnd(msg) {
   var f = globalBot.buildPath + '/' + g.running.task + '/' + b.buildId + '.full.json';
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun));
 
-  var exportCmd = globalBot.config.configBot.exportCmd;
+  var postBuildCmd = globalBot.config.configBot.postBuildCmd;
 
-  if (exportCmd !== undefined) {
-    console.log("Exporting build '" + b.buildId + "'...");
-    moduleRun.exec(exportCmd.exec, exportCmd.args, cwd,
+  if (postBuildCmd !== undefined) {
+    console.log("Post-processing build '" + b.buildId + "'...");
+    moduleRun.exec(postBuildCmd.exec, postBuildCmd.args, cwd,
         function(err, stdout, stderr) {
           if (err) {
-            console.log("Couldn't export build '" + b.buildId + "'");
+            console.log("Couldn't post-process build '" + b.buildId + "'");
             if (globalBot.debug) {
               console.log('stdout: ', stdout);
               console.log('stderr: ', stderr);
             }
           } else {
-            console.log("Done exporting'" + b.buildId + "'");
+            console.log("Done post-processing '" + b.buildId + "'");
           }
         }
     )
