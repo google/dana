@@ -448,23 +448,18 @@ function internalCheckTasks() {
         tasksCurrentTot[tName] = { currentTot: t.base };
       }
 
-      // if (t.currentTot === undefined) {
-      //   t.currentTot = t.base;
-      // }
-
-      if (remoteTot !== tasksCurrentTot[tName].currentTot  /*t.currentTot*/ /*t.base*/) {
+      if (remoteTot !== tasksCurrentTot[tName].currentTot) {
         if (globalBot.debug) console.log('repoResetHard')
         gitForBot.repoResetHard(remoteTot);
         if (globalBot.debug) console.log('getRepoToT')
         var repoTot = gitForBot.getRepoToT();        
         if (t.mode === "patch") {
           let iterCommit = repoTot;
-          while (iterCommit !== tasksCurrentTot[tName].currentTot  /*t.currentTot*/ /*t.base*/ && patches.length < globalBot.limitPatches) {
+          while (iterCommit !== tasksCurrentTot[tName].currentTot && patches.length < globalBot.limitPatches) {
             patches.push(iterCommit);
             if (globalBot.debug) console.log('repoResetHardPrevious')
             iterCommit = gitForBot.repoResetHardPrevious();
           }
-          //patches = [patches.pop()];
         } else
         if (t.mode === "patchSet") {
           if (repoTot !== t.base) {
@@ -504,9 +499,6 @@ function internalCheckTasks() {
         }
 
         tasksCurrentTot[tName].currentTot = remoteTot;
-
-        // t.base = remoteTot;
-        //internalSaveContext();
         www.updateQueue();
       }
       if (globalBot.debug) console.log('checking done')
@@ -588,7 +580,6 @@ One task:
     "fixedTime" // indicate the time (in hour:minutes) to launch the run
   },
   "base": "c24c7a5d1170d09e75db822daa1
-  "currentTot": "c24c7a5d1170d09e75db822daa1"
 }
 
 */
