@@ -464,6 +464,7 @@ function internalCheckTasks() {
             if (globalBot.debug) console.log('repoResetHardPrevious')
             iterCommit = gitForBot.repoResetHardPrevious();
           }
+          //patches = [patches.pop()];
         } else
         if (t.mode === "patchSet") {
           if (repoTot !== t.base) {
