@@ -26,6 +26,8 @@ var AsciiTable = require('ascii-table');
 var htmlBuilder = require(cwd + '/src/htmlBuilder');
 var www = require(cwd + '/src/www');
 var logger = require(cwd + '/src/logger').getLogger();
+var moduleRun = require('./run')
+
 
 var globalBot = {
   version: undefined,
@@ -982,6 +984,25 @@ function userRunEnd(msg) {
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun.allSeries));
   var f = globalBot.buildPath + '/' + g.running.task + '/' + b.buildId + '.full.json';
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun));
+
+  var postBuildCmd = globalBot.config.configBot.postBuildCmd;
+
+  if (postBuildCmd !== undefined) {
+    console.log("Post-processing build '" + b.buildId + "'...");
+    moduleRun.exec(postBuildCmd.exec, postBuildCmd.args, cwd,
+        function(err, stdout, stderr) {
+          if (err) {
+            console.log("Couldn't post-process build '" + b.buildId + "'");
+            if (globalBot.debug) {
+              console.log('stdout: ', stdout);
+              console.log('stderr: ', stderr);
+            }
+          } else {
+            console.log("Done post-processing '" + b.buildId + "'");
+          }
+        }
+    )
+  }
 
   www.stoppingBuild();
 
