@@ -460,7 +460,6 @@ function internalCheckTasks() {
         if (t.mode === "patch") {
           let iterCommit = repoTot;
           while (iterCommit !== tasksCurrentTot[tName].currentTot  /*t.currentTot*/ /*t.base*/ && patches.length < globalBot.limitPatches) {
-            console.log('JMH', iterCommit)
             patches.push(iterCommit);
             if (globalBot.debug) console.log('repoResetHardPrevious')
             iterCommit = gitForBot.repoResetHardPrevious();
@@ -1008,7 +1007,6 @@ function userRunEnd(msg) {
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun));
 
   g.tasks[g.running.task].base = b.infos.hash;
-  console.log('JMH', g.tasks[g.running.task], b.infos.hash);
   internalSaveContext();
   www.updateTasks();
 
