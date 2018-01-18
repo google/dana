@@ -982,3 +982,4 @@ module.exports.startingBuild = startingBuild;
 module.exports.updatingBuild = updatingBuild;
 module.exports.stoppingBuild = stoppingBuild;
 module.exports.updateQueue = updateQueue;
+module.exports.updateTasks = updateTasks;

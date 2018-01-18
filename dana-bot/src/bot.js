@@ -53,6 +53,15 @@ var globalBot = {
   users: undefined
 };
 
+/*
+* Element:
+*   "<taskName>": {
+*      currentTot: "<hash>"
+*   }
+*      
+*/
+var tasksCurrentTot = {}
+
 globalBot.version = JSON.parse(fs.readFileSync(cwd + '/package.json')).version;
 
 if (!fs.existsSync(cwd + '/tmp'))
@@ -433,19 +442,30 @@ function internalCheckTasks() {
       internalGitFetch(t.repository);
       if (globalBot.debug) console.log('getRemoteToT')
       var remoteTot = gitForBot.getRemoteToT(t.branch);
-      if (remoteTot !== t.base) {
+
+      if (tasksCurrentTot[tName] === undefined
+           || tasksCurrentTot[tName].currentTot === undefined) {
+        tasksCurrentTot[tName] = { currentTot: t.base };
+      }
+
+      // if (t.currentTot === undefined) {
+      //   t.currentTot = t.base;
+      // }
+
+      if (remoteTot !== tasksCurrentTot[tName].currentTot  /*t.currentTot*/ /*t.base*/) {
         if (globalBot.debug) console.log('repoResetHard')
         gitForBot.repoResetHard(remoteTot);
         if (globalBot.debug) console.log('getRepoToT')
-        var repoTot = gitForBot.getRepoToT();
+        var repoTot = gitForBot.getRepoToT();        
         if (t.mode === "patch") {
-          while (repoTot !== t.base) {
-            if (patches.length > globalBot.limitPatches)
-              break;
-            patches.push(repoTot);
+          let iterCommit = repoTot;
+          while (iterCommit !== tasksCurrentTot[tName].currentTot  /*t.currentTot*/ /*t.base*/ && patches.length < globalBot.limitPatches) {
+            console.log('JMH', iterCommit)
+            patches.push(iterCommit);
             if (globalBot.debug) console.log('repoResetHardPrevious')
-            repoTot = gitForBot.repoResetHardPrevious();
+            iterCommit = gitForBot.repoResetHardPrevious();
           }
+          //patches = [patches.pop()];
         } else
         if (t.mode === "patchSet") {
           if (repoTot !== t.base) {
@@ -483,8 +503,11 @@ function internalCheckTasks() {
           globalBot.QId++;
 
         }
-        t.base = remoteTot;
-        internalSaveContext();
+
+        tasksCurrentTot[tName].currentTot = remoteTot;
+
+        // t.base = remoteTot;
+        //internalSaveContext();
         www.updateQueue();
       }
       if (globalBot.debug) console.log('checking done')
@@ -566,6 +589,7 @@ One task:
     "fixedTime" // indicate the time (in hour:minutes) to launch the run
   },
   "base": "c24c7a5d1170d09e75db822daa1
+  "currentTot": "c24c7a5d1170d09e75db822daa1"
 }
 
 */
@@ -982,6 +1006,11 @@ function userRunEnd(msg) {
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun.allSeries));
   var f = globalBot.buildPath + '/' + g.running.task + '/' + b.buildId + '.full.json';
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun));
+
+  g.tasks[g.running.task].base = b.infos.hash;
+  console.log('JMH', g.tasks[g.running.task], b.infos.hash);
+  internalSaveContext();
+  www.updateTasks();
 
   www.stoppingBuild();
 
