@@ -16,7 +16,7 @@ When samples are pushed to Dana a regression analysis is computed according to t
 
 The regression analysis configuration associated to each benchmark/test is used to compute regression states. Dana provides also a regression workfow to manage life of a regression or false positive management ([see regression workflow](#workflow)).
 
-By default, the analysis starts from the first available sample. in the regression analysis configuration a **Base** can be used to indicate from which buildId to start the analysis.
+By default, the analysis starts from the first available sample. In the regression analysis configuration a **Base** can be used to indicate from which buildId to start the analysis.
 
 ![Base](img/base.png)
 
@@ -36,7 +36,7 @@ For benchmarks, the analysis starts from the first build and computes the averag
 
 ![Benchmark.range](img/benchmark.range.png)
 
- **Required** specified in the regression analysis is used to specify the minimum number of samples required to validate a new average. It can be used to to simple noise elimiation.
+ **Required** specified in the regression analysis is used to specify the minimum number of samples required to validate a new average. It can be used to simple noise elimination.
 
  ![Benchmark.range](img/benchmark.required.png)
 
@@ -62,7 +62,7 @@ Dana provides a UI to add compares in a project. You can define:
 
 Each time a sample is pushed to a project, Dana tries to apply all the compares of that project. If the serieId exist in the compare projects then the comparison is applied, otherwise skipped.
 
-After computing the raw difference between samples, to know if a comparison is similar, better or lower Dana reuses the regression analysis configuration (range and trend).
+After computing the raw difference between samples, to know if a comparison is similar, better or lower; Dana reuses the regression analysis configuration (range and trend).
 
 ## <a name="workflow"></a>Regression states workflow
 
@@ -76,7 +76,7 @@ Dana provides the user a **state** he can manage.
 
 **Regression status**
 
-When new series are detected in regression, the state is set as **Needs triage**. The user can set the state to **Noisy** to indicate it is a false positive due to noise. When the state is set to Noisy Dana will configure automatically the regression analysis for that benchmark for the analysis to be similar. If it is a true positive, the user can set the state to **Regression confirmed** to indicate that is an unexpected regression or set the state to **Intended behavior** for regressions that are expected. When the state is set to Intended behavior, Dana automatically set the regression analysis base to the first buildId of the regression and the regression status will become similar.
+When new series are detected in regression, the state is set as **Needs triage**. The user can set the state to **Noisy** to indicate it is a false positive due to noise. When the state is set to Noisy, Dana will configure automatically the regression analysis for that benchmark for the analysis to be similar. If it is a true positive, the user can set the state to **Regression confirmed** to indicate that is an unexpected regression or set the state to **Intended behavior** for regressions that are expected. When the state is set to Intended behavior, Dana automatically set the regression analysis base to the first buildId of the regression and the regression status will become similar.
 
 When the regression disappears (status becomes similar due to work on the software) the regression disappears from the regressions page automatically.
 
@@ -86,7 +86,7 @@ Each time a regression is set to **Regression confirmed**, the user is invited t
 
 **Improvement status**
 
-When new series are detected in improvements, the state is set as **Needs triage**. The user can set the state to **Noisy** to indicate it is a false positive due to noise. When the state is set to Noisy Dana will configure automatically the regression analysis for that benchmark by adjusting automatically the range for the analysis to be similar. If it is a true positive, the user can set the state to **Intended behavior** and Dana automatically set the regression analysis base to the first buildId of the improvement and the regression status will become similar.
+When new series are detected in improvements, the state is set as **Needs triage**. The user can set the state to **Noisy** to indicate it is a false positive due to noise. When the state is set to Noisy, Dana will configure automatically the regression analysis for that benchmark by adjusting automatically the range for the analysis to be similar. If it is a true positive, the user can set the state to **Intended behavior** and Dana automatically set the regression analysis base to the first buildId of the improvement and the regression status will become similar.
 
 ### Compares
 
@@ -98,7 +98,7 @@ Dana provides the user a **state** he can manage.
 
 When new series are detected lowers, the state is set as **Needs triage**. The user can set the state to **Lower confirmed** to indicate the lower is confirmed and that someone is working on it. He can set the state to **Intended behavior** to indicate lower is expected.
 
-When the state is set to Noisy Dana will configure automatically the regression analysis for that benchmark for the analysis to be similar. If it is a true positive, the user can set the state to **Lower confirmed** to indicate that is an unexpected regression or set the state to **Intended behavior** for regressions that are expected.
+When the state is set to Noisy, Dana will configure automatically the regression analysis for that benchmark for the analysis to be similar. If it is a true positive, the user can set the state to **Lower confirmed** to indicate that is an unexpected regression or set the state to **Intended behavior** for regressions that are expected.
 
 In case the project is not configured as using a bug tracker (in the project configuration), other states can be set by the user for indication to help him to follow progress and it is up to the user to use it or not. **Assigned** if someone is working on it, **Fixed** if a patch is coming to resolve the case.
 
