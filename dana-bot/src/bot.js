@@ -55,6 +55,15 @@ var globalBot = {
   users: undefined
 };
 
+/*
+* Element:
+*   "<taskName>": {
+*      currentTot: "<hash>"
+*   }
+*      
+*/
+var tasksCurrentTot = {}
+
 globalBot.version = JSON.parse(fs.readFileSync(cwd + '/package.json')).version;
 
 if (!fs.existsSync(cwd + '/tmp'))
@@ -435,18 +444,23 @@ function internalCheckTasks() {
       internalGitFetch(t.repository);
       if (globalBot.debug) console.log('getRemoteToT')
       var remoteTot = gitForBot.getRemoteToT(t.branch);
-      if (remoteTot !== t.base) {
+
+      if (tasksCurrentTot[tName] === undefined
+           || tasksCurrentTot[tName].currentTot === undefined) {
+        tasksCurrentTot[tName] = { currentTot: t.base };
+      }
+
+      if (remoteTot !== tasksCurrentTot[tName].currentTot) {
         if (globalBot.debug) console.log('repoResetHard')
         gitForBot.repoResetHard(remoteTot);
         if (globalBot.debug) console.log('getRepoToT')
-        var repoTot = gitForBot.getRepoToT();
+        var repoTot = gitForBot.getRepoToT();        
         if (t.mode === "patch") {
-          while (repoTot !== t.base) {
-            if (patches.length > globalBot.limitPatches)
-              break;
-            patches.push(repoTot);
+          let iterCommit = repoTot;
+          while (iterCommit !== tasksCurrentTot[tName].currentTot && patches.length < globalBot.limitPatches) {
+            patches.push(iterCommit);
             if (globalBot.debug) console.log('repoResetHardPrevious')
-            repoTot = gitForBot.repoResetHardPrevious();
+            iterCommit = gitForBot.repoResetHardPrevious();
           }
         } else
         if (t.mode === "patchSet") {
@@ -485,8 +499,8 @@ function internalCheckTasks() {
           globalBot.QId++;
 
         }
-        t.base = remoteTot;
-        internalSaveContext();
+
+        tasksCurrentTot[tName].currentTot = remoteTot;
         www.updateQueue();
       }
       if (globalBot.debug) console.log('checking done')
@@ -984,6 +998,11 @@ function userRunEnd(msg) {
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun.allSeries));
   var f = globalBot.buildPath + '/' + g.running.task + '/' + b.buildId + '.full.json';
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun));
+
+
+  g.tasks[g.running.task].base = b.infos.hash;
+  internalSaveContext();
+  www.updateTasks();
 
   var postBuildCmd = globalBot.config.configBot.postBuildCmd;
 
