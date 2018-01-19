@@ -6,7 +6,7 @@ Dana provides some APIs to add builds, build annotations, series and samples. AP
 
 ### <a name="addBuild"></a>addBuild
 
-**addBuild** is used to add a new build. The request must contain the following properties :
+**addBuild** is used to add a new build. The request must contain the following properties:
 - *projectId*, the project you want to add the build,
 - *build.buildId*, the ID of the build,
 - *build.infos.hash*, the hash of the ToT commit for that build,
@@ -38,7 +38,7 @@ Example:
 
 ### <a name="addSerie"></a>addSerie
 
-**addSerie** is used to add a new benchmark/test. The request must contain the following properties :
+**addSerie** is used to add a new benchmark/test. The request must contain the following properties:
 - *projectId*, the project you want to add the benchmark/test,
 - *serieId*, the ID of the benchmark/test you want to add,
 - *description*, optional, the description of the benchmark/test you want to add,
@@ -76,13 +76,13 @@ Example:
 
 ### <a name="addSample"></a>addSample
 
-**addSample** is used to add a new sample to a serieId. The request must contain the following properties :
+**addSample** is used to add a new sample to a serieId. The request must contain the following properties:
 - *projectId*, the project you want to add the sample,
 - *serieId*, the serieId you want to add the sample,
 - *sample* or *samples* must be set. *sample* contains one sample, *samples* contains an array of samples.
 - one sample contains *buildId*, the buildId for that sample, *value*, the value for that sample (true/false for tests) (non zero integer for benchmarks), and *sample.url*, optional, an url (to the sponge logs for example).
 - *override*, optional, default value is false. If override is true, then sample will override previous value for that buildId if there are any,
-- *skipAnalysis*, optional, default value is false. If skipAnalysis is true, then the analysis will not be done. This can be used to push lots of existing samples, and apply only the analysis on new ones. Note that  the series will not appear on test or benchmark summary page until an analysis is done.
+- *skipAnalysis*, optional, default value is false. If skipAnalysis is true, then the analysis will not be done. This can be used to push lots of existing samples, and apply only the analysis on new ones. Note that the series will not appear on test or benchmark summary page until an analysis is done.
 
 Example:
 
@@ -124,7 +124,7 @@ Below examples using curl.
 
 ### addBuild
 
-The relative url to use is **/apis/addBuild**. Below an example of addBuild using curl.
+The relative url to use is `/apis/addBuild`. Below an example of addBuild using curl.
 
 ```
 curl -d '{"projectId":"Test","build":{"buildId":1000,"infos":{"hash":"hash_build_1000","abbrevHash":"abbrevHash_build_1000","authorName":"authorName","authorEmail":"authorEmail","subject":"Dummy build 1000","url":"http://url_build_1000"}}}'
@@ -133,7 +133,7 @@ curl -d '{"projectId":"Test","build":{"buildId":1000,"infos":{"hash":"hash_build
 ```
 ### addSerie
 
-The relative url to use is **/apis/addSerie**. Below an example of addSerie using curl.
+The relative url to use is `/apis/addSerie`. Below an example of addSerie using curl.
 
 ```
 curl -d '{"projectId":"Test","serieId":"serie.dummy.11","analyse":{"benchmark":{"range":"5%", "required":2, "trend":"smaller"}}}'
@@ -142,7 +142,7 @@ curl -d '{"projectId":"Test","serieId":"serie.dummy.11","analyse":{"benchmark":{
 ```
 ### addSample
 
-The relative url to use is **/apis/addSample**. Below an example of addSample using curl.
+The relative url to use is `/apis/addSample`. Below an example of addSample using curl.
 
 ```
 curl -d '{"projectId":"Test","serieId":"serie.dummy.11","sample":{"buildId":1000,"value":748}}'
@@ -154,7 +154,7 @@ curl -d '{"projectId":"Test","serieId":"serie.dummy.11","sample":{"buildId":1000
 
 A skeleton of a nodejs client is available in dana-websocket-client directory. It relies on the *ws* npm module. You can adapt it for example to transfer an existing database to Dana.
 
-To use it, first edit dana-websocket-client/client.js and update the **url** to the right dana server url.
+To use it, first edit `dana-websocket-client/client.js` and update the **url** to the right dana server url.
 
 Then:
 
