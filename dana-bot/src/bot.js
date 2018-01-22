@@ -391,6 +391,7 @@ function internalCheckTasks() {
   var t;
   var ii;
   var k = Object.keys(globalBot.tasks);
+  var tasksInfos = {};
   for (ii in k) {
     tName = k[ii];
     t = globalBot.tasks[tName];
@@ -471,7 +472,6 @@ function internalCheckTasks() {
           console.log('nodeCiBot', 'ERROR mode is invalid', t.mode);
         if (globalBot.debug) console.log('patches computed', patches.length)
 
-        patches.reverse();
         for (var jj in patches) {
           if (globalBot.debug) console.log('getBuildId', jj)
           var bId = gitForBot.getBuildId(patches[jj]);
@@ -488,24 +488,55 @@ function internalCheckTasks() {
             }
           }
 
-          globalBot.Q[globalBot.QId] = {
-            id: globalBot.QId,
-            task: tName,
+          if (tasksInfos[tName] === undefined) {
+            let infos = [];
+            tasksInfos[tName] = {
+              infos: infos
+            }
+          }
+          tasksInfos[tName].infos.push({
+            tName: tName,
             buildId: bId,
-            repository: t.repository,
             patch: patches[jj],
-            infos: pInfo
-          };
-          globalBot.QId++;
+            pInfo: pInfo
+          });
 
         }
 
         tasksCurrentTot[tName].currentTot = remoteTot;
         www.updateQueue();
       }
-      if (globalBot.debug) console.log('checking done')
     }
   }
+
+  let keepGoing = true;
+  while (keepGoing) {
+    if (Object.keys(tasksInfos).length === 0) {
+      break;
+    }
+    keepGoing = false;
+    // Consume and push to queue 1 build per task until none is left
+    for (var tinfo in tasksInfos) {
+      if (tasksInfos[tinfo].infos.length === 0) {
+        continue;
+      }
+      keepGoing = true;
+      var info = tasksInfos[tinfo].infos.pop();
+      globalBot.Q[globalBot.QId] = {
+        id: globalBot.QId,
+        task: info.tName,
+        buildId: info.buildId,
+        repository: globalBot.tasks[info.tName].repository,
+        patch: info.patch,
+        infos: info.pInfo
+      };
+      globalBot.QId++;
+      www.updateQueue();
+    }
+  }
+
+  if (globalBot.debug) console.log('checking done')
+
 }
 
 function internalQNotifyEnd() {
