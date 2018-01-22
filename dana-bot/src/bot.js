@@ -472,7 +472,6 @@ function internalCheckTasks() {
           console.log('nodeCiBot', 'ERROR mode is invalid', t.mode);
         if (globalBot.debug) console.log('patches computed', patches.length)
 
-        //patches.reverse();
         for (var jj in patches) {
           if (globalBot.debug) console.log('getBuildId', jj)
           var bId = gitForBot.getBuildId(patches[jj]);
