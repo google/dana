@@ -489,7 +489,7 @@ function internalCheckTasks() {
           }
 
           if (tasksInfos[tName] === undefined) {
-            let infos= [];
+            let infos = [];
             tasksInfos[tName] = {
               infos: infos
             }
@@ -510,14 +510,14 @@ function internalCheckTasks() {
   }
 
   let keepGoing = true;
-  while(keepGoing) {
+  while (keepGoing) {
     if (Object.keys(tasksInfos).length === 0) {
       break;
     }
     keepGoing = false;
     // Consume and push to queue 1 build per task until none is left
     for (var tinfo in tasksInfos) {
-      if (tasksInfos[tinfo].infos.length == 0) {
+      if (tasksInfos[tinfo].infos.length === 0) {
         continue;
       }
       keepGoing = true;
