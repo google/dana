@@ -356,9 +356,8 @@ module.exports = {
       console.log('ERR', cmdout.code);
       return false;
     }
-    var stdout = cmdout.stdout;
-
-    var result = stdout.trim().length !== 0;
+    
+    var result = cmdout.stdout.trim().length !== 0;
     if (!result) {
       logger.error("Couldn't find remote branch '" + branchName + "'");
     }
