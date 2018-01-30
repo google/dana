@@ -346,7 +346,6 @@ module.exports = {
     return l;
   },
   checkRemoteBranchExists: function (branchName) {
-    currentRepoPath = './tmp/service.repo/R8'
     if (currentRepoPath === undefined) {
       logger.error('getPatchInfo repository not set');
       return false;
