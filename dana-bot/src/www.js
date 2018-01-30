@@ -552,8 +552,15 @@ app.post('/bot/saveTask',
       return;
     }
 
-    if (!gitForBot.checkRemoteBranchExists(req.body.branch)) {
-      appError(req, res, '/bot/saveTask, branch \'' + req.body.branch + '\' undefined');
+    var task = globalWWW.config.globalBot.tasks[req.body.taskName];
+
+    if (!gitForBot.checkRemoteBranchExists(req.body.branch, task.repository)) {
+      appError(req, res, '/bot/saveTask, branch \'' + req.body.branch + '\' does not exist');
+      return;
+    }
+
+    if (!gitForBot.checkCommitExists(req.body.branch, req.body.base, task.repository)) {
+      appError(req, res, '/bot/saveTask, commit \'' + req.body.base + '\' does not exist in branch \'' + req.body.branch + '\'');
       return;
     }
 

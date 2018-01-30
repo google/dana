@@ -345,23 +345,35 @@ module.exports = {
     }
     return l;
   },
-  checkRemoteBranchExists: function (branchName) {
-    if (currentRepoPath === undefined) {
-      logger.error('getPatchInfo repository not set');
-      return false;
-    }
+  checkRemoteBranchExists: function (branchName, repoName) {
     var args = ['branch', '-r', '--list', branchName]
-    var cmdout = run.execSync('git', args, currentRepoPath);
+    var cmdout = run.execSync('git', args, repoPath + '/' + repoName);
     if (cmdout.err) {
       console.log('ERR', cmdout.code);
       return false;
     }
-    
+
     var result = cmdout.stdout.trim().length !== 0;
     if (!result) {
       logger.error("Couldn't find remote branch '" + branchName + "'");
     }
 
     return result;
+  },
+  checkCommitExists: function (branchName, commit, repoName) {
+    var args = ['branch', '-r', '--contains', commit];
+    var cmdout = run.execSync('git', args, repoPath + '/' + repoName);
+    if (cmdout.err) {
+      console.log('ERR', cmdout.code);
+      return false;
+    }
+
+    var lines = cmdout.stdout.split('\n');
+    for(var i = 0;i < lines.length;i++){
+      if (lines[i].trim() === branchName) {
+        return true;
+      }
+    }
+    return false;
   }
 };
