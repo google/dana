@@ -344,5 +344,26 @@ module.exports = {
       l.push(entry);
     }
     return l;
+  },
+  checkRemoteBranchExists: function (branchName) {
+    currentRepoPath = './tmp/service.repo/R8'
+    if (currentRepoPath === undefined) {
+      logger.error('getPatchInfo repository not set');
+      return false;
+    }
+    var args = ['branch', '-r', '--list', branchName]
+    var cmdout = run.execSync('git', args, currentRepoPath);
+    if (cmdout.err) {
+      console.log('ERR', cmdout.code);
+      return false;
+    }
+    var stdout = cmdout.stdout;
+
+    var result = stdout.trim().length !== 0;
+    if (!result) {
+      logger.error("Couldn't find remote branch '" + branchName + "'");
+    }
+
+    return (stdout.trim().length !== 0);
   }
 };

@@ -21,6 +21,7 @@ var cwd = process.cwd();
 var fs = require('fs');
 var util = require('util');
 var sendMail = require(cwd + '/src/sendMail');
+var gitForBot = require('./gitForBot');
 
 var WWW_KILL = 1;
 var WWW_KILL_AND_UPDATE = 2;
@@ -548,6 +549,11 @@ app.post('/bot/saveTask',
     }
     if (globalWWW.config.globalBot.tasks[req.body.taskName] === undefined) {
       appError(req, res, '/bot/saveTask, task of ' + req.body.taskName + ' undefined');
+      return;
+    }
+
+    if (!gitForBot.checkRemoteBranchExists(req.body.branch)) {
+      appError(req, res, '/bot/saveTask, branch \'' + req.body.branch + '\' undefined');
       return;
     }
 
