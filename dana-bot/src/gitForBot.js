@@ -363,6 +363,6 @@ module.exports = {
       logger.error("Couldn't find remote branch '" + branchName + "'");
     }
 
-    return (stdout.trim().length !== 0);
+    return result;
   }
 };
