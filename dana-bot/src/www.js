@@ -397,12 +397,19 @@ app.post('/bot/addRepository',
       appError(req, res, '/bot/addRepository, repository of ' + req.body.repoName + ' already exist');
       return;
     }
-    globalWWW.config.globalBot.repositories[req.body.repoName] = {
+    var repository = {
       name: req.body.repoName,
       git: {
         url: req.body.giturl
       }
     }
+    if (!fs.existsSync(globalWWW.config.globalBot.repoPath + '/' + req.body.repoName)) {
+      console.log('/bot/addRepository -- Cloning repo ' + req.body.repoName + ' in ' + globalWWW.config.globalBot.repoPath);
+      gitForBot.setRepoPath(globalWWW.config.globalBot.repoPath);
+      gitForBot.setRepo(repository);
+      gitForBot.clone();
+    }
+    globalWWW.config.globalBot.repositories[req.body.repoName] = repository;
     fs.writeFileSync(cwd + '/configs/repositories.js', JSON.stringify(globalWWW.config.globalBot.repositories));
     updateRepositories();
     res.redirect('/bot/status');
@@ -427,6 +434,18 @@ app.post('/bot/saveRepository',
     if (req.body.giturl === '') {
       appError(req, res, '/bot/saveRepository, gitrul undefined');
       return;
+    }
+
+    if (!fs.existsSync(globalWWW.config.globalBot.repoPath + '/' + req.body.repoName)) {
+      console.log('/bot/addRepository -- Cloning repo ' + req.body.repoName + ' in ' + globalWWW.config.globalBot.repoPath);
+      gitForBot.setRepoPath(globalWWW.config.globalBot.repoPath);
+      gitForBot.setRepo({
+        name: req.body.repoName,
+        git: {
+          url: req.body.giturl
+        }
+      });
+      gitForBot.clone();
     }
 
     globalWWW.config.globalBot.repositories[req.body.repoName].git.url = req.body.giturl;
@@ -554,12 +573,12 @@ app.post('/bot/saveTask',
 
     var task = globalWWW.config.globalBot.tasks[req.body.taskName];
 
-    if (!gitForBot.checkRemoteBranchExists(req.body.branch, task.repository)) {
+    if (!gitForBot.checkRemoteBranchExists(req.body.branch, req.body.repository)) {
       appError(req, res, '/bot/saveTask, branch \'' + req.body.branch + '\' does not exist');
       return;
     }
 
-    if (!gitForBot.checkCommitExists(req.body.branch, req.body.base, task.repository)) {
+    if (!gitForBot.checkCommitExists(req.body.branch, req.body.base, req.body.repository)) {
       appError(req, res, '/bot/saveTask, commit \'' + req.body.base + '\' does not exist in branch \'' + req.body.branch + '\'');
       return;
     }

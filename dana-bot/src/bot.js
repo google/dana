@@ -133,7 +133,7 @@ function loadContext() {
   for (var ii = 0; ii < keys.length; ii++) {
     if (globalBot.repositories[globalBot.tasks[keys[ii]].repository] === undefined) {
       console.log("loadContext -- ERROR - task repository is invalid");
-      console.log("loadContext", tasks[keys[ii]], repositories);
+      console.log("loadContext", globalBot.tasks[keys[ii]], globalBot.repositories);
       process.exit(1);
     }
   }
