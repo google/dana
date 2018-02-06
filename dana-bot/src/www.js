@@ -407,7 +407,12 @@ app.post('/bot/addRepository',
       console.log('/bot/addRepository -- Cloning repo ' + req.body.repoName + ' in ' + globalWWW.config.globalBot.repoPath);
       gitForBot.setRepoPath(globalWWW.config.globalBot.repoPath);
       gitForBot.setRepo(repository);
-      gitForBot.clone();
+      var cloneOut = gitForBot.clone();
+      if (cloneOut.err) {
+        console.log('/bot/addRepository -- error while cloning ' + req.body.repoName + ': ' + JSON.stringify(cloneOut, null, 2));
+        appError(req, res, '/bot/addRepository, repository of ' + req.body.repoName + ' could not be cloned');
+        return;
+      }
     }
     globalWWW.config.globalBot.repositories[req.body.repoName] = repository;
     fs.writeFileSync(cwd + '/configs/repositories.js', JSON.stringify(globalWWW.config.globalBot.repositories));
@@ -437,7 +442,7 @@ app.post('/bot/saveRepository',
     }
 
     if (!fs.existsSync(globalWWW.config.globalBot.repoPath + '/' + req.body.repoName)) {
-      console.log('/bot/addRepository -- Cloning repo ' + req.body.repoName + ' in ' + globalWWW.config.globalBot.repoPath);
+      console.log('/bot/saveRepository -- Cloning repo ' + req.body.repoName + ' in ' + globalWWW.config.globalBot.repoPath);
       gitForBot.setRepoPath(globalWWW.config.globalBot.repoPath);
       gitForBot.setRepo({
         name: req.body.repoName,
@@ -445,7 +450,12 @@ app.post('/bot/saveRepository',
           url: req.body.giturl
         }
       });
-      gitForBot.clone();
+      var cloneOut = gitForBot.clone();
+      if (cloneOut.err) {
+        console.log('/bot/saveRepository -- error while cloning ' + req.body.repoName + ': ' + JSON.stringify(cloneOut, null, 2));
+        appError(req, res, '/bot/saveRepository, repository of ' + req.body.repoName + ' could not be cloned');
+        return;
+      }
     }
 
     globalWWW.config.globalBot.repositories[req.body.repoName].git.url = req.body.giturl;
