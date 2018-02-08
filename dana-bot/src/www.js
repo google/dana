@@ -382,6 +382,27 @@ app.get('/bot/editRepository',
     });
   });
 
+
+function fetchRepo(req, res, repoName, serviceName) {
+    if (!fs.existsSync(globalWWW.config.globalBot.repoPath + '/' + repoName)) {
+        console.log('/bot/' + serviceName + ' -- Cloning repo ' + repoName + ' in ' + globalWWW.config.globalBot.repoPath);
+        gitForBot.setRepoPath(globalWWW.config.globalBot.repoPath);
+        gitForBot.setRepo(globalWWW.config.globalBot.repositories[repoName]);
+        var cloneOut = gitForBot.clone();
+        if (cloneOut.err) {
+          console.log('/bot/' + serviceName + ' -- error while cloning ' + repoName + ': ' + JSON.stringify(cloneOut, null, 2));
+          appError(req, res, '/bot/' + serviceName + ', repository of ' + repoName + ' could not be cloned');
+          return;
+        }
+        var fetchOut = gitForBot.fetch();
+        if (fetchOut.err) {
+          console.log('/bot/' + serviceName + ' -- error while fetching ' + repoName + ': ' + JSON.stringify(fetchOut, null, 2));
+          appError(req, res, '/bot/' + serviceName + ', repository of ' + repoName + ' could not be fetched');
+          return;
+        }
+      }
+}
+
 app.post('/bot/addRepository',
   // require('connect-ensure-login').ensureLoggedIn(),
   function(req, res) {
@@ -397,23 +418,7 @@ app.post('/bot/addRepository',
       appError(req, res, '/bot/addRepository, repository of ' + req.body.repoName + ' already exist');
       return;
     }
-    var repository = {
-      name: req.body.repoName,
-      git: {
-        url: req.body.giturl
-      }
-    }
-    if (!fs.existsSync(globalWWW.config.globalBot.repoPath + '/' + req.body.repoName)) {
-      console.log('/bot/addRepository -- Cloning repo ' + req.body.repoName + ' in ' + globalWWW.config.globalBot.repoPath);
-      gitForBot.setRepoPath(globalWWW.config.globalBot.repoPath);
-      gitForBot.setRepo(repository);
-      var cloneOut = gitForBot.clone();
-      if (cloneOut.err) {
-        console.log('/bot/addRepository -- error while cloning ' + req.body.repoName + ': ' + JSON.stringify(cloneOut, null, 2));
-        appError(req, res, '/bot/addRepository, repository of ' + req.body.repoName + ' could not be cloned');
-        return;
-      }
-    }
+
     globalWWW.config.globalBot.repositories[req.body.repoName] = repository;
     fs.writeFileSync(cwd + '/configs/repositories.js', JSON.stringify(globalWWW.config.globalBot.repositories));
     updateRepositories();
@@ -439,23 +444,6 @@ app.post('/bot/saveRepository',
     if (req.body.giturl === '') {
       appError(req, res, '/bot/saveRepository, gitrul undefined');
       return;
-    }
-
-    if (!fs.existsSync(globalWWW.config.globalBot.repoPath + '/' + req.body.repoName)) {
-      console.log('/bot/saveRepository -- Cloning repo ' + req.body.repoName + ' in ' + globalWWW.config.globalBot.repoPath);
-      gitForBot.setRepoPath(globalWWW.config.globalBot.repoPath);
-      gitForBot.setRepo({
-        name: req.body.repoName,
-        git: {
-          url: req.body.giturl
-        }
-      });
-      var cloneOut = gitForBot.clone();
-      if (cloneOut.err) {
-        console.log('/bot/saveRepository -- error while cloning ' + req.body.repoName + ': ' + JSON.stringify(cloneOut, null, 2));
-        appError(req, res, '/bot/saveRepository, repository of ' + req.body.repoName + ' could not be cloned');
-        return;
-      }
     }
 
     globalWWW.config.globalBot.repositories[req.body.repoName].git.url = req.body.giturl;
@@ -530,6 +518,18 @@ app.post('/bot/addTask',
       return;
     }
 
+    fetchRepo(req, res, req.body.repository, 'addTask')
+
+    if (!gitForBot.checkRemoteBranchExists(req.body.branch, req.body.repository)) {
+      appError(req, res, '/bot/addTask, branch \'' + req.body.branch + '\' does not exist');
+      return;
+    }
+
+    if (!gitForBot.checkCommitExists(req.body.branch, req.body.base, req.body.repository)) {
+      appError(req, res, '/bot/addTask, commit \'' + req.body.base + '\' does not exist in branch \'' + req.body.branch + '\'');
+      return;
+    }
+
     var active;
     if (req.body.active === 'Yes') active = true;
     if (req.body.active === 'No') active = false;
@@ -581,7 +581,7 @@ app.post('/bot/saveTask',
       return;
     }
 
-    var task = globalWWW.config.globalBot.tasks[req.body.taskName];
+    fetchRepo(req, res, req.body.repository, 'saveTask')
 
     if (!gitForBot.checkRemoteBranchExists(req.body.branch, req.body.repository)) {
       appError(req, res, '/bot/saveTask, branch \'' + req.body.branch + '\' does not exist');
