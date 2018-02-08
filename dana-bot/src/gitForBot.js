@@ -97,8 +97,8 @@ module.exports = {
     var cmdout = run.execSync('git', ['fetch'], currentRepoPath);
     if (cmdout.err) {
       logger.error('cannot do git fetch', currentRepoPath);
-      return;
     }
+    return cmdout;
   },
   pull: function() {
     if (currentRepoPath === undefined) {

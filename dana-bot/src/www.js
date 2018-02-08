@@ -384,22 +384,24 @@ app.get('/bot/editRepository',
 
 
 function fetchRepo(req, res, repoName, serviceName) {
+    gitForBot.setRepoPath(globalWWW.config.globalBot.repoPath);
+    gitForBot.setRepo(globalWWW.config.globalBot.repositories[repoName]);
+
     if (!fs.existsSync(globalWWW.config.globalBot.repoPath + '/' + repoName)) {
         console.log('/bot/' + serviceName + ' -- Cloning repo ' + repoName + ' in ' + globalWWW.config.globalBot.repoPath);
-        gitForBot.setRepoPath(globalWWW.config.globalBot.repoPath);
-        gitForBot.setRepo(globalWWW.config.globalBot.repositories[repoName]);
         var cloneOut = gitForBot.clone();
         if (cloneOut.err) {
           console.log('/bot/' + serviceName + ' -- error while cloning ' + repoName + ': ' + JSON.stringify(cloneOut, null, 2));
           appError(req, res, '/bot/' + serviceName + ', repository of ' + repoName + ' could not be cloned');
           return;
         }
-        var fetchOut = gitForBot.fetch();
-        if (fetchOut.err) {
-          console.log('/bot/' + serviceName + ' -- error while fetching ' + repoName + ': ' + JSON.stringify(fetchOut, null, 2));
-          appError(req, res, '/bot/' + serviceName + ', repository of ' + repoName + ' could not be fetched');
-          return;
-        }
+      }
+
+      var fetchOut = gitForBot.fetch();
+      if (fetchOut.err) {
+        console.log('/bot/' + serviceName + ' -- error while fetching ' + repoName + ': ' + JSON.stringify(fetchOut, null, 2));
+        appError(req, res, '/bot/' + serviceName + ', repository of ' + repoName + ' could not be fetched');
+        return;
       }
 }
 
