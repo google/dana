@@ -1025,6 +1025,8 @@ function userRunEnd(msg) {
   if (!fs.existsSync(f))
     fs.mkdirSync(f);
 
+  globalBot.currentRun.exportedTo = [];
+
   var f = globalBot.buildPath + '/' + g.running.task + '/' + b.buildId + '.json';
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun.allSeries));
   var f = globalBot.buildPath + '/' + g.running.task + '/' + b.buildId + '.full.json';
