@@ -395,13 +395,14 @@ function fetchRepo(req, res, repoName, serviceName) {
           appError(req, res, '/bot/' + serviceName + ', repository of ' + repoName + ' could not be cloned');
           return;
         }
-      }
-
-      var fetchOut = gitForBot.fetch();
-      if (fetchOut.err) {
-        console.log('/bot/' + serviceName + ' -- error while fetching ' + repoName + ': ' + JSON.stringify(fetchOut, null, 2));
-        appError(req, res, '/bot/' + serviceName + ', repository of ' + repoName + ' could not be fetched');
-        return;
+      } else {
+        console.log('/bot/' + serviceName + ' -- Fetching repo ' + repoName + ' in ' + globalWWW.config.globalBot.repoPath);
+        var fetchOut = gitForBot.fetch();
+        if (fetchOut.err) {
+          console.log('/bot/' + serviceName + ' -- error while fetching ' + repoName + ': ' + JSON.stringify(fetchOut, null, 2));
+          appError(req, res, '/bot/' + serviceName + ', repository of ' + repoName + ' could not be fetched');
+          return;
+        }
       }
 }
 
