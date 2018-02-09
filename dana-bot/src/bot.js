@@ -785,7 +785,8 @@ function userRunStart(msg) {
     maxSamples: 0,
     sequences: {},
     failingSeries: [],
-    allSeries: []
+    allSeries: [],
+    metadata: {}
   };
 
   www.startingBuild();
@@ -1024,8 +1025,6 @@ function userRunEnd(msg) {
   var f = globalBot.buildPath + '/' + g.running.task;
   if (!fs.existsSync(f))
     fs.mkdirSync(f);
-
-  globalBot.currentRun.exportedTo = [];
 
   var f = globalBot.buildPath + '/' + g.running.task + '/' + b.buildId + '.json';
   fs.writeFileSync(f, JSON.stringify(globalBot.currentRun.allSeries));
