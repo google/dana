@@ -1542,11 +1542,12 @@ app.post('/apis/*', function(req, res, next) {
 
 app.get('/*',
   function(req, res) {
-    let r = req.originalUrl.substring(1);
+    let r = req.path.substring(1);
     if (fs.existsSync('www/views/projects/' + r + '.ejs')) {
       res.render('projects/' + r, {
         user: req.user,
         global: global,
+        req: req,
       });
     } else {
       appError(req, res, 'Page ' + req.originalUrl + ' doesnt exist !');
