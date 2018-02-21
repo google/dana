@@ -785,7 +785,8 @@ function userRunStart(msg) {
     maxSamples: 0,
     sequences: {},
     failingSeries: [],
-    allSeries: []
+    allSeries: [],
+    metadata: {}
   };
 
   www.startingBuild();
