@@ -18,12 +18,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<% include ../../common/head %>
+<%- include('../../common/head') %>
 
 	<body class="nav-md">
 		<div class="container body">
 			<div class="main_container">
-				<% include sidebar %>
+				<%- include('sidebar') %>
 
 					<!-- top navigation -->
 					<div class="top_nav navbar-fixed-top">
@@ -43,7 +43,7 @@
 					</div>
 					<!-- /top navigation -->
 
-					<% include ../../common/pageOverall %>
+					<%- include('../../common/pageOverall') %>
 
 			</div>
 		</div>

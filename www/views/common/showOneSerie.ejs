@@ -18,12 +18,12 @@
 <!DOCTYPE html>
 <html lang="en">
 
-  <% include head %>
+  <%- include('head') %>
 
   <body class="nav-md">
     <div class="container body">
       <div class="main_container">
-        <% include admin/sidebar %>
+        <%- include('admin/sidebar') %>
 
         <!-- top navigation -->
         <div class="top_nav navbar-fixed-top">
@@ -265,13 +265,13 @@
         </div>
         <!-- page content -->
 
-        <% include modalAddBugLink %>
+        <%- include('modalAddBugLink') %>
 
       </div>
 
     </div>
 
-    <% include footer %>
+    <%- include('footer') %>
   </body>
 
 </html>

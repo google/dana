@@ -18,13 +18,13 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<% include ../head %>
+<%- include('../head') %>
 
 	<body class="nav-md">
 		<div class="container body">
 			<div class="main_container">
 
-				<% include sidebar %>
+				<%- include('sidebar') %>
 				<!-- top navigation -->
 				<div class="top_nav navbar-fixed-top">
 					<div class="nav_menu">
@@ -99,7 +99,7 @@
 				</div>
 				<!-- /page content -->
 
-				<% include ../footer %>
+				<%- include('../footer') %>
 
 				<!-- jQuery -->
 				<script src="/third_party/jquery/dist/jquery.min.js"></script>
