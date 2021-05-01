@@ -1063,7 +1063,6 @@ passport.deserializeUser(function(username, cb) {
 const express = require('express');
 const app = express();
 const server = require('http').createServer(app);
-const io = require('socket.io')(server);
 
 app.locals.fs = fs;
 app.locals.cwd = cwd;
@@ -1079,17 +1078,18 @@ app.use(require('body-parser').urlencoded({
 }));
 app.use(require('body-parser').json());
 
-app.use(require('express-session')({
-  secret: 'keyboard cat',
-  resave: true,
-  saveUninitialized: true,
-}));
+const session = require("express-session");
+const sessionMiddleware = session({
+  secret: global.config.sessionSecret,
+  resave: false,
+  saveUninitialized: false
+});
+app.use(sessionMiddleware);
 
 app.use(require('connect-flash')());
 
 app.use(passport.initialize());
 app.use(passport.session());
-
 
 // LOGIN / LOGOUT
 app.get('/',
@@ -1595,6 +1595,14 @@ server.listen(global.config.server.port, function() {
 });
 
 
+const io = require('socket.io')(server);
+
+const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+
+io.use(wrap(sessionMiddleware));
+io.use(wrap(passport.initialize()));
+io.use(wrap(passport.session()));
+
 // Set socket.io listeners from the web clients
 io.on('connection', function(socket) {
   console.log('New web connection');
@@ -1685,6 +1693,14 @@ io.on('connection', function(socket) {
   socket.on('serieUpdateAnalyse', function(req) {
     let projectId = req.projectId;
     let serieId = req.serieId;
+
+    if (!socket.request.user) {
+      let e = 'socket serieUpdateAnalyse requires admin login';
+      console.error(e, projectId, serieId);
+      socket.emit('serverError', e);
+      return;
+    }
+
     let analyse = req.analyse;
     let comment = req.comment;
     if (global.debug) console.log('serieUpdateAnalyse', req);
@@ -1935,6 +1951,14 @@ io.on('connection', function(socket) {
   socket.on('serieAddComment', function(req) {
     let projectId = req.projectId;
     let serieId = req.serieId;
+
+    if (!socket.request.user) {
+      let e = 'socket serieAddComment requires admin login';
+      console.error(e, projectId, serieId);
+      socket.emit('serverError', e);
+      return;
+    }
+
     let comment = req.comment;
     if (global.debug) console.log('serieAddComment', req);
     if (comment === undefined) {
@@ -1989,6 +2013,14 @@ io.on('connection', function(socket) {
   socket.on('serieUpdateAssignee', function(req) {
     let projectId = req.projectId;
     let serieId = req.serieId;
+
+    if (!socket.request.user) {
+      let e = 'socket serieUpdateAssignee requires admin login';
+      console.error(e, projectId, serieId);
+      socket.emit('serverError', e);
+      return;
+    }
+
     let comment = {};
     let compareId = req.compareId;
     let assignee = req.assignee;
@@ -2119,6 +2151,14 @@ io.on('connection', function(socket) {
   socket.on('serieUpdateSeriesState', function(req) {
     let projectId = req.projectId;
     let serieId = req.serieId;
+
+    if (!socket.request.user) {
+      let e = 'socket serieupdateSeriesState requires admin login';
+      console.error(e, projectId, serieId);
+      socket.emit('serverError', e);
+      return;
+    }
+
     let comment = {
       text: ''
     };
@@ -2244,6 +2284,14 @@ io.on('connection', function(socket) {
   socket.on('serieUpdateBugLink', function(req) {
     let projectId = req.projectId;
     let serieId = req.serieId;
+
+    if (!socket.request.user) {
+      let e = 'socket serieUpdateBugLink requires admin login';
+      console.error(e, projectId, serieId);
+      socket.emit('serverError', e);
+      return;
+    }
+
     let comment = {
       text: ''
     };
