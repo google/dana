@@ -37,6 +37,23 @@
               <ul class="nav navbar-nav">
                 <h4 id="modalSerieType" class="navbar-text"></h4>
               </ul>
+              <ul class="nav navbar-nav navbar-right" style="width: auto">
+                <% if (user===undefined) { %>
+                  <li>
+                    <a href="/login">
+                      Admin Login
+                    </a>
+                  </li>
+                <% } else { %>
+                  <li>
+                    <a href="/logout">
+                      <% if (user!==undefined) { %>
+                        Logout <%=user.username%>
+                      <% } %>
+                    </a>
+                  </li>
+                <% } %>
+              </ul>
             </nav>
           </div>
         </div>

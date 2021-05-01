@@ -1001,6 +1001,7 @@ if (global.config.adminUser === undefined) {
 const passport = require('passport');
 const Strategy = require('passport-local').Strategy;
 
+/*
 function findById(id, cb) {
   let records = global.config.adminUser;
   process.nextTick(function() {
@@ -1012,11 +1013,12 @@ function findById(id, cb) {
     }
   });
 }
+*/
 
 function findByUsername(username, cb) {
   let records = global.config.adminUser;
   process.nextTick(function() {
-    for (let ii = 0, len = records.length; ii < len; i++) {
+    for (let ii = 0, len = records.length; ii < len; ii++) {
       let record = records[ii];
       if (record.username === username) {
         return cb(null, record);
@@ -1033,21 +1035,23 @@ passport.use(new Strategy(
         return cb(err);
       }
       if (!user) {
-        return cb(null, false);
+        console.log('Unknown username');
+        return cb(null, false, {message: 'Unknown username'});
       }
       if (user.password !== password) {
-        return cb(null, false);
+        console.log('Incorrect passward');
+        return cb(null, false, {message: 'Incorrect passward'});
       }
       return cb(null, user);
     });
   }));
 
 passport.serializeUser(function(user, cb) {
-  cb(null, user.id);
+  cb(null, user.username);
 });
 
-passport.deserializeUser(function(id, cb) {
-  findById(id, function(err, user) {
+passport.deserializeUser(function(username, cb) {
+  findByUsername(username, function(err, user) {
     if (err) {
       return cb(err);
     }
@@ -1077,12 +1081,15 @@ app.use(require('body-parser').json());
 
 app.use(require('express-session')({
   secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: false,
+  resave: true,
+  saveUninitialized: true,
 }));
+
+app.use(require('connect-flash')());
 
 app.use(passport.initialize());
 app.use(passport.session());
+
 
 // LOGIN / LOGOUT
 app.get('/',
@@ -1097,7 +1104,7 @@ app.get('/',
 
 app.get('/login',
   function(req, res) {
-    res.render('login/login', {
+    res.render('common/login', {
       global: global,
       title: 'Login',
       user: req.user,
@@ -1106,11 +1113,10 @@ app.get('/login',
 
 app.post('/login',
   passport.authenticate('local', {
+    successRedirect: '/admin/viewProjects',
     failureRedirect: '/login',
-  }),
-  function(req, res) {
-    res.redirect('/series');
-  });
+    failureFlash: true
+  }));
 
 app.get('/logout',
   function(req, res) {
@@ -1119,6 +1125,7 @@ app.get('/logout',
   });
 
 app.get('/admin/*',
+  require('connect-ensure-login').ensureLoggedIn(),
   function(req, res) {
     let l = '/admin/'.length;
     let r = req.originalUrl.substring(l);
@@ -1187,7 +1194,7 @@ app.get('/admin/*',
 // *with_buildId
 // *with_useAverage
 app.post('/admin/addComparator',
-  // require('connect-ensure-login').ensureLoggedIn(),
+  require('connect-ensure-login').ensureLoggedIn(),
   function(req, res) {
     if (global.debug)
       console.log('/admin/addComparator', req.body);
@@ -1269,7 +1276,7 @@ app.post('/admin/addComparator',
 // *with_buildId
 // *with_useAverage
 app.post('/admin/saveComparator',
-  // require('connect-ensure-login').ensureLoggedIn(),
+  require('connect-ensure-login').ensureLoggedIn(),
   function(req, res) {
     //if (global.debug)
     console.log('/admin/saveComparator', req.body);
@@ -1343,7 +1350,7 @@ app.post('/admin/saveComparator',
   });
 
 app.post('/admin/deleteComparator',
-  // require('connect-ensure-login').ensureLoggedIn(),
+  require('connect-ensure-login').ensureLoggedIn(),
   function(req, res) {
     if (global.debug)
       console.log('/admin/deleteComparator', req.body);
@@ -1369,7 +1376,7 @@ app.post('/admin/deleteComparator',
   });
 
 app.post('/admin/addProject',
-  // require('connect-ensure-login').ensureLoggedIn(),
+  require('connect-ensure-login').ensureLoggedIn(),
   function(req, res) {
     if (global.debug) console.log('/admin/addProject', req.body);
 
@@ -1411,7 +1418,7 @@ app.post('/admin/addProject',
   });
 
 app.post('/admin/saveProject',
-  // require('connect-ensure-login').ensureLoggedIn(),
+  require('connect-ensure-login').ensureLoggedIn(),
   function(req, res) {
     if (global.debug) console.log(req.body);
     // if (req.user.username !== 'admin') {
@@ -1441,7 +1448,7 @@ app.post('/admin/saveProject',
   });
 
 app.post('/admin/deleteProject',
-  // require('connect-ensure-login').ensureLoggedIn(),
+  require('connect-ensure-login').ensureLoggedIn(),
   function(req, res) {
     if (global.debug) console.log(req.body);
     // if (req.user.username !== 'admin') {

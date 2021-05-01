@@ -21,117 +21,133 @@
 
 <%- include('head') %>
 
-	<body class="nav-md">
-		<div class="container body">
-			<div class="main_container">
-				<% var pathSidebar=relativeSideBarPath+"/sidebar"; %>
-				<%-include(pathSidebar)%>
-					<!-- top navigation -->
-					<div class="top_nav navbar-fixed-top">
-						<div class="nav_menu">
-							<nav class="" role="navigation">
-								<div class="nav toggle">
-									<a id="menu_toggle">
-									<i class="fa fa-bars"></i>
-								</a>
-								</div>
-								<ul class="nav navbar-nav">
-									<h3 id='page-title' class="navbar-text"></h3>
-									<!-- <ul class="nav navbar-nav navbar-right"> -->
-								</ul>
-							</nav>
-						</div>
-					</div>
-					<!-- /top navigation -->
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        <% var pathSidebar=relativeSideBarPath+"/sidebar"; %>
+        <%-include(pathSidebar)%>
+          <!-- top navigation -->
+          <div class="top_nav navbar-fixed-top">
+            <div class="nav_menu">
+              <nav class="" role="navigation">
+                <div class="nav toggle">
+                  <a id="menu_toggle">
+                  <i class="fa fa-bars"></i>
+                </a>
+                </div>
+                <ul class="nav navbar-nav">
+                  <h3 id='page-title' class="navbar-text"></h3>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" style="width: auto">
+                  <% if (user===undefined) { %>
+                    <li>
+                      <a href="/login">
+                        Admin Login
+                      </a>
+                    </li>
+                  <% } else { %>
+                    <li>
+                      <a href="/logout">
+                        <% if (user!==undefined) { %>
+                          Logout <%=user.username%>
+                        <% } %>
+                      </a>
+                    </li>
+                  <% } %>
+                </ul>
+              </nav>
+            </div>
+          </div>
+          <!-- /top navigation -->
 
-					<!-- page content -->
-					<div class="right_col" role="main" style="padding-top: 50px;">
-						<div class="">
-							<!-- <div class="page-title">
-							<div class="title_left">
-								<h3>Music2</h3>
-							</div>
-						</div> -->
+          <!-- page content -->
+          <div class="right_col" role="main" style="padding-top: 50px;">
+            <div class="">
+              <!-- <div class="page-title">
+              <div class="title_left">
+                <h3>Music2</h3>
+              </div>
+            </div> -->
 
-							<div class="clearfix"></div>
-							<br>
-							<br>
-							<div id="rowNoDataToShow" class="row" hidden>
-								<div class="col-md-12 col-sm-12 col-xs-12">
-									<div class="x_panel">
-										<div class="x_title">
-											<h2>Information</h2>
-											<div class="clearfix"></div>
-										</div>
-										<div class="x_content">
-											<p>No graphs to show.</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div id='btnRow' class='row' hidden>
-								<center>
-								<p>Choose coloring of graphs. For analysis:
-									<span class="green">green</span> for improvements,
-									<span class="blue">blue</span> for similars,
-									<span class="red">red</span> for regressions and <b>grey</b> if not available.
-									For compares:
-									<span class="green">green</span> for betters,
-									<span class="blue">blue</span> for similars,
-									<span class="red">red</span> for lowers and <b>grey</b> if not available. </p>
-									<div class="btn-group" id="btnStatusChoices">
-									</div>
-								</center>
-							</div>
-							<br>
-							<div class="clearfix"></div>
-							<div id='page-body' class="row"></div>
-						</div>
-					</div>
-			</div>
-			<!-- /page content -->
+              <div class="clearfix"></div>
+              <br>
+              <br>
+              <div id="rowNoDataToShow" class="row" hidden>
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <div class="x_panel">
+                    <div class="x_title">
+                      <h2>Information</h2>
+                      <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+                      <p>No graphs to show.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id='btnRow' class='row' hidden>
+                <center>
+                <p>Choose coloring of graphs. For analysis:
+                  <span class="green">green</span> for improvements,
+                  <span class="blue">blue</span> for similars,
+                  <span class="red">red</span> for regressions and <b>grey</b> if not available.
+                  For compares:
+                  <span class="green">green</span> for betters,
+                  <span class="blue">blue</span> for similars,
+                  <span class="red">red</span> for lowers and <b>grey</b> if not available. </p>
+                  <div class="btn-group" id="btnStatusChoices">
+                  </div>
+                </center>
+              </div>
+              <br>
+              <div class="clearfix"></div>
+              <div id='page-body' class="row"></div>
+            </div>
+          </div>
+      </div>
+      <!-- /page content -->
 
-			<%- include('footer') %>
+      <%- include('footer') %>
 
-		</div>
-		</div>
+    </div>
+    </div>
 
-		<!-- jQuery -->
-		<script src="/third_party/jquery/dist/jquery.min.js"></script>
-		<!-- Bootstrap -->
-		<script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
-		<!-- FastClick -->
-		<script src="/third_party/fastclick/lib/fastclick.js"></script>
-		<!-- NProgress -->
-		<script src="/third_party/nprogress/nprogress.js"></script>
+    <!-- jQuery -->
+    <script src="/third_party/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="/third_party/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="/third_party/nprogress/nprogress.js"></script>
 
-		<!-- Datatables -->
-		<!-- <script src="/third_party/datatables.net/js/jquery.dataTables.min.js"></script>
-		<script src="/third_party/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-		<script src="/third_party/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-		<script src="/third_party/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-		<script src="/third_party/datatables.net-buttons/js/buttons.flash.min.js"></script>
-		<script src="/third_party/datatables.net-buttons/js/buttons.html5.min.js"></script>
-		<script src="/third_party/datatables.net-buttons/js/buttons.print.min.js"></script>
-		<script src="/third_party/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-		<script src="/third_party/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-		<script src="/third_party/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-		<script src="/third_party/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-		<script src="/third_party/datatables.net-scroller/js/dataTables.scroller.min.js"></script> -->
+    <!-- Datatables -->
+    <!-- <script src="/third_party/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="/third_party/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="/third_party/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/third_party/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="/third_party/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="/third_party/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="/third_party/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="/third_party/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="/third_party/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="/third_party/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/third_party/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="/third_party/datatables.net-scroller/js/dataTables.scroller.min.js"></script> -->
 
-		<!-- Custom Theme Scripts -->
-		<script src="/third_party/gentelella/build/js/custom.js"></script>
+    <!-- Custom Theme Scripts -->
+    <script src="/third_party/gentelella/build/js/custom.js"></script>
 
-		<!-- Dygraph for sparklines -->
-		<script type="text/javascript" src="/third_party/dygraph/js/dygraph.js"></script>
-		<script type="text/javascript" src="/third_party/dygraph/js/synchronizer.js"></script>
+    <!-- Dygraph for sparklines -->
+    <script type="text/javascript" src="/third_party/dygraph/js/dygraph.js"></script>
+    <script type="text/javascript" src="/third_party/dygraph/js/synchronizer.js"></script>
 
-		<!-- Custom ui lib -->
-		<script src="/js/uilib.js"></script>
+    <!-- Custom ui lib -->
+    <script src="/js/uilib.js"></script>
 
-		<!-- socket.io -->
-		<script src="/socket.io/socket.io.js"></script>
+    <!-- socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
 
-	</body>
+  </body>
 
 </html>
