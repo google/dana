@@ -1504,9 +1504,27 @@ app.get('/serie',
 
 app.post('/apis/*', function(req, res, next) {
   if (!req.is('application/json')) {
-    return res.send('Bad request - Content-Type must be application/json\n');
+    return res.send('Expected application/json Content-Type');
   }
 
+  const { authorization } = req.headers
+  if (!authorization) {
+    return res.status(401).send('Missing authorization header')
+  }
+
+  const [authType, token] = authorization.trim().split(' ')
+  if (authType !== 'Bearer') {
+    return res.status(401).send('Expected a Bearer token')
+  }
+
+  if (token != global.config.apiToken) {
+    return res.status(401).send('Wrong token')
+  }
+
+  next();
+});
+
+app.post('/apis/*', function(req, res, next) {
   let l = '/apis/'.length;
   let apiName = req.originalUrl.substring(l);
   let data = req.body;
@@ -2402,6 +2420,7 @@ io.on('connection', function(socket) {
   });
 });
 
+/*
 // for other webservices via direct connection
 const WebSocketServer = require('ws').Server;
 const wss = new WebSocketServer({
@@ -2451,6 +2470,7 @@ wss.on('connection', function connection(ws) {
     console.log('Dana server ws close');
   });
 });
+*/
 
 periodicSnapshot();
 snapshotAtMidnight();
