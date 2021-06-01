@@ -917,6 +917,45 @@ function apiAddSample(apiData, hdl) {
   return hdl();
 }
 
+function apiGetBuild(apiData, hdl) {
+  let projectId;
+  let buildId;
+
+  if (apiData.projectId === undefined) {
+    return hdl(null, 'Invalid data, projectId is missing');
+  }
+  projectId = apiData.projectId;
+
+  if (apiData.buildId === undefined) {
+    return hdl(null, 'Invalid data, buildId is missing');
+  }
+  buildId = apiData.buildId;
+
+  if (!global.projects[projectId].infos.existsSync('builds')) {
+    // No information about this build; just return an empty result.
+    return hdl(null);
+  }
+
+  let series = {};
+  if (global.projects[projectId].infos.existsSync('benchmarks.series')) {
+    series = global.projects[projectId].infos.readSync('benchmarks.series');
+  }
+
+  let results = {};
+
+  let keys = Object.keys(series);
+  for (let ii = 0; ii < keys.length; ii++) {
+    let thisSeries = global.projects[projectId].series.readSync(keys[ii]);
+    if (thisSeries.projectId !== projectId) continue;
+
+    let samples = thisSeries.samples;
+    if (samples[buildId] === undefined) continue;
+    results[keys[ii]] = samples[buildId];
+  }
+
+  return hdl(results);
+}
+
 const global = {
   ws: {},
   states: {},
@@ -1563,6 +1602,18 @@ app.post('/apis/*', function(req, res, next) {
   err = 'Invalid API request';
   err.status = 400;
   res.send(err);
+});
+
+app.get('/apis/getBuild', function(req, res, next) {
+  let data = req.body;
+  if (global.debug) console.log('Got a request', 'getBuild', data);
+  apiGetBuild(data, function end(results, err) {
+    if (err) {
+      err.status = 400;
+      return res.send(err);
+    }
+    return res.json(results);
+  });
 });
 
 app.get('/*',

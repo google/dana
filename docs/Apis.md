@@ -116,6 +116,25 @@ Example:
 }
 ```
 
+### <a name="getBuild"></a>getBuild
+
+**getBuild** is used to get samples from a build. The request must contain the following properties:
+- *projectId*, the project you want to add the build,
+- *build.buildId*, the ID of the build.
+
+Example:
+
+```
+{
+  "projectId": "Test",
+  "buildId": 1000,
+}
+```
+
+It returns a JSON dictionary containing serieIds and their sample values.
+
+_Note: right now this only supports querying information for benchmark builds._
+
 ## <a name="usingPost"></a>Using http POST requests
 
 Dana supports POST http requests with Content-Type **application/json**.
