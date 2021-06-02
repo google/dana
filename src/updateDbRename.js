@@ -55,9 +55,9 @@ for (let ii = 0; ii < k.length; ii++) {
     fs.mkdirSync(cwd + '/configs/db/' + k[ii]);
   }
   global.projects[k[ii]].series =
-    new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/series', 10);
+    new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/series', 200);
   global.projects[k[ii]].comments =
-    new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/comments', 10);
+    new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/comments', 200);
   global.projects[k[ii]].infos =
     new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/infos', 200);
 }
