@@ -1014,9 +1014,9 @@ for (let ii = 0; ii < k.length; ii++) {
     fs.mkdirSync(cwd + '/configs/db/' + k[ii]);
   }
   global.projects[k[ii]].series =
-    new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/series', 10);
+    new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/series', 200);
   global.projects[k[ii]].comments =
-    new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/comments', 10);
+    new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/comments', 200);
   global.projects[k[ii]].infos =
     new ModuleFiles(cwd + '/configs/db/' + k[ii] + '/infos', 200);
 }
@@ -1465,9 +1465,9 @@ app.post('/admin/addProject',
       fs.mkdirSync(cwd + '/configs/db/' + projectId);
     }
     global.projects[projectId].series =
-      new ModuleFiles(cwd + '/configs/db/' + projectId + '/series', 10);
+      new ModuleFiles(cwd + '/configs/db/' + projectId + '/series', 200);
     global.projects[projectId].comments =
-      new ModuleFiles(cwd + '/configs/db/' + projectId + '/comments', 10);
+      new ModuleFiles(cwd + '/configs/db/' + projectId + '/comments', 200);
     global.projects[projectId].infos =
       new ModuleFiles(cwd + '/configs/db/' + projectId + '/infos', 200);
 
