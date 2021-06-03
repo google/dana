@@ -695,8 +695,10 @@
         let s = series[serieId];
         // h += '<td>'; if (s.description)   h += s.description; h += '</td>';
         if (s.status.error) {
-          h += '<td>Undefined</td>';
           h += '<td>--</td>';
+          if (!projects[projectId].useBugTracker) {
+            h += '<td>--</td>';
+          }
           h += '<td><div style="word-wrap: break-word; word-break: break-all; white-space: normal;">' + serieId + '</div></td>';
           h += '<td><div style="height:16px;" id="graphId_' + index + '"><center><i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i></center></div></td>';
           h += '<td>--</td>';
