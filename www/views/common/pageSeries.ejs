@@ -204,7 +204,7 @@
       function start(tprojectId, tSerieFilter) {
         projectId = tprojectId;
         serieFilter = tSerieFilter;
-        $('#page_title_description').html('Benchmarks regression status for ' + projectId + ' <small>Based on latest results</small>');
+        $('#page_title_description').html((serieFilter ?? '') + ' Benchmark Status for ' + projectId + ' <small>Based on latest results</small>');
 
         socket.on('receiveFileInfo', function(req) {
           if (debug)
