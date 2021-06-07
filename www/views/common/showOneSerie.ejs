@@ -23,7 +23,8 @@
   <body class="nav-md">
     <div class="container body">
       <div class="main_container">
-        <%- include('admin/sidebar') %>
+        <% var relativeSideBarPath='../projects/'+projectId %>
+        <%- include(relativeSideBarPath+'/sidebar') %>
 
         <!-- top navigation -->
         <div class="top_nav navbar-fixed-top">
