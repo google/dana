@@ -120,7 +120,7 @@ Example:
 
 **getBuild** is used to get samples from a build. The request must contain the following properties:
 - *projectId*, the project you want to add the build,
-- *build.buildId*, the ID of the build.
+- *buildId*, the ID of the build.
 
 Example:
 
