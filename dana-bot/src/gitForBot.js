@@ -97,8 +97,8 @@ module.exports = {
     var cmdout = run.execSync('git', ['fetch'], currentRepoPath);
     if (cmdout.err) {
       logger.error('cannot do git fetch', currentRepoPath);
-      return;
     }
+    return cmdout;
   },
   pull: function() {
     if (currentRepoPath === undefined) {
@@ -344,5 +344,36 @@ module.exports = {
       l.push(entry);
     }
     return l;
+  },
+  checkRemoteBranchExists: function (branchName, repoName) {
+    var args = ['branch', '-r', '--list', branchName]
+    var cmdout = run.execSync('git', args, repoPath + '/' + repoName);
+    if (cmdout.err) {
+      console.log('ERR', cmdout.code);
+      return false;
+    }
+
+    var result = cmdout.stdout.trim().length !== 0;
+    if (!result) {
+      logger.error("Couldn't find remote branch '" + branchName + "'");
+    }
+
+    return result;
+  },
+  checkCommitExists: function (branchName, commit, repoName) {
+    var args = ['branch', '-r', '--contains', commit];
+    var cmdout = run.execSync('git', args, repoPath + '/' + repoName);
+    if (cmdout.err) {
+      console.log('ERR', cmdout.code);
+      return false;
+    }
+
+    var lines = cmdout.stdout.split('\n');
+    for(var i = 0;i < lines.length;i++){
+      if (lines[i].trim() === branchName) {
+        return true;
+      }
+    }
+    return false;
   }
 };
