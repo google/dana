@@ -1057,12 +1057,9 @@ function findById(id, cb) {
 function findByUsername(username, cb) {
   let records = global.config.adminUser;
   process.nextTick(function() {
-    for (let ii = 0, len = records.length; ii < len; ii++) {
-      let record = records[ii];
-      if (record.username === username) {
-        return cb(null, record);
+      if (records.username === username) {
+        return cb(null, records);
       }
-    }
     return cb(null, null);
   });
 };
