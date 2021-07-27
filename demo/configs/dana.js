@@ -16,12 +16,14 @@
 
 module.exports = {
   adminUser: {
-    name: 'admin',
+    username: 'admin',
     password: 'admin',
     email: 'yourEmail@yourDomain.com'
   },
   server: {
     ip: 'localhost',
     port: 7000
-  }
+  },
+  sessionSecret: "some random string",
+  apiToken: "some token"
 }

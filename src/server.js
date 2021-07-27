@@ -1057,9 +1057,9 @@ function findById(id, cb) {
 function findByUsername(username, cb) {
   let records = global.config.adminUser;
   process.nextTick(function() {
-      if (records.username === username) {
-        return cb(null, records);
-      }
+    if (records.username === username) {
+      return cb(null, records);
+    }
     return cb(null, null);
   });
 };

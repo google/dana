@@ -29,14 +29,16 @@ This file should be like this:
 ```
 module.exports = {
   adminUser: {
-    login: 'admin',
+    username: 'admin',
     password: 'admin',
     email: 'youremail@google.com'
   },
   server: {
     ip:'localhost',
     port: 7000
-  }
+  },
+  sessionSecret: "some random string",
+  apiToken: "some token"
 }
 ```
 
