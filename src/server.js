@@ -171,9 +171,7 @@ function createSnapshotProjectId(projectId) {
 
 function sendDailyReport(projectId) {
 
-  var danaUrl =
-    'http://' + global.config.server.ip + ':' +
-    global.config.server.port;
+  var danaUrl = 'https://' + global.config.server.ip;
 
   moduleHtmlBuilder.bodyReset();
 
