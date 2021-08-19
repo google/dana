@@ -499,8 +499,18 @@ function apiAddSerie(apiData, hdl) {
     serie.infos = apiData.infos;
   }
 
-  // serie.analyse set if not exist otherwise keep the active one in the system
-  serie.analyse = apiData.analyse;
+  // Override serie.analyse data using the API call payload.
+  // This is done per field to avoid discarding existing data if not supplied
+  // in the payload.
+  if (analyse.base) {
+    serie.analyse.base = analyse.base;
+  }
+  if (analyse.benchmark) {
+    serie.analyse.benchmark = analyse.benchmark;
+  }
+  if (analyse.test) {
+    serie.analyse.test = analyse.test;
+  }
 
   if (serie.assignee === undefined) {
     serie.assignee = {};
@@ -1762,6 +1772,8 @@ io.on('connection', function(socket) {
   // serieUpdateAnalyse (projectId, serieId, analyse)
   // -> receiveUpdateAnalyseDone (projectId, serieId, analyse)
   socket.on('serieUpdateAnalyse', function(req) {
+    if (global.debug) console.log('serieUpdateAnalyse', req);
+
     let projectId = req.projectId;
     let serieId = req.serieId;
 
@@ -1774,7 +1786,6 @@ io.on('connection', function(socket) {
 
     let analyse = req.analyse;
     let comment = req.comment;
-    if (global.debug) console.log('serieUpdateAnalyse', req);
     if (comment === undefined) {
       let e = 'socket serieUpdateAnalyse comment undefined';
       console.error(e);
