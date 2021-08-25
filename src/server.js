@@ -516,6 +516,8 @@ function apiAddSerie(apiData, hdl) {
     serie.assignee = {};
   }
 
+  if (global.debug) console.log('apiAddSerie update', serieId, 'to', serie)
+
   global.projects[projectId].series.writeSync(serieId, serie);
 
   let gs = {
@@ -910,6 +912,7 @@ function apiAddSample(apiData, hdl) {
     }
   }
 
+  if (global.debug) console.log('apiAddSample update', serieId, 'to', serie)
   global.projects[projectId].series.writeSync(serieId, serie);
 
   if (!global.admin.existsSync('globalStats')) {
@@ -1764,6 +1767,7 @@ io.on('connection', function(socket) {
       return;
     }
     req.serie = global.projects[projectId].series.readSync(serieId);
+    if (global.debug) console.log('getOneSerie query', serieId, 'result', req.serie)
 
     req.serie.comments = global.projects[projectId].comments.readSync(serieId);
     socket.emit('receiveOneSerie', req);
