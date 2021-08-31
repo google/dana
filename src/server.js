@@ -502,6 +502,9 @@ function apiAddSerie(apiData, hdl) {
   // Override serie.analyse data using the API call payload.
   // This is done per field to avoid discarding existing data if not supplied
   // in the payload.
+  if (serie.analyse === undefined) {
+    serie.analyse = {}
+  }
   if (analyse.base) {
     serie.analyse.base = analyse.base;
   }
