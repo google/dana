@@ -341,9 +341,8 @@
         var p = numSeriesUndefined / numSeries * 100;
         $('#topBanner_numSeriesUndefined_percent').html(p.toFixed(2) + "%");
 
-        if ((numSeriesUndefined === numActive) || (numSeriesRegression === numActive) || (numSeriesSimilar === numActive) || (numSeriesImproved === numActive)) {
+        if (numActive === numSeries)
           $('#btnShowActive').hide();
-        }
 
         if ((numSeriesUndefined === numSeries) || (numSeriesRegression === numSeries) || (numSeriesSimilar === numSeries) || (numSeriesImproved === numSeries)) {
           $('#btnShowAll').hide();
