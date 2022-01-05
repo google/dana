@@ -828,6 +828,9 @@
           } else if (mode !== 'all') {
             if (s.state.indexOf(mode) === -1)
               continue;
+            // For similar benchmarks, also filter out inactive ones.
+            if (mode === 'similar' && s.status.lastBuildId !== largestBuildId)
+              continue;
           }
 
           h += '<tr id="row_' + ii + '">';
