@@ -24,7 +24,7 @@
     "express-session": "^1.17.1",
     "google-auth-library": "^7.0.4",
     "googleapis": "^72.0.0",
-    "log4js": "^6.3.0",
+    "log4js": "^6.4.0",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
