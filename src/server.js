@@ -221,7 +221,7 @@ function sendDailyReport(projectId) {
             s.status.failingSince,
             s.status.lastExecuted,
             '<a href=' + danaUrl +
-            '/serie?' + projectId + '?' + encodeURI(k[ii]) + '>View</a>'
+            '/serie?' + projectId + '?' + encodeURIComponent(k[ii]) + '>View</a>'
           ]);
         }
       }
@@ -271,7 +271,7 @@ function sendDailyReport(projectId) {
             s.status.current.average * 1,
             s.status.current.ratio * 1,
             '<a href=' + danaUrl +
-            '/serie?' + projectId + '?' + encodeURI(dataBenchmarksNew[ii].serieId) + '>View</a>'
+            '/serie?' + projectId + '?' + encodeURIComponent(dataBenchmarksNew[ii].serieId) + '>View</a>'
           ]);
         }
         moduleHtmlBuilder.bodyTableEnd();
@@ -333,7 +333,7 @@ function sendDailyReport(projectId) {
             s.result.compareValue * 1,
             ratio,
             '<a href=' + danaUrl +
-            '/serie?' + projectId + '?' + encodeURI(dataCompareNew[jj].serieId) + '>View</a>'
+            '/serie?' + projectId + '?' + encodeURIComponent(dataCompareNew[jj].serieId) + '>View</a>'
           ]);
         }
         moduleHtmlBuilder.bodyTableEnd();
@@ -1542,7 +1542,7 @@ app.get('/serie',
       return;
     }
     let serieId = r[1];
-    serieId = decodeURI(serieId);
+    serieId = decodeURIComponent(serieId);
 
     if (global.debug) {
       console.log('/serie projectId', projectId, 'serieId', serieId);

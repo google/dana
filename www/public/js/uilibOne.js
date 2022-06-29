@@ -1786,7 +1786,7 @@ function addBugLinkTest() {
   report += '\r\n\r\n';
   report += 'Links:';
   report += '\r\n';
-  report += '- test: ' + danaUrl + '/serie?' + projectId + '?' + encodeURI(serieId);
+  report += '- test: ' + danaUrl + '/serie?' + projectId + '?' + encodeURIComponent(serieId);
   report += '\r\n';
   report += '- project tests status: ' + danaUrl + '/' + projectId + '/statusTests';
   report += '\r\n';
@@ -1858,7 +1858,7 @@ function addBugLinkBenchmark() {
   report += '\r\n\r\n';
   report += 'Links:';
   report += '\r\n';
-  report += '- benchmark: ' + danaUrl + '/serie?' + projectId + '?' + encodeURI(serieId);
+  report += '- benchmark: ' + danaUrl + '/serie?' + projectId + '?' + encodeURIComponent(serieId);
   report += '\r\n';
   report += '- project benchmark status: ' + danaUrl + '/' + projectId + '/statusSeries';
   report += '\r\n';
@@ -1928,7 +1928,7 @@ function addBugLinkCompare(compareId) {
   report += '\r\n\r\n';
   report += 'Links:';
   report += '\r\n';
-  report += '- benchmark: ' + danaUrl + '/serie?' + projectId + '?' + encodeURI(serieId);
+  report += '- benchmark: ' + danaUrl + '/serie?' + projectId + '?' + encodeURIComponent(serieId);
   report += '\r\n';
   report += '- project compare status: ' + danaUrl + '/' + projectId + '/status' + compareId;
   report += '\r\n';
