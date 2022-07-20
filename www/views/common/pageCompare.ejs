@@ -674,7 +674,7 @@ implied. * See the License for the specific language governing permissions and *
 
       function openEditSerie(serieId) {
         console.log('openEditSerie', projectId, serieId)
-        window.open("/serie?" + projectId + '?' + serieId, "_blank");
+        window.open("/serie?" + projectId + '?' + encodeURIComponent(serieId), "_blank");
       }
 
       function openSpongelink(serieId) {

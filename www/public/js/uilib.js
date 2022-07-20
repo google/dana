@@ -256,8 +256,8 @@ function buildTableWidget(tw, option) {
             if (debug) console.log("Click", this, e, x, pts);
             var el = globalG[this.globalGIndex];
             if (debug) console.log(el.tw);
-            if (debug) console.log("/serie?" + repo.projectId + '?' + el.tw.serieId[el.row][el.serie]);
-            window.open("/serie?" + repo.projectId + '?' + el.tw.serieId[el.row][el.serie], "_blank");
+            if (debug) console.log("/serie?" + repo.projectId + '?' + encodeURIComponent(el.tw.serieId[el.row][el.serie]));
+            window.open("/serie?" + repo.projectId + '?' + encodeURIComponent(el.tw.serieId[el.row][el.serie]), "_blank");
           }
         });
         tw.graphs[jj][ii] = eltg;

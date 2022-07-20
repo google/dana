@@ -535,7 +535,7 @@
         report += '- test failing since buildId: ' + s.status.failingSince;
         report += '\r\n';
         report += '- last executed buildId: : ' + s.status.lastExecuted;
-        var danaUrl = 'http://<%=global.config.server.ip%>:<%=global.config.server.port%>';
+        var danaUrl = 'https://<%=global.config.server.ip%>';
         report += '\r\n\r\n';
         report += 'Links:';
         report += '\r\n';
@@ -592,7 +592,7 @@
 
       function openEditSerie(serieId) {
         console.log('testsOpenEditSerie', serieId)
-        window.open("/serie?" + projectId + '?' + serieId, "_blank");
+        window.open("/serie?" + projectId + '?' + encodeURIComponent(serieId), "_blank");
       }
 
       function openSpongeLink(serieId) {
