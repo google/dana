@@ -49,7 +49,7 @@ function uiShowSerie(tpageType, tprojectId, tserieId) {
   pageType = tpageType;
 
   $('#modalBtnOpen').click(function() {
-    window.open("/serie?" + projectId + "?" + serieId, "_blank");
+    window.open("/serie?" + projectId + "?" + encodeURIComponent(serieId), "_blank");
   });
   socket.on('receiveOneSerie', function(req) {
     if (debug)
@@ -1411,7 +1411,7 @@ function dumpComparesTable() {
 }
 
 function openEditCompareSerie(compareId) {
-  window.open('/serie?' + compares[compareId].compareWith.projectId + '?' + serieId);
+  window.open('/serie?' + compares[compareId].compareWith.projectId + '?' + encodeURIComponent(serieId));
 }
 
 function showOpenBugLink(compareId) {

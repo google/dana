@@ -983,7 +983,7 @@
           clickCallback: function(e, x, pts) {
             if (debug)
               console.log("Click", this, e, x, pts);
-            window.open("/serie?" + projectId + '?' + graph.serieId, "_blank");
+            window.open("/serie?" + projectId + '?' + encodeURIComponent(graph.serieId), "_blank");
           }
         });
 
@@ -1158,7 +1158,7 @@
 
       function openEditSerie(serieId) {
         console.log('openEditSerie', projectId, serieId)
-        window.open("/serie?" + projectId + '?' + serieId, "_blank");
+        window.open("/serie?" + projectId + '?' + encodeURIComponent(serieId), "_blank");
       }
 
       function openSpongelink(serieId) {
