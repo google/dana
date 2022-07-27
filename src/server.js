@@ -544,6 +544,13 @@ function apiAddSerie(apiData, hdl, apiVersion) {
   }
   if (analyse.benchmark) {
     serie.analyse.benchmark = analyse.benchmark;
+    if (apiVersion < 2) {
+      // Convert IREE milliseconds range to nanoseconds.
+      let range = serie.analyse.benchmark.range;
+      if (!range.toString().endsWith("%") && serieUnit == "ns") {
+        range = Math.floor(moduleUtils.unitConversion(range, "ms", "ns"));
+      }
+    }
   }
   if (analyse.test) {
     serie.analyse.test = analyse.test;
