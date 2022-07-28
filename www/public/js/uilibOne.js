@@ -17,6 +17,9 @@
 var debug = false;
 
 var serie;
+var convertedSerieSamples;
+var convertAnalyseResult;
+var displayUnit = null;
 var serieData;
 var serieBuilds;
 var testsBuilds;
@@ -61,28 +64,14 @@ function uiShowSerie(tpageType, tprojectId, tserieId) {
     if (req.serie === 'dontexist')
       return alert('receiveOneSerie dontexist for ', serieId);
     serie = req.serie;
+    if (displayUnit === null) {
+      displayUnit = serie.serieUnit;
+    }
 
     if (pageType === 'showOneSerie')
       if (loaded) {
         uiLibOneReadyToProcessData();
         return;
-      }
-
-    if ((pageType === 'showOneSerie') || (pageType === 'statusSeries'))
-      if (serie.samples) {
-        var k = Object.keys(serie.samples);
-        k.sort(function(a, b) {
-          return a * 1 - b * 1
-        });
-        var a = [];
-        var b = [];
-        for (var ii in k) {
-          a.push(serie.samples[k[ii]])
-          b.push(k[ii])
-        }
-        serieData = a;
-        serieBuilds = b;
-        savedAnalyse = serie.analyse;
       }
 
     if (pageType === 'showOneSerie') {
@@ -356,11 +345,11 @@ function drawBenchmarkGraph() {
   //var annotationArray = [];
 
   function createRegressionArray() {
-    if (serie.analyseResult.summary.error) {
+    if (convertAnalyseResult.summary.error) {
       for (var ii = 0; ii < serieData.length; ii++)
         regArray.push(undefined);
     } else {
-      var a = serie.analyseResult.averages;
+      var a = convertAnalyseResult.averages;
       var currentIndex = 0;
       for (var ii = 0; ii < serieData.length; ii++) {
         if (ii < a[currentIndex].start)
@@ -429,24 +418,24 @@ function drawBenchmarkGraph() {
         e = [ii, serieData[ii], null, null, null]
       else {
         if (regArray[ii].success)
-          e = [ii, serieData[ii], serie.analyseResult.averages[serie.analyseResult.details.first].average, regArray[ii].average, null];
+          e = [ii, serieData[ii], convertAnalyseResult.averages[convertAnalyseResult.details.first].average, regArray[ii].average, null];
         else
-          e = [ii, serieData[ii], serie.analyseResult.averages[serie.analyseResult.details.first].average, null, regArray[ii].average];
+          e = [ii, serieData[ii], convertAnalyseResult.averages[convertAnalyseResult.details.first].average, null, regArray[ii].average];
         d.push(e);
       }
     }
 
     var d = [];
-    if (serie.analyseResult.summary.error) {
+    if (convertAnalyseResult.summary.error) {
       for (var ii = 0; ii < serieData.length; ii++) {
         d.push([ii, serieData[ii], null, null, null, null]);
       }
     } else {
-      var a = serie.analyseResult.averages;
-      var baseValue = serie.analyseResult.averages[serie.analyseResult.details.first].average;
+      var a = convertAnalyseResult.averages;
+      var baseValue = convertAnalyseResult.averages[convertAnalyseResult.details.first].average;
       var currentIndex = 0;
       var firstShown = false;
-      var s = serie.analyseResult.averages[0].start;
+      var s = convertAnalyseResult.averages[0].start;
       if (s != 0)
         for (var ii = 0; ii < s; ii++) {
           d.push([currentIndex, serieData[currentIndex], null, null, null, null]);
@@ -454,10 +443,10 @@ function drawBenchmarkGraph() {
         }
       for (var indexAverage = 0; indexAverage < a.length; indexAverage++) {
         if (debug) console.log('averages index', indexAverage);
-        var avg = serie.analyseResult.averages[indexAverage];
+        var avg = convertAnalyseResult.averages[indexAverage];
         for (var jj = avg.start; jj <= avg.end; jj++) {
           if (debug) console.log('averages index start end', avg.start, avg.end);
-          if (serie.analyseResult.details.first === indexAverage) {
+          if (convertAnalyseResult.details.first === indexAverage) {
             firstShown = true;
             e = [currentIndex, serieData[currentIndex], avg.average, null, null, null];
           } else {
@@ -565,22 +554,22 @@ function drawBenchmarkGraph() {
     },
     unhighlightCallback: function(e) {},
     underlayCallback: function(canvas, area, g) {
-      if (!serie.analyseResult.summary.error) {
-        var aRange = serie.analyseResult.details.aRange;
+      if (!convertAnalyseResult.summary.error) {
+        var aRange = convertAnalyseResult.details.aRange;
         var v;
         if (aRange.upIsValue) {
           v = aRange.up;
         } else {
-          v = aRange.up * serie.analyseResult.averages[0].average / 100;
+          v = aRange.up * convertAnalyseResult.averages[0].average / 100;
         }
-        var xl = g.toDomCoords(serie.analyseResult.averages[0].start, serie.analyseResult.averages[0].average + v);
+        var xl = g.toDomCoords(convertAnalyseResult.averages[0].start, convertAnalyseResult.averages[0].average + v);
         //console.log(v, xl)
         if (aRange.downIsValue) {
           v = aRange.down;
         } else {
-          v = aRange.down * serie.analyseResult.averages[0].average / 100;
+          v = aRange.down * convertAnalyseResult.averages[0].average / 100;
         }
-        var xy = g.toDomCoords(serie.analyseResult.averages[serie.analyseResult.averages.length - 1].end, serie.analyseResult.averages[0].average + v);
+        var xy = g.toDomCoords(convertAnalyseResult.averages[convertAnalyseResult.averages.length - 1].end, convertAnalyseResult.averages[0].average + v);
         //console.log(v, xy)
 
         canvas.fillStyle = "rgba(255, 255, 102, 1.0)";
@@ -613,7 +602,7 @@ function showHeader() {
     $('#topBanner_statusTest').show();
 
     // status
-    if (serie.analyseResult.isPassing) {
+    if (convertAnalyseResult.isPassing) {
       $('#topBanner_statusPassing').html('Passing')
       $('#topBanner_statusPassing').addClass('green');
       $('#topBanner_statusPassing').removeClass('red');
@@ -621,7 +610,7 @@ function showHeader() {
       $('#topBanner_statusPassing').html('Failed')
       $('#topBanner_statusPassing').addClass('red');
       $('#topBanner_statusPassing').removeClass('green');
-      $('#topBanner_statusPassingSince').html('Since buildId ' + serie.analyseResult.failingSince)
+      $('#topBanner_statusPassingSince').html('Since buildId ' + convertAnalyseResult.failingSince)
     }
     $('#topBanner_status').show();
   }
@@ -648,28 +637,28 @@ function showHeader() {
     }
 
     // regression
-    if (!serie.analyseResult.summary.error) {
-      var p = serie.analyseResult.summary.current.ratio;
+    if (!convertAnalyseResult.summary.error) {
+      var p = convertAnalyseResult.summary.current.ratio;
       if (p > 0)
         $('#topBanner_analysisMain').html('+' + p.toFixed(2) + '%');
       else
         $('#topBanner_analysisMain').html(p.toFixed(2) + '%');
 
-      if (serie.analyseResult.summary.status === 'similar') {
+      if (convertAnalyseResult.summary.status === 'similar') {
         $('#topBanner_analysisBottom').html('Similar');
         $('#topBanner_analysisBottom').addClass('green');
         $('#topBanner_analysisBottom').removeClass('red');
         $('#topBanner_analysisMain').removeClass('red')
         $('#topBanner_analysisMain').addClass('green')
       }
-      if (serie.analyseResult.summary.status === 'regression') {
+      if (convertAnalyseResult.summary.status === 'regression') {
         $('#topBanner_analysisMain').removeClass('green')
         $('#topBanner_analysisMain').addClass('red')
         $('#topBanner_analysisBottom').html('Regression');
         $('#topBanner_analysisBottom').addClass('red');
         $('#topBanner_analysisBottom').removeClass('green');
       }
-      if (serie.analyseResult.summary.status === 'improvement') {
+      if (convertAnalyseResult.summary.status === 'improvement') {
         $('#topBanner_analysisBottom').html('Improved');
         $('#topBanner_analysisBottom').addClass('green');
         $('#topBanner_analysisBottom').removeClass('red');
@@ -692,7 +681,72 @@ function drawAnalyseGraph() {
     drawTestGraph();
 }
 
+function inPlaceConvertSummaryValue(summaryValue, srcUnit, dstUnit) {
+  if (summaryValue["average"] !== undefined) {
+    summaryValue["average"] = unitConversionFixedPoint(
+      summaryValue["average"], srcUnit, dstUnit, 2);
+  }
+  if (summaryValue["diff"] !== undefined) {
+    summaryValue["diff"] = unitConversionFixedPoint(
+      summaryValue["diff"], srcUnit, dstUnit, 2);
+  }
+}
+
+function inplaceConvertAnalyseResult(analyseResult, srcUnit, dstUnit) {
+  let summary = analyseResult.summary;
+  if (!summary.error) {
+    inPlaceConvertSummaryValue(summary.base, srcUnit, dstUnit);
+    inPlaceConvertSummaryValue(summary.current, srcUnit, dstUnit);
+    let aRange = analyseResult.details.aRange;
+    if (aRange.upIsValue) {
+      aRange.up = Math.floor(unitConversion(aRange.up, srcUnit, dstUnit));
+    }
+    if (aRange.downIsValue) {
+      aRange.down = Math.floor(unitConversion(aRange.down, srcUnit, dstUnit));
+    }
+  }
+  let averages = analyseResult.averages;
+  if (averages) {
+    for (let average of averages) {
+      inPlaceConvertSummaryValue(average, srcUnit, dstUnit);
+    }
+  }
+}
+
+function updateAnalyse() {
+  analyse(serie);
+  console.log(serie.analyseResult);
+  convertAnalyseResult = structuredClone(serie.analyseResult);
+  if (convertAnalyseResult) {
+    inplaceConvertAnalyseResult(
+      convertAnalyseResult, serie.serieUnit, displayUnit);
+  }
+}
+
 function uiLibOneReadyToProcessData() {
+  convertedSerieSamples = structuredClone(serie.samples);
+  if (convertedSerieSamples) {
+    var k = Object.keys(convertedSerieSamples);
+    k.sort(function (a, b) {
+      return a * 1 - b * 1;
+    });
+    var a = [];
+    var b = [];
+    for (var ii in k) {
+      convertedSerieSamples[k[ii]] = unitConversionFixedPoint(
+        convertedSerieSamples[k[ii]], serie.serieUnit, displayUnit, 2);
+      a.push(convertedSerieSamples[k[ii]]);
+      b.push(k[ii]);
+    }
+    serieData = a;
+    serieBuilds = b;
+    savedAnalyse = serie.analyse;
+  }
+  convertAnalyseResult = structuredClone(serie.analyseResult);
+  if (convertAnalyseResult) {
+    inplaceConvertAnalyseResult(
+      convertAnalyseResult, serie.serieUnit, displayUnit);
+  }
 
   if (debug) console.log('uiLibOneReadyToProcessData');
   NProgress.done();
@@ -729,7 +783,8 @@ function uiLibOneReadyToProcessData() {
       unselectAnalysePanel();
       serie.analyse = savedAnalyse;
       setAnalysePanel();
-      analyse(serie);
+      updateAnalyse();
+      console.log(serie.analyseResult);
       drawAnalyseGraph();
       $('#analyseChanged').hide();
     });
@@ -779,6 +834,26 @@ function uiLibOneReadyToProcessData() {
           $('#spongeLinks').show();
         }
       }
+  }
+
+  if (pageType === 'showOneSerie') {
+    let selector = $('#serieUnit');
+    let timeUnits = ["ms", "us", "ns"];
+    let sizeUnits = ["mbytes", "kbytes", "bytes"];
+    let unitOptions = [];
+    if (timeUnits.includes(displayUnit)) {
+      unitOptions = timeUnits;
+    } else if (sizeUnits.includes(displayUnit)) {
+      unitOptions = sizeUnits;
+    }
+    selector.empty();
+    for (let unit of unitOptions) {
+      selector.append($('<option>', {
+        value: unit,
+        text: unit
+      }));
+    }
+    selector.val(displayUnit);
   }
 
   var h = '';
@@ -846,7 +921,7 @@ function serieGetMinRange() {
   while (maxit < 100000) {
     maxit++;
     serie.analyse.benchmark.range = currentRange;
-    analyse(serie);
+    updateAnalyse();
     if (serie.analyseResult.averages.length === 1) {
       max = currentRange;
       currentRange -= Math.floor((max - min) / 2);
@@ -882,7 +957,7 @@ function serieChangeState(sel) {
     console.log('serieChangeState', sel)
     var newBase = serieBuilds[serie.analyseResult.averages[serie.analyseResult.averages.length - 1].start];
     serie.analyse.base = newBase;
-    analyse(serie);
+    updateAnalyse();
     showHeader();
     drawAnalyseGraph();
     socket.emit('serieUpdateAnalyse', {
@@ -1158,7 +1233,7 @@ function dumpRegressionTable() {
     h += '</tr>';
     h += '</thead>';
     h += '<tbody>';
-    var s = serie.analyseResult.summary;
+    var s = convertAnalyseResult.summary;
     h += '<tr>';
 
     if (s.error) {
@@ -1175,7 +1250,7 @@ function dumpRegressionTable() {
     } else {
       // convert an existing database
       if (serie.state.analyse === 'none') {
-        if (serie.analyseResult.summary.status === "improvement")
+        if (convertAnalyseResult.summary.status === "improvement")
           serie.state.analyse = 'improvementNeedstriage';
         else
           serie.state.analyse = 'similarNeedstriage';
@@ -1230,7 +1305,7 @@ function dumpRegressionTable() {
     h += '</tbody>';
   }
   if (serie.analyse.test) {
-    var s = serie.analyseResult;
+    var s = convertAnalyseResult;
 
     // convert an existing database
     if (s.isPassing)
@@ -1436,12 +1511,12 @@ function globalSetSelectionRegression(idx) {
   var h = '';
   var e = document.getElementById('valueinfo');
   eltg.setSelection(idx);
-  if (serie.analyseResult.summary.error) {
+  if (convertAnalyseResult.summary.error) {
     h = 'Analysis not available';
   } else {
     var idxAvg;
-    for (var ii = 0; ii < serie.analyseResult.averages.length; ii++) {
-      if ((serie.analyseResult.averages[ii].start <= idx) && (idx <= serie.analyseResult.averages[ii].end)) {
+    for (var ii = 0; ii < convertAnalyseResult.averages.length; ii++) {
+      if ((convertAnalyseResult.averages[ii].start <= idx) && (idx <= convertAnalyseResult.averages[ii].end)) {
         idxAvg = ii;
         break;
       }
@@ -1454,11 +1529,11 @@ function globalSetSelectionRegression(idx) {
       return;
     }
 
-    var v = serie.analyseResult.averages[idxAvg].average;
-    var status = serie.analyseResult.averages[idxAvg].status;
+    var v = convertAnalyseResult.averages[idxAvg].average;
+    var status = convertAnalyseResult.averages[idxAvg].status;
 
     if (idxAvg === undefined) alert('idxAvg NOT FOUND');
-    var previousV = serie.analyseResult.averages[serie.analyseResult.details.first].average;
+    var previousV = convertAnalyseResult.averages[convertAnalyseResult.details.first].average;
 
     //h +='<center>';
     h += 'Base average = <b>' + previousV + '</b> ';
@@ -1499,7 +1574,7 @@ function globalSetSelectionRegression(idx) {
     h += v;
     h += '</b> ';
     h += 'Diff current average = <b>';
-    var ca = Math.floor(serie.analyseResult.averages[idxAvg].average);
+    var ca = convertAnalyseResult.averages[idxAvg].average;
     var diff = (v - ca);
     var p = diff / ca * 100;
     if (diff === 0)
@@ -1512,7 +1587,7 @@ function globalSetSelectionRegression(idx) {
 
     if ((idxAvg - 1) > 0) {
       h += 'Diff previous average = <b>';
-      var ca = Math.floor(serie.analyseResult.averages[idxAvg - 1].average);
+      var ca = convertAnalyseResult.averages[idxAvg - 1].average;
       var diff = (v - ca);
       var p = diff / ca * 100;
       if (diff === 0)
@@ -1604,7 +1679,12 @@ function setAnalysePanel() {
     $('#analyseBenchmarkForm').show();
     $('#analyseTypeBenchmark').prop("selected", true)
     if (a.benchmark.range !== undefined) {
-      $('#analyseBenchmarkRange').val(a.benchmark.range);
+      if (a.benchmark.range.toString().endsWith('%')) {
+        convertedRange = a.benchmark.range;
+      } else {
+        convertedRange = `${a.benchmark.range}${serie.serieUnit}`;
+      }
+      $('#analyseBenchmarkRange').val(convertedRange);
     }
     if (a.benchmark.trend !== undefined) {
       if (a.benchmark.trend === 'higher') {
@@ -1656,8 +1736,18 @@ function applyAnalyse() {
 
   if (serie.analyse.benchmark) {
     newAnalyse.benchmark = {};
-    if ($('#analyseBenchmarkRange').val() !== '')
-      newAnalyse.benchmark.range = $('#analyseBenchmarkRange').val();
+    if ($('#analyseBenchmarkRange').val() !== '') {
+      let range = $('#analyseBenchmarkRange').val();
+      if (!range.endsWith('%')) {
+        if (!range.endsWith(serie.serieUnit)) {
+          alert(`Unit must be '%' or '${serie.serieUnit}'`)
+          return;
+        }
+        // We don't store the unit internally.
+        range = parseInt(range);
+      }
+      newAnalyse.benchmark.range = range
+    }
     if ($('#analyseBenchmarkTrend').val() === 'smaller')
       newAnalyse.benchmark.trend = 'smaller'
     else
@@ -1673,7 +1763,7 @@ function applyAnalyse() {
 
   if (debug) console.log(newAnalyse)
   serie.analyse = newAnalyse;
-  analyse(serie);
+  updateAnalyse();
   showHeader();
   drawAnalyseGraph();
 
@@ -1745,6 +1835,17 @@ function modalSaveAssignee() {
   clearSelect2s();
 }
 
+function changeSerieUnit() {
+  let unit = $('#serieUnit').val();
+  if (unit === null) {
+    return;
+  }
+  displayUnit = unit;
+  if (loaded) {
+    uiLibOneReadyToProcessData();
+  }
+}
+
 function addBugLink() {
   modalBugLinkCompareId = undefined;
   if (serie.analyse.benchmark)
@@ -1755,7 +1856,7 @@ function addBugLink() {
 }
 
 function addBugLinkTest() {
-  var s = serie.analyseResult;
+  var s = convertAnalyseResult;
   $('#AddBugLink_Link').val('');
   if (serie.bugLink) {
     if (serie.bugLink.series) {
@@ -1802,7 +1903,7 @@ function addBugLinkBenchmark() {
     }
   }
   var report = '';
-  var s = serie.analyseResult.summary;
+  var s = convertAnalyseResult.summary;
   if (s.error) {
     report += 'Regression status: undefined';
   } else {
@@ -1937,7 +2038,7 @@ function addBugLinkCompare(compareId) {
   $('#myModalAddBugLink').modal();
 }
 
-$('#modalSaveBugLink').click(function() {
+$('#modalSaveBugLink').click(function () {
   var bugLink = $('#AddBugLink_Link').val();
   alert('serieUpdateBugLink ' + projectId + ' ' + serieId + ' ' + bugLink + ' ' + modalBugLinkCompareId);
   socket.emit('serieUpdateBugLink', {
