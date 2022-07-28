@@ -23,6 +23,7 @@ const fs = require('fs');
 const moduleAnalyse = require(cwd + '/src/analyse');
 const moduleHtmlBuilder = require(cwd + '/src/htmlBuilder');
 const moduleSendMail = require(cwd + '/src/sendMail');
+const moduleUtils = require(cwd + '/src/utils');
 
 function snapshotAtMidnight() {
   let now = new Date();
@@ -440,15 +441,36 @@ function apiAddBuild(apiData, hdl) {
   return hdl();
 }
 
+/** Get the default unit of IREE series. */
+function getSerieDefaultUnit(serieId) {
+  if (serieId.indexOf("[compilation:module:component-size:total-dispatch-size]") !== -1) {
+    return "bytes";
+  } else if (serieId.indexOf("[compilation:module:compilation-time]") !== -1) {
+    return "ms";
+  }
+  return "ns";
+}
+
+/** Get the default unit of samples uploaded by IREE. */
+function getSampleDefaultUnit(serieId) {
+  if (serieId.indexOf("[compilation:module:component-size:total-dispatch-size]") !== -1) {
+    return "bytes";
+  } else if (serieId.indexOf("[compilation:module:compilation-time]") !== -1) {
+    return "ms";
+  }
+  return "ms";
+}
+
 /**
  * Add a serie to a project and serie.
  * @param {object} apiData, object containing the serie.
  * @param {function} hdl handler called at the end of the function.
  * @return {void}.
  */
-function apiAddSerie(apiData, hdl) {
+function apiAddSerie(apiData, hdl, apiVersion) {
   let projectId;
   let serieId;
+  let serieUnit;
   let analyse;
   if (apiData.projectId === undefined) {
     return hdl('Invalid data, projectId is missing');
@@ -464,6 +486,15 @@ function apiAddSerie(apiData, hdl) {
     return hdl('Invalid data, serieId is missing');
   }
   serieId = apiData.serieId;
+  if (apiVersion >= 2) {
+    if (apiData.serieUnit === undefined) {
+      return hdl('Invalid data, serieUnit is missing');
+    }
+    serieUnit = apiData.serieUnit;
+  } else {
+    // TODO: Temporary unit for IREE migration.
+    serieUnit = getSerieDefaultUnit(serieId);
+  }
 
   // analyse
   if (apiData.analyse === undefined) {
@@ -487,6 +518,11 @@ function apiAddSerie(apiData, hdl) {
     return hdl('Serie serieId already exist, use override flag to override content.');
   }
 
+  if (serie.serieUnit !== undefined && serie.serieUnit !== serieUnit) {
+    return hdl('Unit mismatched with the existing serie.');
+  }
+  serie.serieUnit = serieUnit;
+
   // optional apiData.description
   if (apiData.description) {
     serie.description = apiData.description;
@@ -508,6 +544,13 @@ function apiAddSerie(apiData, hdl) {
   }
   if (analyse.benchmark) {
     serie.analyse.benchmark = analyse.benchmark;
+    if (apiVersion < 2) {
+      // Convert IREE milliseconds range to nanoseconds.
+      let range = serie.analyse.benchmark.range;
+      if (!range.toString().endsWith("%") && serieUnit == "ns") {
+        range = Math.floor(moduleUtils.unitConversion(range, "ms", "ns"));
+      }
+    }
   }
   if (analyse.test) {
     serie.analyse.test = analyse.test;
@@ -554,11 +597,11 @@ function apiAddSerie(apiData, hdl) {
  * @param {function} hdl handler called at the end of the function.
  * @return {void}.
  */
-function apiAddSample(apiData, hdl) {
+function apiAddSample(apiData, hdl, apiVersion) {
   let projectId;
   let serieId;
   let samples;
-  let analyse;
+  let sampleUnit;
   if (apiData.projectId === undefined) {
     return hdl('Invalid data, projectId is missing');
   }
@@ -573,6 +616,15 @@ function apiAddSample(apiData, hdl) {
     return hdl('Invalid data, serieId is missing');
   }
   serieId = apiData.serieId;
+  if (apiVersion >= 2) {
+    if (apiData.sampleUnit === undefined) {
+      return hdl('Invalid data, sampleUnit is missing');
+    }
+    sampleUnit = apiData.sampleUnit;
+  } else {
+    // TODO: Temporary unit for IREE migration.
+    sampleUnit = getSampleDefaultUnit(serieId);
+  }
 
   if ((apiData.sample === undefined) && (apiData.samples === undefined)) {
     return hdl('Invalid data, sample or samples is missing');
@@ -632,7 +684,11 @@ function apiAddSample(apiData, hdl) {
       //
       // Serie analysis for benchmark
       //
-      sample.value = sample.value.toFixed(2) * 1;
+      let convertedValue = moduleUtils.unitConversion(sample.value, sampleUnit, serie.serieUnit);
+      if (convertedValue === null) {
+        return hdl('Invalid data - unit conversion failed');
+      }
+      sample.value = convertedValue.toFixed(2) * 1;
 
       if (serie.samples === undefined) serie.samples = {};
       serie.samples[sample.buildId] = sample.value;
@@ -931,7 +987,7 @@ function apiAddSample(apiData, hdl) {
   return hdl();
 }
 
-function apiGetBuild(apiData, hdl) {
+function apiGetBuild(apiData, hdl, apiVersion) {
   let projectId;
   let buildId;
 
@@ -962,9 +1018,26 @@ function apiGetBuild(apiData, hdl) {
     let thisSeries = global.projects[projectId].series.readSync(keys[ii]);
     if (thisSeries.projectId !== projectId) continue;
 
-    let samples = thisSeries.samples;
-    if (samples[buildId] === undefined) continue;
-    results[keys[ii]] = samples[buildId];
+    let sample = thisSeries.samples[buildId];
+    if (sample === undefined) {
+      continue;
+    }
+    let sampleUnit = thisSeries.serieUnit;
+    let result;
+    if (apiVersion >= 2) {
+      result = {
+        sampleUnit: sampleUnit,
+        sample: sample,
+      };
+    } else {
+      // TODO: Temporarily converting the unit for migration.
+      if (sampleUnit === 'ns') {
+        result = unitConversion(sample, sampleUnit, 'ms');
+      } else {
+        result = sample;
+      }
+    }
+    results[keys[ii]] = result;
   }
 
   return hdl(results);
@@ -1132,6 +1205,7 @@ app.use(require('body-parser').urlencoded({
 app.use(require('body-parser').json());
 
 const session = require("express-session");
+const { unitConversion } = require('./utils');
 const sessionMiddleware = session({
   secret: global.config.sessionSecret,
   resave: false,
@@ -1579,9 +1653,15 @@ app.post('/apis/*', function(req, res, next) {
   next();
 });
 
-app.post('/apis/*', function(req, res, next) {
-  let l = '/apis/'.length;
-  let apiName = req.originalUrl.substring(l);
+app.post('/apis/:apiVersion(v\\d+)?/:apiAction', function(req, res, next) {
+  let apiName = req.params.apiAction;
+  let apiVersion = req.params.apiVersion;
+  if (apiVersion === undefined) {
+    apiVersion = 1;
+  } else {
+    // Trim the 'v' from the head and convert to int.
+    apiVersion = parseInt(apiVersion.substring(1));
+  }
   let data = req.body;
   if (global.debug) console.log('Got a request', apiName, data);
   if (apiName === 'addBuild') {
@@ -1601,7 +1681,7 @@ app.post('/apis/*', function(req, res, next) {
         return res.send(err);
       }
       return res.send('addSerie successfull\n');
-    });
+    }, apiVersion);
     return;
   }
   if (apiName === 'addSample') {
@@ -1611,7 +1691,7 @@ app.post('/apis/*', function(req, res, next) {
         return res.send(err);
       }
       return res.send('addSample successfull\n');
-    });
+    }, apiVersion);
     return;
   }
 
@@ -1620,16 +1700,24 @@ app.post('/apis/*', function(req, res, next) {
   res.send(err);
 });
 
-app.get('/apis/getBuild', function(req, res, next) {
+app.get('/apis/:apiVersion(v\\d+)?/getBuild', function(req, res, next) {
   let data = req.body;
   if (global.debug) console.log('Got a request', 'getBuild', data);
+  let apiVersion = req.params.apiVersion;
+  if (apiVersion === undefined) {
+    apiVersion = 1;
+  } else {
+    // Trim the 'v' from the head and convert to int.
+    apiVersion = parseInt(apiVersion.substring(1));
+  }
+  console.log(apiVersion);
   apiGetBuild(data, function end(results, err) {
     if (err) {
       err.status = 400;
       return res.send(err);
     }
     return res.json(results);
-  });
+  }, apiVersion);
 });
 
 app.get('/*',

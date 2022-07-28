@@ -146,6 +146,17 @@
                 </div>
               </div>
               <div class="col-md-4 col-sm-4 col-xs-4">
+                <div id="unit" onloadedmetadata="" class="col-md-12 col-sm-12 col-xs-12">
+                  <div class="x_panel">
+                    <div class="x_content">
+                      <div class="form-group">
+                        <label>Unit</label>
+                        <select class="form-control" id="serieUnit">
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 <div class="col-md-12 col-sm-12 col-xs-12">
 
                   <div class="x_panel">
@@ -345,6 +356,7 @@
   }
 </script>
 <script src="/js/analyse.js"></script>
+<script src="/js/utils.js"></script>
 
 <script>
 var danaUrl = 'https://<%=global.config.server.ip%>';
@@ -362,6 +374,9 @@ var danaUrl = 'https://<%=global.config.server.ip%>';
   })
   $('#modalSaveAssignee').click(function () {
     modalSaveAssignee();
+  })
+  $('#serieUnit').change(function () {
+    changeSerieUnit();
   })
 </script>
 </body>
