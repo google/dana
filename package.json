@@ -38,7 +38,7 @@
     }
   },
   "devDependencies": {
-    "eslint": "^4.8.0",
+    "eslint": "^8.28.0",
     "eslint-config-google": "^0.9.1"
   },
   "scripts": {
