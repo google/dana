@@ -756,7 +756,7 @@ function uiLibOneReadyToProcessData() {
   else
     $('#modalSerieType').html('Show benchmark from ' + serie.projectId + ' project');
 
-  var h = serieId + '<small>';
+  var h = serie.serieName + '<small>';
   if (serie.description)
     h += '<br>' + serie.description;
   if (serie.infos)

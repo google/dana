@@ -495,6 +495,10 @@ function apiAddSerie(apiData, hdl, apiVersion) {
     // TODO: Temporary unit for IREE migration.
     serieUnit = getSerieDefaultUnit(serieId);
   }
+  let serieName = apiData.serieName
+  if (serieName === undefined) {
+    serieName = serieId;
+  }
 
   // analyse
   if (apiData.analyse === undefined) {
@@ -522,6 +526,8 @@ function apiAddSerie(apiData, hdl, apiVersion) {
     return hdl('Unit mismatched with the existing serie.');
   }
   serie.serieUnit = serieUnit;
+
+  serie.serieName = serieName;
 
   // optional apiData.description
   if (apiData.description) {
@@ -781,6 +787,7 @@ function apiAddSample(apiData, hdl, apiVersion) {
       }
       series[serieId] = {
         status: serie.analyseResult.summary,
+        serieName: serie.serieName,
         description: serie.description,
         state: serie.state.analyse,
         assignee: serie.assignee.analyse,
