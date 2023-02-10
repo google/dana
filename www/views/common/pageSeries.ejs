@@ -278,7 +278,7 @@
         for (var ii = 0; ii < k.length; ii++) {
           var s = series[k[ii]];
           if (serieFilter)
-            if (k[ii].indexOf(serieFilter) === -1)
+            if (s.serieName.indexOf(serieFilter) === -1)
               continue;
 
           numSeries++;
@@ -728,7 +728,7 @@
           if (!projects[projectId].useBugTracker) {
             h += '<td>--</td>';
           }
-          h += '<td><div style="word-wrap: break-word; word-break: break-all; white-space: normal;">' + serieId + '</div></td>';
+          h += '<td><div style="word-wrap: break-word; word-break: break-all; white-space: normal;" id="serieId_' + serieId + '">' + s.serieName + '</div></td>';
           h += '<td><div style="height:16px;" id="graphId_' + index + '"><center><i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i></center></div></td>';
           h += '<td>--</td>';
         } else {
@@ -740,7 +740,7 @@
                 ass = s.assignee
             h += myGetAssigneeTd(ass, serieId);
           }
-          h += '<td><div style="word-wrap: break-word; word-break: break-all; white-space: normal;">' + serieId + '</div></td>';
+          h += '<td><div style="word-wrap: break-word; word-break: break-all; white-space: normal;" id="serieId_' + serieId + '">' + s.serieName + '</div></td>';
           h += '<td><div style="height:16px;" id="graphId_' + index + '"><center><i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i></center></div></td>';
           let ttip = "";
           if (s.state.indexOf('similar') !== -1)
@@ -797,7 +797,7 @@
         if (!projects[projectId].useBugTracker) {
           h += '<th>Assignee</th>';
         }
-        h += '<th>Serie Id</th>';
+        h += '<th>Serie Name</th>';
         h += '<th style="width: 250px">Graph</th>';
         h += '<th style="width: 40px">Ratio</th>';
         h += '<th style="width: 80px" class="no-sort"></th>';
@@ -816,7 +816,7 @@
           }
 
           if (serieFilter)
-            if (k[ii].indexOf(serieFilter) === -1)
+            if (s.serieName.indexOf(serieFilter) === -1)
               continue;
 
           if (mode === 'undefined') {
@@ -888,9 +888,9 @@
               var ie = t.indexOf('</');
               var serieId;
               if (!projects[projectId].useBugTracker)
-                serieId = data[ii][2].substring(is + 2, ie);
+                serieId = data[ii][2].match(/\"serieId_(.+)\"/)[1];
               else
-                serieId = data[ii][1].substring(is + 2, ie);
+                serieId = data[ii][1].match(/\"serieId_(.+)\"/)[1];
               if (graphs[serieId].serie)
                 continue;
               socket.emit('getOneSerie', {
