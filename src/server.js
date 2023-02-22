@@ -556,6 +556,7 @@ function apiAddSerie(apiData, hdl, apiVersion) {
       if (!range.toString().endsWith("%") && serieUnit == "ns") {
         range = Math.floor(moduleUtils.unitConversion(range, "ms", "ns"));
       }
+      serie.analyse.benchmark.range = range;
     }
   }
   if (analyse.test) {
