@@ -283,7 +283,7 @@
 
           numSeries++;
 
-          if (s.status.lastBuildId === largestBuildId)
+          if (s.status.lastBuildId + 10 > largestBuildId)
             numActive++;
 
           if (s.status.error) {
@@ -823,13 +823,13 @@
             if (!s.status.error)
               continue;
           } else if (mode === 'active') {
-            if (s.status.lastBuildId !== largestBuildId)
+            if (s.status.lastBuildId + 10 <= largestBuildId)
               continue;
           } else if (mode !== 'all') {
             if (s.state.indexOf(mode) === -1)
               continue;
             // For similar benchmarks, also filter out inactive ones.
-            if (mode === 'similar' && s.status.lastBuildId !== largestBuildId)
+            if (mode === 'similar' && s.status.lastBuildId + 10 <= largestBuildId)
               continue;
           }
 
