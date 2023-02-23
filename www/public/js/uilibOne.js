@@ -70,6 +70,8 @@ function uiShowSerie(tpageType, tprojectId, tserieId) {
         displayUnit = 'ms'
       else if  (serie.serieUnit === 'bytes')
         displayUnit = 'kbytes'
+      else
+        displayUnit = serie.serieUnit
     }
 
     if (pageType === 'showOneSerie')
