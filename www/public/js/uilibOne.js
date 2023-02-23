@@ -65,7 +65,11 @@ function uiShowSerie(tpageType, tprojectId, tserieId) {
       return alert('receiveOneSerie dontexist for ', serieId);
     serie = req.serie;
     if (displayUnit === null) {
-      displayUnit = serie.serieUnit;
+      // Try to use a larger unit so that the number is smaller and nicer to read.
+      if (serie.serieUnit === 'ns')
+        displayUnit = 'ms'
+      else if  (serie.serieUnit === 'bytes')
+        displayUnit = 'kbytes'
     }
 
     if (pageType === 'showOneSerie')
