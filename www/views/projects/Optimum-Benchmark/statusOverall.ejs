@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../../common/head') %>
+
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        <%- include('sidebar') %>
+
+        <!-- top navigation -->
+        <div class="top_nav navbar-fixed-top">
+          <div class="nav_menu">
+            <nav class="" role="navigation">
+              <div class="nav toggle">
+                <a id="menu_toggle">
+                  <i class="fa fa-bars"></i>
+                </a>
+              </div>
+              <ul class="nav navbar-nav">
+                <h3 id="page-title" class="navbar-text">
+                  <span id="page_title_description"></span>
+                </h3>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        <!-- /top navigation -->
+
+        <%- include('../../common/pageOverall') %>
+      </div>
+    </div>
+
+    <script>
+      setOverallPage({
+        projectId: "Optimum-Benchmark",
+      });
+    </script>
+  </body>
+</html>
