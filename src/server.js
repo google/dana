@@ -2585,7 +2585,7 @@ io.on('connection', function(socket) {
   });
 });
 
-/*
+
 // for other webservices via direct connection
 const WebSocketServer = require('ws').Server;
 const wss = new WebSocketServer({
@@ -2635,7 +2635,6 @@ wss.on('connection', function connection(ws) {
     console.log('Dana server ws close');
   });
 });
-*/
 
 periodicSnapshot();
 snapshotAtMidnight();

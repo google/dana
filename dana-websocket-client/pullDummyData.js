@@ -81,8 +81,8 @@ function iAmConnectedToDana() {
         infos: {
           hash: "hash_build_" + 1000 + ii,
           abbrevHash: "abbrevHash_build_" + 1000 + ii,
-          authorName: "authorName",
-          authorEmail: "authorEmail",
+          authorName: "ilyas",
+          authorEmail: "ilyas@gmail.com",
           subject: "Dummy build " + 1000 + ii,
           url: "http://url_build_" + 1000 + ii,
         }
