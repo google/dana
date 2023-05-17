@@ -1,52 +1,48 @@
-<!--
-/*
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
--->
-
 <!-- page content -->
-<div class="right_col" role="main" style="padding-top: 50px;">
-
+<div class="right_col" role="main" style="padding-top: 50px">
   <!-- top tiles -->
   <div class="row">
     <div id="topBanner" class="row tile_count">
-      <div id="topBanner_overallTests" class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" hidden>
-        <span class="count_top">
-          Failing tests</span>
+      <div
+        id="topBanner_overallTests"
+        class="col-md-2 col-sm-4 col-xs-6 tile_stats_count"
+        hidden
+      >
+        <span class="count_top"> Failing tests</span>
         <div id="topBanner_overallFailingTests" class="count"></div>
-        <span id="topBanner_overallFailingTests_percent" class="count_bottom"></span>
+        <span
+          id="topBanner_overallFailingTests_percent"
+          class="count_bottom"
+        ></span>
       </div>
-      <div id="topBanner_overallSeries" class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" hidden>
-        <span class="count_top">
-          Benchmark regression(s)
-        </span>
+      <div
+        id="topBanner_overallSeries"
+        class="col-md-2 col-sm-4 col-xs-6 tile_stats_count"
+        hidden
+      >
+        <span class="count_top"> Benchmark regression(s) </span>
         <div id="topBanner_overallSeriesRegression" class="count"></div>
-        <span id="topBanner_overallSeriesRegression_percent" class="count_bottom"></span>
+        <span
+          id="topBanner_overallSeriesRegression_percent"
+          class="count_bottom"
+        ></span>
       </div>
-      <div id='topBannerCompares' class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" hidden>
-        <span class="count_top">
-          Benchmark lower(s)
-        </span>
+      <div
+        id="topBannerCompares"
+        class="col-md-2 col-sm-4 col-xs-6 tile_stats_count"
+        hidden
+      >
+        <span class="count_top"> Benchmark lower(s) </span>
         <div id="topBanner_overallSeriesLower" class="count"></div>
-        <span id="topBanner_overallSeriesLower_percent" class="count_bottom"></span>
+        <span
+          id="topBanner_overallSeriesLower_percent"
+          class="count_bottom"
+        ></span>
       </div>
     </div>
   </div>
 
   <div class="">
-
     <div id="rowNoDataToShow" class="row" hidden>
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
@@ -61,14 +57,20 @@
       </div>
     </div>
 
-    <div id='rowTests' class="row" hidden>
+    <div id="rowTests" class="row" hidden>
       <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
           <div class="x_title">
             <h2>Tests</h2>
             <ul class="nav navbar-right panel_toolbox">
               <li>
-                <button id='btnShowTests' type="button" class="btn btn-primary btn-xs">Show</button>
+                <button
+                  id="btnShowTests"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  Show
+                </button>
               </li>
             </ul>
             <div class="clearfix"></div>
@@ -78,24 +80,26 @@
               <div id="topBannerTests" class="tile_count">
                 <div class="row">
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Number of tests</span>
+                    <span class="count_top"> Number of tests</span>
                     <div id="topBanner_numTests" class="count"></div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Passing tests
-                    </span>
+                    <span class="count_top"> Passing tests </span>
                     <div id="topBanner_numTestsPassing" class="count"></div>
-                    <span id="topBanner_numTestsPassing_percent" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numTestsPassing_percent"
+                      class="count_bottom"
+                    ></span>
                   </div>
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Failing tests</span>
+                    <span class="count_top"> Failing tests</span>
                     <div id="topBanner_numTestsFailing" class="count"></div>
-                    <span id="topBanner_numTestsFailing_percent" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numTestsFailing_percent"
+                      class="count_bottom"
+                    ></span>
                   </div>
                 </div>
               </div>
@@ -115,7 +119,13 @@
             <h2>Regression analysis</h2>
             <ul class="nav navbar-right panel_toolbox">
               <li>
-                <button id='btnShowSeries' type="button" class="btn btn-primary btn-xs">Show</button>
+                <button
+                  id="btnShowSeries"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  Show
+                </button>
               </li>
             </ul>
             <div class="clearfix"></div>
@@ -125,36 +135,38 @@
               <div id="topBannerSeries" class="tile_count">
                 <div class="row">
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Benchmarks</span>
+                    <span class="count_top"> Benchmarks</span>
                     <div id="topBanner_numSeries" class="count"></div>
                   </div>
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Undefined</span>
+                    <span class="count_top"> Undefined</span>
                     <div id="topBanner_numSeriesUndefined" class="count"></div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Similar
-                    </span>
+                    <span class="count_top"> Similar </span>
                     <div id="topBanner_numSeriesSimilar" class="count"></div>
-                    <span id="topBanner_numSeriesSimilar_percent" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numSeriesSimilar_percent"
+                      class="count_bottom"
+                    ></span>
                   </div>
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Improved
-                    </span>
+                    <span class="count_top"> Improved </span>
                     <div id="topBanner_numSeriesImproved" class="count"></div>
-                    <span id="topBanner_numSeriesImproved_percent" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numSeriesImproved_percent"
+                      class="count_bottom"
+                    ></span>
                   </div>
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Regression</span>
+                    <span class="count_top"> Regression</span>
                     <div id="topBanner_numRegressions" class="count"></div>
-                    <span id="topBanner_numRegressions_percent" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numRegressions_percent"
+                      class="count_bottom"
+                    ></span>
                   </div>
                 </div>
               </div>
@@ -171,10 +183,16 @@
       <div class="col-md-12">
         <div class="x_panel">
           <div class="x_title">
-            <h2 id='compareDesc_Id0'></h2>
+            <h2 id="compareDesc_Id0"></h2>
             <ul class="nav navbar-right panel_toolbox">
               <li>
-                <button id='btnShowCompare_Id0' type="button" class="btn btn-primary btn-xs">Show</button>
+                <button
+                  id="btnShowCompare_Id0"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  Show
+                </button>
               </li>
             </ul>
             <div class="clearfix"></div>
@@ -184,31 +202,37 @@
               <div id="topBannerCompare_Id0" class="tile_count">
                 <div class="row">
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Benchmarks</span>
+                    <span class="count_top"> Benchmarks</span>
                     <div id="topBanner_numSeries_Id0" class="count"></div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Similar
-                    </span>
-                    <div id="topBanner_numSeriesSimilar_Id0" class="count"></div>
-                    <span id="topBanner_numSeriesSimilar_percent_Id0" class="count_bottom"></span>
+                    <span class="count_top"> Similar </span>
+                    <div
+                      id="topBanner_numSeriesSimilar_Id0"
+                      class="count"
+                    ></div>
+                    <span
+                      id="topBanner_numSeriesSimilar_percent_Id0"
+                      class="count_bottom"
+                    ></span>
                   </div>
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Better
-                    </span>
+                    <span class="count_top"> Better </span>
                     <div id="topBanner_numSeriesBetter_Id0" class="count"></div>
-                    <span id="topBanner_numSeriesBetter_percent_Id0" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numSeriesBetter_percent_Id0"
+                      class="count_bottom"
+                    ></span>
                   </div>
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Lower</span>
+                    <span class="count_top"> Lower</span>
                     <div id="topBanner_numSeriesLower_Id0" class="count"></div>
-                    <span id="topBanner_numSeriesLower_percent_Id0" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numSeriesLower_percent_Id0"
+                      class="count_bottom"
+                    ></span>
                   </div>
                 </div>
               </div>
@@ -225,10 +249,16 @@
       <div class="col-md-12">
         <div class="x_panel">
           <div class="x_title">
-            <h2 id='compareDesc_Id1'></h2>
+            <h2 id="compareDesc_Id1"></h2>
             <ul class="nav navbar-right panel_toolbox">
               <li>
-                <button id='btnShowCompare_Id1' type="button" class="btn btn-primary btn-xs">Show</button>
+                <button
+                  id="btnShowCompare_Id1"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  Show
+                </button>
               </li>
             </ul>
             <div class="clearfix"></div>
@@ -238,31 +268,37 @@
               <div id="topBannerCompare_Id1" class="tile_count">
                 <div class="row">
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Benchmarks</span>
+                    <span class="count_top"> Benchmarks</span>
                     <div id="topBanner_numSeries_Id1" class="count"></div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Similar
-                    </span>
-                    <div id="topBanner_numSeriesSimilar_Id1" class="count"></div>
-                    <span id="topBanner_numSeriesSimilar_percent_Id1" class="count_bottom"></span>
+                    <span class="count_top"> Similar </span>
+                    <div
+                      id="topBanner_numSeriesSimilar_Id1"
+                      class="count"
+                    ></div>
+                    <span
+                      id="topBanner_numSeriesSimilar_percent_Id1"
+                      class="count_bottom"
+                    ></span>
                   </div>
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Better
-                    </span>
+                    <span class="count_top"> Better </span>
                     <div id="topBanner_numSeriesBetter_Id1" class="count"></div>
-                    <span id="topBanner_numSeriesBetter_percent_Id1" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numSeriesBetter_percent_Id1"
+                      class="count_bottom"
+                    ></span>
                   </div>
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Lower</span>
+                    <span class="count_top"> Lower</span>
                     <div id="topBanner_numSeriesLower_Id1" class="count"></div>
-                    <span id="topBanner_numSeriesLower_percent_Id1" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numSeriesLower_percent_Id1"
+                      class="count_bottom"
+                    ></span>
                   </div>
                 </div>
               </div>
@@ -279,10 +315,16 @@
       <div class="col-md-12">
         <div class="x_panel">
           <div class="x_title">
-            <h2 id='compareDesc_Id2'></h2>
+            <h2 id="compareDesc_Id2"></h2>
             <ul class="nav navbar-right panel_toolbox">
               <li>
-                <button id='btnShowCompare_Id2' type="button" class="btn btn-primary btn-xs">Show</button>
+                <button
+                  id="btnShowCompare_Id2"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  Show
+                </button>
               </li>
             </ul>
             <div class="clearfix"></div>
@@ -292,31 +334,37 @@
               <div id="topBannerCompare_Id2" class="tile_count">
                 <div class="row">
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Benchmarks</span>
+                    <span class="count_top"> Benchmarks</span>
                     <div id="topBanner_numSeries_Id2" class="count"></div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Similar
-                    </span>
-                    <div id="topBanner_numSeriesSimilar_Id2" class="count"></div>
-                    <span id="topBanner_numSeriesSimilar_percent_Id2" class="count_bottom"></span>
+                    <span class="count_top"> Similar </span>
+                    <div
+                      id="topBanner_numSeriesSimilar_Id2"
+                      class="count"
+                    ></div>
+                    <span
+                      id="topBanner_numSeriesSimilar_percent_Id2"
+                      class="count_bottom"
+                    ></span>
                   </div>
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Better
-                    </span>
+                    <span class="count_top"> Better </span>
                     <div id="topBanner_numSeriesBetter_Id2" class="count"></div>
-                    <span id="topBanner_numSeriesBetter_percent_Id2" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numSeriesBetter_percent_Id2"
+                      class="count_bottom"
+                    ></span>
                   </div>
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Lower</span>
+                    <span class="count_top"> Lower</span>
                     <div id="topBanner_numSeriesLower_Id2" class="count"></div>
-                    <span id="topBanner_numSeriesLower_percent_Id2" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numSeriesLower_percent_Id2"
+                      class="count_bottom"
+                    ></span>
                   </div>
                 </div>
               </div>
@@ -333,10 +381,16 @@
       <div class="col-md-12">
         <div class="x_panel">
           <div class="x_title">
-            <h2 id='compareDesc_Id3'></h2>
+            <h2 id="compareDesc_Id3"></h2>
             <ul class="nav navbar-right panel_toolbox">
               <li>
-                <button id='btnShowCompare_Id3' type="button" class="btn btn-primary btn-xs">Show</button>
+                <button
+                  id="btnShowCompare_Id3"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  Show
+                </button>
               </li>
             </ul>
             <div class="clearfix"></div>
@@ -346,31 +400,37 @@
               <div id="topBannerCompare_Id3" class="tile_count">
                 <div class="row">
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Benchmarks</span>
+                    <span class="count_top"> Benchmarks</span>
                     <div id="topBanner_numSeries_Id3" class="count"></div>
                   </div>
                 </div>
                 <div class="row">
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Similar
-                    </span>
-                    <div id="topBanner_numSeriesSimilar_Id3" class="count"></div>
-                    <span id="topBanner_numSeriesSimilar_percent_Id3" class="count_bottom"></span>
+                    <span class="count_top"> Similar </span>
+                    <div
+                      id="topBanner_numSeriesSimilar_Id3"
+                      class="count"
+                    ></div>
+                    <span
+                      id="topBanner_numSeriesSimilar_percent_Id3"
+                      class="count_bottom"
+                    ></span>
                   </div>
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Better
-                    </span>
+                    <span class="count_top"> Better </span>
                     <div id="topBanner_numSeriesBetter_Id3" class="count"></div>
-                    <span id="topBanner_numSeriesBetter_percent_Id3" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numSeriesBetter_percent_Id3"
+                      class="count_bottom"
+                    ></span>
                   </div>
                   <div class="col-md-4 col-sm-4 col-xs-6 tile_stats_count">
-                    <span class="count_top">
-                      Lower</span>
+                    <span class="count_top"> Lower</span>
                     <div id="topBanner_numSeriesLower_Id3" class="count"></div>
-                    <span id="topBanner_numSeriesLower_percent_Id3" class="count_bottom"></span>
+                    <span
+                      id="topBanner_numSeriesLower_percent_Id3"
+                      class="count_bottom"
+                    ></span>
                   </div>
                 </div>
               </div>
@@ -385,10 +445,9 @@
 
     <div class="row">
       <div class="col-md-12 col-sm-12 col-xs-12">
-        <br>
+        <br />
       </div>
     </div>
-
   </div>
 </div>
 <%- include('../common/footer') %>
@@ -408,8 +467,14 @@
 <script src="/socket.io/socket.io.js"></script>
 
 <!-- Dygraph for sparklines-->
-<script type="text/javascript" src="/third_party/dygraph/js/dygraph.js"></script>
-<script type="text/javascript" src="/third_party/dygraph/js/synchronizer.js"></script>
+<script
+  type="text/javascript"
+  src="/third_party/dygraph/js/dygraph.js"
+></script>
+<script
+  type="text/javascript"
+  src="/third_party/dygraph/js/synchronizer.js"
+></script>
 
 <!-- Charts -->
 <script src="/third_party/charts.js/Chart.bundle.min.js"></script>
@@ -436,9 +501,9 @@
     green: "#5fe468",
     greenDark: "#009900",
     red: "#FF0000",
-    grey: "#808080"
+    grey: "#808080",
   };
-  var timeFormat = 'MM/DD/YYYY';
+  var timeFormat = "MM/DD/YYYY";
 
   function setOverallPage(obj) {
     userPage = obj;
@@ -455,112 +520,106 @@
         if (statusSeries !== undefined)
           if (compares !== undefined) {
             var k1 = Object.keys(statusCompares);
-            if (numComparesRequired === k1.length)
-              return true;
-            }
+            if (numComparesRequired === k1.length) return true;
+          }
 
-          return false;
-        }
+    return false;
+  }
 
   function overallStart(tprojectId) {
     projectId = tprojectId;
-    $('#page_title_description').html('Project Status Snapshots for ' + projectId + ' <small>Based on results taken at noon each day</small></h3>');
+    $("#page_title_description").html(
+      "Project Status Snapshots for " +
+        projectId +
+        " <small>Based on results taken at noon each day</small></h3>"
+    );
 
     socket = io();
 
-    socket.on('receiveFileInfo', function (req) {
-      if (debug)
-        console.log('receiveFileInfo', req);
+    socket.on("receiveFileInfo", function (req) {
+      if (debug) console.log("receiveFileInfo", req);
       NProgress.inc();
-      if (req.fileId === 'builds')
-        builds = req.file;
-      if (req.fileId === 'tests.statusSeries')
-        statusTests = req.file;
-      if (req.fileId === 'benchmarks.statusSeries')
-        statusSeries = req.file;
-      if (req.fileId === 'compares') {
+      if (req.fileId === "builds") builds = req.file;
+      if (req.fileId === "tests.statusSeries") statusTests = req.file;
+      if (req.fileId === "benchmarks.statusSeries") statusSeries = req.file;
+      if (req.fileId === "compares") {
         compares = req.file;
         statusCompares = {};
-        numComparesRequired=0;
+        numComparesRequired = 0;
         var k = Object.keys(compares);
         for (var ii in k) {
-          if (compares[k[ii]].projectId !== projectId)
-            continue;
-            numComparesRequired++;
-          socket.emit('getFileInfo', {
+          if (compares[k[ii]].projectId !== projectId) continue;
+          numComparesRequired++;
+          socket.emit("getFileInfo", {
             projectId: projectId,
             compareId: k[ii],
-            fileId: 'benchmarks.statusCompare_' + k[ii]
+            fileId: "benchmarks.statusCompare_" + k[ii],
           });
         }
       }
-      if (req.fileId.indexOf('benchmarks.statusCompare_') !== -1)
+      if (req.fileId.indexOf("benchmarks.statusCompare_") !== -1)
         statusCompares[req.compareId] = req.file;
-      if (allIsDownloaded())
-        overallReadyToProcessData();
-      }
-    );
-
-    socket.on('serverError', function (req) {
-      if (debug)
-        console.log('serverError', req);
-      alert(req)
+      if (allIsDownloaded()) overallReadyToProcessData();
     });
 
-    if (debug)
-      console.log('getBuilds, getStatusSeries, getCompares');
+    socket.on("serverError", function (req) {
+      if (debug) console.log("serverError", req);
+      alert(req);
+    });
+
+    if (debug) console.log("getBuilds, getStatusSeries, getCompares");
     NProgress.start();
-    socket.emit('getFileInfo', {
+    socket.emit("getFileInfo", {
       projectId: projectId,
-      fileId: 'builds'
+      fileId: "builds",
     });
-    socket.emit('getFileInfo', {
+    socket.emit("getFileInfo", {
       projectId: projectId,
-      fileId: 'tests.statusSeries'
+      fileId: "tests.statusSeries",
     });
-    socket.emit('getFileInfo', {
+    socket.emit("getFileInfo", {
       projectId: projectId,
-      fileId: 'benchmarks.statusSeries'
+      fileId: "benchmarks.statusSeries",
     });
-    socket.emit('getFileInfo', {
-      projectId: 'admin',
-      fileId: 'compares'
+    socket.emit("getFileInfo", {
+      projectId: "admin",
+      fileId: "compares",
     });
   }
 
   function overallReadyToProcessData() {
-    if (debug)
-      console.log('overallReadyToProcessData');
+    if (debug) console.log("overallReadyToProcessData");
     NProgress.done();
     updateTestsBannerAndGraph();
     updateSeriesBannerAndGraph();
     updateComparesBannerAndGraph();
 
-    if (!someDataShown)
-      $('#rowNoDataToShow').show();
-    }
+    if (!someDataShown) $("#rowNoDataToShow").show();
+  }
 
   function updateTestsBannerAndGraph() {
     function doUpdateTestBanner(numTests, numTestsFailing, numTestsPassing) {
-      $('#topBanner_numTests').html(numTests);
+      $("#topBanner_numTests").html(numTests);
 
-      var p = numTestsFailing / numTests * 100;
-      $('#topBanner_numTestsFailing').html(p.toFixed(2) + "%");
+      var p = (numTestsFailing / numTests) * 100;
+      $("#topBanner_numTestsFailing").html(p.toFixed(2) + "%");
       if (numTestsFailing === 0)
-        $('#topBanner_numTestsFailing').addClass('green')
-      else
-        $('#topBanner_numTestsFailing').addClass('red')
-      $('#topBanner_numTestsFailing_percent').html(numTestsFailing + ' on ' + numTests);
+        $("#topBanner_numTestsFailing").addClass("green");
+      else $("#topBanner_numTestsFailing").addClass("red");
+      $("#topBanner_numTestsFailing_percent").html(
+        numTestsFailing + " on " + numTests
+      );
 
-      var p = numTestsPassing / numTests * 100;
-      $('#topBanner_numTestsPassing').html(p.toFixed(2) + "%");
+      var p = (numTestsPassing / numTests) * 100;
+      $("#topBanner_numTestsPassing").html(p.toFixed(2) + "%");
       if (numTestsPassing === 0)
-        $('#topBanner_numTestsPassing').addClass('red')
-      else
-        $('#topBanner_numTestsPassing').addClass('green')
-      $('#topBanner_numTestsPassing_percent').html(numTestsPassing + ' on ' + numTests);
+        $("#topBanner_numTestsPassing").addClass("red");
+      else $("#topBanner_numTestsPassing").addClass("green");
+      $("#topBanner_numTestsPassing_percent").html(
+        numTestsPassing + " on " + numTests
+      );
 
-      $('#topBanner_overallTests').show();
+      $("#topBanner_overallTests").show();
     }
 
     var numTests = 0;
@@ -568,29 +627,29 @@
     var numTestsPassing = 0;
     var p = 0;
     var k = Object.keys(statusTests);
-    if (k.length === 0)
-      return;
+    if (k.length === 0) return;
     someDataShown = true;
-    $('#rowTests').show();
-    $('#btnShowTests').click(function () {
-      window.open("/" + projectId + '/statusTests', '_parent');
-    })
+    $("#rowTests").show();
+    $("#btnShowTests").click(function () {
+      window.open("/" + projectId + "/statusTests", "_parent");
+    });
     k.sort(function (a, b) {
-      return a * 1 - b * 1
+      return a * 1 - b * 1;
     });
 
     var s = k[k.length - 1];
     numTests = statusTests[s].numTests;
     numTestsFailing = statusTests[s].numTestsFailing;
     numTestsPassing = statusTests[s].numTestsPassing;
-    p = numTestsFailing / numTests * 100;
+    p = (numTestsFailing / numTests) * 100;
 
-    $('#topBanner_overallFailingTests').html(p.toFixed(2) + "%");
+    $("#topBanner_overallFailingTests").html(p.toFixed(2) + "%");
     if (numTestsFailing === 0)
-      $('#topBanner_overallFailingTests').addClass('green')
-    else
-      $('#topBanner_overallFailingTests').addClass('red')
-    $('#topBanner_overallFailingTests_percent').html(numTestsFailing + ' on ' + numTests);
+      $("#topBanner_overallFailingTests").addClass("green");
+    else $("#topBanner_overallFailingTests").addClass("red");
+    $("#topBanner_overallFailingTests_percent").html(
+      numTestsFailing + " on " + numTests
+    );
 
     doUpdateTestBanner(numTests, numTestsFailing, numTestsPassing);
 
@@ -607,105 +666,120 @@
       axisBuildIndexes.push(k[ii] * 1);
       axisDateLabels.push(statusTests[k[ii]].time);
     }
-    var ctx = document.getElementById("testGraph").getContext('2d');
+    var ctx = document.getElementById("testGraph").getContext("2d");
     var myChart = new Chart(ctx, {
-      type: 'line',
+      type: "line",
       data: {
         labels: axisDateLabels,
         datasets: [
           {
             pointRadius: 1,
-            label: 'Failing',
+            label: "Failing",
             data: datasetFailing,
             borderColor: colors.red,
             backgroundColor: colors.red,
-            fill: true
-          }, {
+            fill: true,
+          },
+          {
             pointRadius: 1,
-            label: 'Passing',
+            label: "Passing",
             data: datasetPassing,
             borderColor: colors.green,
             backgroundColor: colors.green,
-            fill: true
-          }
-        ]
+            fill: true,
+          },
+        ],
       },
       options: {
         tooltips: {
-          mode: 'index',
-          intersect: true
+          mode: "index",
+          intersect: true,
         },
         elements: {
           line: {
-            tension: 0 // disables bezier curves
-          }
+            tension: 0, // disables bezier curves
+          },
         },
         scales: {
           yAxes: [
             {
               ticks: {
-                beginAtZero: false
+                beginAtZero: false,
               },
-              stacked: true
-            }
+              stacked: true,
+            },
           ],
           xAxes: [
             {
-              display:false,
-              type: 'time',
+              display: false,
+              type: "time",
               time: {
                 format: timeFormat,
-                tooltipFormat: timeFormat
+                tooltipFormat: timeFormat,
               },
               scaleLabel: {
-                display: false
-              }
-            }
-          ]
+                display: false,
+              },
+            },
+          ],
         },
         hover: {
           intersect: false,
-          mode: 'nearest',
+          mode: "nearest",
           onHover: function (event, selection) {
             if (selection.length !== 0) {
-              var s = statusTests[axisBuildIndexes[selection[0]._index]]
-              doUpdateTestBanner(s.numTests, s.numTestsFailing, s.numTestsPassing);
+              var s = statusTests[axisBuildIndexes[selection[0]._index]];
+              doUpdateTestBanner(
+                s.numTests,
+                s.numTestsFailing,
+                s.numTestsPassing
+              );
             }
-          }
-        }
-      }
+          },
+        },
+      },
     });
   }
 
   function updateSeriesBannerAndGraph() {
-    function doUpdateSerieBanner(numSeries, numSeriesRegression, numSeriesSimilar, numSeriesImproved, numSeriesUndefined) {
-      $('#topBanner_numSeries').html(numSeries);
+    function doUpdateSerieBanner(
+      numSeries,
+      numSeriesRegression,
+      numSeriesSimilar,
+      numSeriesImproved,
+      numSeriesUndefined
+    ) {
+      $("#topBanner_numSeries").html(numSeries);
 
-      var p = numSeriesRegression / numSeries * 100;
-      $('#topBanner_numRegressions').html(p.toFixed(2) + "%");
+      var p = (numSeriesRegression / numSeries) * 100;
+      $("#topBanner_numRegressions").html(p.toFixed(2) + "%");
       if (numSeriesRegression === 0)
-        $('#topBanner_numRegressions').addClass('green')
-      else
-        $('#topBanner_numRegressions').addClass('red')
-      $('#topBanner_numRegressions_percent').html(numSeriesRegression + ' on ' + numSeries);
+        $("#topBanner_numRegressions").addClass("green");
+      else $("#topBanner_numRegressions").addClass("red");
+      $("#topBanner_numRegressions_percent").html(
+        numSeriesRegression + " on " + numSeries
+      );
 
-      var p = numSeriesSimilar / numSeries * 100;
-      $('#topBanner_numSeriesSimilar').html(p.toFixed(2) + "%");
+      var p = (numSeriesSimilar / numSeries) * 100;
+      $("#topBanner_numSeriesSimilar").html(p.toFixed(2) + "%");
       if (numSeriesSimilar === 0)
-        $('#topBanner_numSeriesSimilar').addClass('red')
-      else
-        $('#topBanner_numSeriesSimilar').addClass('green')
-      $('#topBanner_numSeriesSimilar_percent').html(numSeriesSimilar + ' on ' + numSeries);
+        $("#topBanner_numSeriesSimilar").addClass("red");
+      else $("#topBanner_numSeriesSimilar").addClass("green");
+      $("#topBanner_numSeriesSimilar_percent").html(
+        numSeriesSimilar + " on " + numSeries
+      );
 
-      var p = numSeriesImproved / numSeries * 100;
-      $('#topBanner_numSeriesImproved').html(p.toFixed(2) + "%");
+      var p = (numSeriesImproved / numSeries) * 100;
+      $("#topBanner_numSeriesImproved").html(p.toFixed(2) + "%");
       if (numSeriesImproved !== 0)
-        $('#topBanner_numSeriesImproved').addClass('green')
-      $('#topBanner_numSeriesImproved_percent').html(numSeriesImproved + ' on ' + numSeries);
+        $("#topBanner_numSeriesImproved").addClass("green");
+      $("#topBanner_numSeriesImproved_percent").html(
+        numSeriesImproved + " on " + numSeries
+      );
 
-      $('#topBanner_numSeriesUndefined').html(numSeriesUndefined);
+      $("#topBanner_numSeriesUndefined").html(numSeriesUndefined);
 
-      $('#topBanner_overallSeries').show();
+      $("#topBanner_overallSeries").show();
     }
 
     var numSeries;
@@ -714,15 +788,14 @@
     var numSeriesImproved;
     var numSeriesUndefined;
     var k = Object.keys(statusSeries);
-    if (k.length === 0)
-      return;
+    if (k.length === 0) return;
     someDataShown = true;
-    $('#rowBenchmarks').show();
-    $('#btnShowSeries').click(function () {
-      window.open("/" + projectId + '/statusSeries', '_parent');
-    })
+    $("#rowBenchmarks").show();
+    $("#btnShowSeries").click(function () {
+      window.open("/" + projectId + "/statusSeries", "_parent");
+    });
     k.sort(function (a, b) {
-      return a * 1 - b * 1
+      return a * 1 - b * 1;
     });
 
     var s = k[k.length - 1];
@@ -731,15 +804,22 @@
     numSeriesSimilar = statusSeries[s].numSeriesSimilar;
     numSeriesImproved = statusSeries[s].numSeriesImproved;
     numSeriesUndefined = statusSeries[s].numSeriesUndefined;
-    var p = numSeriesRegression / numSeries * 100;
-    $('#topBanner_overallSeriesRegression').html(p.toFixed(2) + "%");
+    var p = (numSeriesRegression / numSeries) * 100;
+    $("#topBanner_overallSeriesRegression").html(p.toFixed(2) + "%");
     if (numSeriesRegression === 0)
-      $('#topBanner_overallSeriesRegression').addClass('green')
-    else
-      $('#topBanner_overallSeriesRegression').addClass('red')
-    $('#topBanner_overallSeriesRegression_percent').html(numSeriesRegression + ' on ' + numSeries);
+      $("#topBanner_overallSeriesRegression").addClass("green");
+    else $("#topBanner_overallSeriesRegression").addClass("red");
+    $("#topBanner_overallSeriesRegression_percent").html(
+      numSeriesRegression + " on " + numSeries
+    );
 
-    doUpdateSerieBanner(numSeries, numSeriesRegression, numSeriesSimilar, numSeriesImproved, numSeriesUndefined);
+    doUpdateSerieBanner(
+      numSeries,
+      numSeriesRegression,
+      numSeriesSimilar,
+      numSeriesImproved,
+      numSeriesUndefined
+    );
 
     // prepare data for graph var labels = [];
     var datasetUndefined = [];
@@ -756,109 +836,115 @@
       datasetSimilar.push(statusSeries[k[ii]].numSeriesSimilar);
       datasetImproved.push(statusSeries[k[ii]].numSeriesImproved);
       axisDateLabels.push(statusSeries[k[ii]].time);
-      axisBuildIndexes.push(k[ii] * 1)
+      axisBuildIndexes.push(k[ii] * 1);
     }
 
-    var ctx = document.getElementById("serieGraph").getContext('2d');
+    var ctx = document.getElementById("serieGraph").getContext("2d");
     var myChart = new Chart(ctx, {
-      type: 'line',
+      type: "line",
       data: {
         labels: axisDateLabels,
         datasets: [
           {
             pointRadius: 1,
-            label: 'Improved',
+            label: "Improved",
             data: datasetImproved,
             borderColor: colors.green,
             backgroundColor: colors.green,
-            fill: true
-          }, {
+            fill: true,
+          },
+          {
             pointRadius: 1,
-            label: 'Similar',
+            label: "Similar",
             data: datasetSimilar,
             borderColor: colors.greenDark,
             backgroundColor: colors.greenDark,
-            fill: true
-          }, {
+            fill: true,
+          },
+          {
             pointRadius: 1,
-            label: 'Regression',
+            label: "Regression",
             data: datasetRegression,
             borderColor: colors.red,
             backgroundColor: colors.red,
-            fill: true
-          }, {
+            fill: true,
+          },
+          {
             pointRadius: 1,
-            label: 'Undefined',
+            label: "Undefined",
             data: datasetUndefined,
             borderColor: colors.grey,
             backgroundColor: colors.grey,
-            fill: true
-          }
-        ]
+            fill: true,
+          },
+        ],
       },
       options: {
         tooltips: {
-          mode: 'index',
-          intersect: false
+          mode: "index",
+          intersect: false,
         },
         elements: {
           line: {
             tension: 0, // disables bezier curves
-          }
+          },
         },
         scales: {
           yAxes: [
             {
               ticks: {
-                beginAtZero: false
+                beginAtZero: false,
               },
-              stacked: true
-            }
+              stacked: true,
+            },
           ],
           xAxes: [
             {
-              display:false,
-              type: 'time',
+              display: false,
+              type: "time",
               time: {
                 format: timeFormat,
-                tooltipFormat: timeFormat
+                tooltipFormat: timeFormat,
               },
               scaleLabel: {
-                display: true
-              }
-            }
-          ]
+                display: true,
+              },
+            },
+          ],
         },
         hover: {
           intersect: false,
-          mode: 'nearest',
+          mode: "nearest",
           onHover: function (event, selection) {
             if (selection.length !== 0) {
-              var s = statusSeries[axisBuildIndexes[selection[0]._index]]
-              doUpdateSerieBanner(s.numSeries, s.numSeriesRegression, s.numSeriesSimilar, s.numSeriesImproved, s.numSeriesUndefined);
+              var s = statusSeries[axisBuildIndexes[selection[0]._index]];
+              doUpdateSerieBanner(
+                s.numSeries,
+                s.numSeriesRegression,
+                s.numSeriesSimilar,
+                s.numSeriesImproved,
+                s.numSeriesUndefined
+              );
             }
-          }
-        }
-      }
+          },
+        },
+      },
     });
   }
 
   function updateComparesBannerAndGraph() {
     var k = Object.keys(compares);
-    if (k.length === 0)
-      return;
+    if (k.length === 0) return;
 
     var sumNumSeries = 0;
     var sumSerieLower = 0;
     for (var ii in k) {
-      if (compares[k[ii]].projectId !== projectId)
-        continue;
+      if (compares[k[ii]].projectId !== projectId) continue;
       var kk = Object.keys(statusCompares[k[ii]]);
-      if (kk.length === 0)
-        continue;
+      if (kk.length === 0) continue;
       someDataShown = true;
       kk.sort(function (a, b) {
-        return a * 1 - b * 1
+        return a * 1 - b * 1;
       });
       var s = statusCompares[k[ii]][kk[kk.length - 1]];
       sumNumSeries += s.numSeries;
@@ -867,66 +953,86 @@
     }
 
     if (sumNumSeries !== 0) {
-      var p = sumSerieLower / sumNumSeries * 100;
-      $('#topBanner_overallSeriesLower').html(p.toFixed(2) + "%");
+      var p = (sumSerieLower / sumNumSeries) * 100;
+      $("#topBanner_overallSeriesLower").html(p.toFixed(2) + "%");
       if (sumSerieLower === 0)
-        $('#topBanner_overallSeriesLower').addClass('green')
-      else
-        $('#topBanner_overallSeriesLower').addClass('red')
-      $('#topBanner_overallSeriesLower_percent').html(sumSerieLower + ' on ' + sumNumSeries);
+        $("#topBanner_overallSeriesLower").addClass("green");
+      else $("#topBanner_overallSeriesLower").addClass("red");
+      $("#topBanner_overallSeriesLower_percent").html(
+        sumSerieLower + " on " + sumNumSeries
+      );
 
-      $('#topBannerCompares').show();
+      $("#topBannerCompares").show();
     }
   }
 
   function updateComparesBannerAndGraphOne(compareIndex, compareId) {
-    $('#btnShowCompare_Id' + compareIndex).click(function () {
-      window.open("/" + projectId + '/status' + compareId, '_parent');
-    })
-    $('#compareDesc_Id' + compareIndex).html(compares[compareId].description);
+    $("#btnShowCompare_Id" + compareIndex).click(function () {
+      window.open("/" + projectId + "/status" + compareId, "_parent");
+    });
+    $("#compareDesc_Id" + compareIndex).html(compares[compareId].description);
 
-    function doUpdateCompareBanner(compareIndex, numSeries, numSeriesSimilar, numSeriesBetter, numSeriesLower) {
-      $('#topBanner_numSeries_Id' + compareIndex).html(numSeries);
+    function doUpdateCompareBanner(
+      compareIndex,
+      numSeries,
+      numSeriesSimilar,
+      numSeriesBetter,
+      numSeriesLower
+    ) {
+      $("#topBanner_numSeries_Id" + compareIndex).html(numSeries);
 
-      var p = numSeriesLower / numSeries * 100;
-      $('#topBanner_numSeriesLower_Id' + compareIndex).html(p.toFixed(2) + "%");
+      var p = (numSeriesLower / numSeries) * 100;
+      $("#topBanner_numSeriesLower_Id" + compareIndex).html(p.toFixed(2) + "%");
       if (numSeriesLower === 0)
-        $('#topBanner_numSeriesLower_Id' + compareIndex).addClass('green')
-      else
-        $('#topBanner_numSeriesLower_Id' + compareIndex).addClass('red')
-      $('#topBanner_numSeriesLower_percent_Id' + compareIndex).html(numSeriesLower + ' on ' + numSeries);
+        $("#topBanner_numSeriesLower_Id" + compareIndex).addClass("green");
+      else $("#topBanner_numSeriesLower_Id" + compareIndex).addClass("red");
+      $("#topBanner_numSeriesLower_percent_Id" + compareIndex).html(
+        numSeriesLower + " on " + numSeries
+      );
 
-      p = numSeriesBetter / numSeries * 100;
-      $('#topBanner_numSeriesBetter_Id' + compareIndex).html(p.toFixed(2) + "%");
+      p = (numSeriesBetter / numSeries) * 100;
+      $("#topBanner_numSeriesBetter_Id" + compareIndex).html(
+        p.toFixed(2) + "%"
+      );
       if (numSeriesBetter === 0)
-        $('#topBanner_numSeriesBetter_Id' + compareIndex).addClass('red')
-      else
-        $('#topBanner_numSeriesBetter_Id' + compareIndex).addClass('green')
-      $('#topBanner_numSeriesBetter_percent_Id' + compareIndex).html(numSeriesBetter + ' on ' + numSeries);
+        $("#topBanner_numSeriesBetter_Id" + compareIndex).addClass("red");
+      else $("#topBanner_numSeriesBetter_Id" + compareIndex).addClass("green");
+      $("#topBanner_numSeriesBetter_percent_Id" + compareIndex).html(
+        numSeriesBetter + " on " + numSeries
+      );
 
-      p = numSeriesSimilar / numSeries * 100;
-      $('#topBanner_numSeriesSimilar_Id' + compareIndex).html(p.toFixed(2) + "%");
+      p = (numSeriesSimilar / numSeries) * 100;
+      $("#topBanner_numSeriesSimilar_Id" + compareIndex).html(
+        p.toFixed(2) + "%"
+      );
       if (numSeriesSimilar === 0)
-        $('#topBanner_numSeriesSimilar_Id' + compareIndex).addClass('red')
-      else
-        $('#topBanner_numSeriesSimilar_Id' + compareIndex).addClass('green')
-      $('#topBanner_numSeriesSimilar_percent_Id' + compareIndex).html(numSeriesSimilar + ' on ' + numSeries);
+        $("#topBanner_numSeriesSimilar_Id" + compareIndex).addClass("red");
+      else $("#topBanner_numSeriesSimilar_Id" + compareIndex).addClass("green");
+      $("#topBanner_numSeriesSimilar_percent_Id" + compareIndex).html(
+        numSeriesSimilar + " on " + numSeries
+      );
 
-      $('#compareRow_Id' + compareIndex).show();
+      $("#compareRow_Id" + compareIndex).show();
     }
 
     // for one compareId (in compares)
     var sc = statusCompares[compareId];
     var k = Object.keys(sc);
     k.sort(function (a, b) {
-      return a * 1 - b * 1
+      return a * 1 - b * 1;
     });
     var s = k[k.length - 1];
     var numSeries = sc[s].numSeries;
     var numSeriesSimilar = sc[s].numSeriesSimilar;
     var numSeriesLower = sc[s].numSeriesLower;
     var numSeriesBetter = sc[s].numSeriesBetter;
-    doUpdateCompareBanner(compareIndex, numSeries, numSeriesSimilar, numSeriesBetter, numSeriesLower);
+    doUpdateCompareBanner(
+      compareIndex,
+      numSeries,
+      numSeriesSimilar,
+      numSeriesBetter,
+      numSeriesLower
+    );
 
     // prepare data for graph
     var datasetLower = [];
@@ -943,80 +1049,90 @@
       axisBuildIndexes.push(k[ii] * 1);
     }
 
-    var ctx = document.getElementById('compareGraph_Id' + compareIndex).getContext('2d');
+    var ctx = document
+      .getElementById("compareGraph_Id" + compareIndex)
+      .getContext("2d");
     var myChart = new Chart(ctx, {
-      type: 'line',
+      type: "line",
       data: {
         labels: axisDateLabels,
         datasets: [
           {
             pointRadius: 1,
-            label: 'Better',
+            label: "Better",
             data: datasetBetter,
             borderColor: colors.green,
             backgroundColor: colors.green,
-            fill: true
-          }, {
+            fill: true,
+          },
+          {
             pointRadius: 1,
-            label: 'Similar',
+            label: "Similar",
             data: datasetSimilar,
             borderColor: colors.greenDark,
             backgroundColor: colors.greenDark,
-            fill: true
-          }, {
+            fill: true,
+          },
+          {
             pointRadius: 1,
-            label: 'Lower',
+            label: "Lower",
             data: datasetLower,
             borderColor: colors.red,
             backgroundColor: colors.red,
-            fill: true
-          }
-        ]
+            fill: true,
+          },
+        ],
       },
       options: {
         tooltips: {
-          mode: 'index',
-          intersect: false
+          mode: "index",
+          intersect: false,
         },
         elements: {
           line: {
             tension: 0, // disables bezier curves
-          }
+          },
         },
         scales: {
           yAxes: [
             {
               ticks: {
-                beginAtZero: false
+                beginAtZero: false,
               },
-              stacked: true
-            }
+              stacked: true,
+            },
           ],
           xAxes: [
             {
-              display:false,
-              type: 'time',
+              display: false,
+              type: "time",
               time: {
                 format: timeFormat,
-                tooltipFormat: timeFormat
+                tooltipFormat: timeFormat,
               },
               scaleLabel: {
-                display: true
-              }
-            }
-          ]
+                display: true,
+              },
+            },
+          ],
         },
         hover: {
           intersect: false,
-          mode: 'nearest',
+          mode: "nearest",
           onHover: function (event, selection) {
             if (selection.length !== 0) {
               var s = sc[axisBuildIndexes[selection[0]._index]];
-              doUpdateCompareBanner(compareIndex, s.numSeries, s.numSeriesSimilar, s.numSeriesBetter, s.numSeriesLower);
+              doUpdateCompareBanner(
+                compareIndex,
+                s.numSeries,
+                s.numSeriesSimilar,
+                s.numSeriesBetter,
+                s.numSeriesLower
+              );
             }
-          }
-        }
-      }
+          },
+        },
+      },
     });
   }
 </script>

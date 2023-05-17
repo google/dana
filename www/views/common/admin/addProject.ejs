@@ -17,124 +17,158 @@
 -->
 <!DOCTYPE html>
 <html lang="en">
+  <%- include('../../common/head') %>
 
-	<%- include('../../common/head') %>
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        <%- include('sidebar') %>
 
-	<body class="nav-md">
-		<div class="container body">
-			<div class="main_container">
-				<%- include('sidebar') %>
+        <!-- top navigation -->
+        <div class="top_nav navbar-fixed-top">
+          <div class="nav_menu">
+            <nav class="" role="navigation">
+              <div class="nav toggle">
+                <a id="menu_toggle">
+                  <i class="fa fa-bars"></i>
+                </a>
+              </div>
+              <ul class="nav navbar-nav">
+                <h3 id="page-title" class="navbar-text">
+                  <span id="page_title_description"></span>
+                </h3>
+              </ul>
+            </nav>
+          </div>
+        </div>
 
-				<!-- top navigation -->
-				<div class="top_nav navbar-fixed-top">
-					<div class="nav_menu">
-						<nav class="" role="navigation">
-							<div class="nav toggle">
-								<a id="menu_toggle">
-									<i class="fa fa-bars"></i>
-								</a>
-							</div>
-							<ul class="nav navbar-nav">
-								<h3 id='page-title' class="navbar-text">
-									<span id='page_title_description'></span>
-								</h3>
-							</ul>
-						</nav>
-					</div>
-				</div>
+        <% var guest=true; if (user!==undefined) { if (user.username=='admin') {
+        guest=false; } } %>
+        <!-- page content -->
+        <div class="right_col" role="main" style="padding-top: 50px">
+          <!-- top tiles -->
+          <div class="row">
+            <div class="container" id="formulaire">
+              <div class="row">
+                <div class="col-md-12">
+                  <br />
+                  <br />
+                  <center>
+                    <h1>Add a new project</h1>
+                    <h4>
+                      Please look to the documentation on how to add pages for
+                      this new project
+                    </h4>
+                  </center>
+                  <br />
+                </div>
+                <div class="col-md-offset-4 col-md-4">
+                  <form action="/admin/addProject" method="post">
+                    <div class="form-group">
+                      <label>ProjectId</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="projectId"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Description</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="description"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label
+                        >Default page (if not defined will use
+                        <i>statusSeries</i>)</label
+                      >
+                      <input
+                        type="text"
+                        class="form-control"
+                        name="defaultPage"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Infos</label>
+                      <textarea
+                        class="form-control"
+                        rows="10"
+                        name="infos"
+                      ></textarea>
+                    </div>
+                    <div class="form-group">
+                      <label
+                        >Users (one per line) to send daily notification
+                        emails</label
+                      >
+                      <textarea
+                        class="form-control"
+                        rows="10"
+                        name="users"
+                      ></textarea>
+                    </div>
+                    <div class="form-group">
+                      <input
+                        class="js-switch"
+                        checked
+                        type="checkbox"
+                        name="bugtracker"
+                        value="bugtracker"
+                      />
+                      <label
+                        >Prefer to use a bug tracker to follow working state of
+                        a regression</label
+                      >
+                    </div>
+                    <center>
+                      <br />
+                      <button
+                        class="btn btn-danger btn-block"
+                        type="submit"
+                        id="submitButton"
+                      >
+                        Add Project
+                      </button>
+                    </center>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <div class="clearfix"></div>
 
-				<%
-          var guest=true;
-          if (user!==undefined) {
-            if (user.username=='admin') {
-              guest=false;
-            }
-          }
-          %>
-				<!-- page content -->
-				<div class="right_col" role="main" style="padding-top: 50px;">
-					<!-- top tiles -->
-					<div class="row">
+          <%- include('../footer') %>
+        </div>
+      </div>
+    </div>
+    <!-- jQuery -->
+    <script src="/third_party/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
 
-						<div class="container" id="formulaire">
-							<div class="row">
-								<div class="col-md-12">
-									<br>
-									<br>
-									<center>
-										<h1>Add a new project</h1>
-										<h4>Please look to the documentation on how to add pages for this new project</h4>
-									</center>
-									<br>
-								</div>
-								<div class="col-md-offset-4 col-md-4">
-									<form action="/admin/addProject" method="post">
-										<div class="form-group">
-											<label>ProjectId</label>
-											<input type="text" class="form-control" name="projectId"/>
-										</div>
-										<div class="form-group">
-											<label>Description</label>
-											<input type="text" class="form-control" name="description"/>
-										</div>
-										<div class="form-group">
-											<label>Default page (if not defined will use <i>statusSeries</i>)</label>
-											<input type="text" class="form-control" name="defaultPage"/>
-										</div>
-										<div class="form-group">
-											<label>Infos</label>
-											<textarea class="form-control" rows="10" name="infos"></textarea>
-										</div>
-										<div class="form-group">
-											<label>Users (one per line) to send daily notification emails</label>
-											<textarea class="form-control" rows="10" name="users"></textarea>
-										</div>
-										<div class="form-group">
-											<input class="js-switch" checked type="checkbox" name="bugtracker" value="bugtracker">
-											<label>Prefer to use a bug tracker to follow working state of a regression</label>
-										</div>
-										<center>
-											<br>
-											<button class="btn btn-danger btn-block" type="submit" id="submitButton">Add Project</button>
-										</center>
-									</form>
-								</div>
-							</div>
-						</div>
-					</div>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<br>
-					<div class="clearfix"></div>
+    <!-- Switchery -->
+    <script src="/third_party/switchery/dist/switchery.js"></script>
 
-					<%- include('../footer') %>
-
-				</div>
-			</div>
-		</div>
-		<!-- jQuery -->
-		<script src="/third_party/jquery/dist/jquery.min.js"></script>
-		<!-- Bootstrap -->
-		<script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
-
-		<!-- Switchery -->
-		<script src="/third_party/switchery/dist/switchery.js"></script>
-
-		<script>
-		$( document ).ready(function() {
-			var elem = document.querySelector('.js-switch');
-			var init = new Switchery(elem);
-		});
-		</script>
-
-	</body>
+    <script>
+      $(document).ready(function () {
+        var elem = document.querySelector(".js-switch");
+        var init = new Switchery(elem);
+      });
+    </script>
+  </body>
 </html>

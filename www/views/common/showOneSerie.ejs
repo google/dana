@@ -1,30 +1,12 @@
-<!--
-/*
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
--->
 <!DOCTYPE html>
 <html lang="en">
-
   <%- include('head') %>
 
   <body class="nav-md">
     <div class="container body">
       <div class="main_container">
-        <% var relativeSideBarPath='../projects/'+projectId %>
-        <%- include(relativeSideBarPath+'/sidebar') %>
+        <% var relativeSideBarPath='../projects/'+projectId %> <%-
+        include(relativeSideBarPath+'/sidebar') %>
 
         <!-- top navigation -->
         <div class="top_nav navbar-fixed-top">
@@ -40,19 +22,16 @@
               </ul>
               <ul class="nav navbar-nav navbar-right" style="width: auto">
                 <% if (user===undefined) { %>
-                  <li>
-                    <a href="/login">
-                      Admin Login
-                    </a>
-                  </li>
+                <li>
+                  <a href="/login"> Admin Login </a>
+                </li>
                 <% } else { %>
-                  <li>
-                    <a href="/logout">
-                      <% if (user!==undefined) { %>
-                        Logout <%=user.username%>
-                      <% } %>
-                    </a>
-                  </li>
+                <li>
+                  <a href="/logout">
+                    <% if (user!==undefined) { %> Logout <%=user.username%> <% }
+                    %>
+                  </a>
+                </li>
                 <% } %>
               </ul>
             </nav>
@@ -61,8 +40,7 @@
         <!-- /top navigation -->
 
         <!-- page content -->
-        <div class="right_col" role="main" style="padding-top: 50px;">
-
+        <div class="right_col" role="main" style="padding-top: 50px">
           <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
               <h4 id="modalSerieId" class="navbar-text"></h4>
@@ -70,140 +48,257 @@
           </div>
           <!-- top tiles -->
           <div class="row tile_count">
-            <div id="topBanner_samples" class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" hidden>
-              <span class="count_top">
-                Number of samples</span>
+            <div
+              id="topBanner_samples"
+              class="col-md-2 col-sm-4 col-xs-6 tile_stats_count"
+              hidden
+            >
+              <span class="count_top"> Number of samples</span>
               <div id="topBanner_numSamples" class="count"></div>
             </div>
-            <div id="topBanner_lastBuild" class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" hidden>
-              <span class="count_top">
-                Comparing with build N-1
-              </span>
+            <div
+              id="topBanner_lastBuild"
+              class="col-md-2 col-sm-4 col-xs-6 tile_stats_count"
+              hidden
+            >
+              <span class="count_top"> Comparing with build N-1 </span>
               <div id="topBanner_lastBuildPourcent" class="count"></div>
               <span id="topBanner_lastBuildDiff" class="count_bottom"></span>
             </div>
-            <div id="topBanner_analysis" class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" hidden>
-              <span class="count_top">
-                Bench analysis</span>
+            <div
+              id="topBanner_analysis"
+              class="col-md-2 col-sm-4 col-xs-6 tile_stats_count"
+              hidden
+            >
+              <span class="count_top"> Bench analysis</span>
               <div id="topBanner_analysisMain" class="count"></div>
               <span id="topBanner_analysisBottom" class="count_bottom"></span>
             </div>
-            <div id="topBanner_analysisTest" class="col-md-2 col-sm-4 col-xs-6 tile_stats_count" hidden>
-              <span class="count_top">
-                Test analysis</span>
+            <div
+              id="topBanner_analysisTest"
+              class="col-md-2 col-sm-4 col-xs-6 tile_stats_count"
+              hidden
+            >
+              <span class="count_top"> Test analysis</span>
               <div id="topBanner_analysisPassing" class="count"></div>
-              <span id="topBanner_analysisPassingSince" class="count_bottom"></span>
+              <span
+                id="topBanner_analysisPassingSince"
+                class="count_bottom"
+              ></span>
             </div>
           </div>
           <!-- /top tiles -->
 
           <div class="">
-
             <div class="clearfix"></div>
 
-            <div id='rowForSampleSerie' class="row" hidden>
+            <div id="rowForSampleSerie" class="row" hidden>
               <div class="col-md-8 col-sm-8 col-xs-8">
                 <div class="col-md-12 col-sm-12 col-xs-12">
                   <div class="x_panel">
                     <div class="x_content">
                       <div class="btn-group">
-                        <button id="btnRaw" class="btn btn-default btn-xs" type="button" hidden>Raw data</button>
-                        <button id="btnSeries" class="btn btn-default btn-xs" type="button" hidden>Regression analysis</button>
+                        <button
+                          id="btnRaw"
+                          class="btn btn-default btn-xs"
+                          type="button"
+                          hidden
+                        >
+                          Raw data
+                        </button>
+                        <button
+                          id="btnSeries"
+                          class="btn btn-default btn-xs"
+                          type="button"
+                          hidden
+                        >
+                          Regression analysis
+                        </button>
                       </div>
-                      <p style="text-align:right">
-                        <span class='pull-right' id="buildInfo"></span><br>
-                        <span class='pull-right' id='valueinfo'></span>
+                      <p style="text-align: right">
+                        <span class="pull-right" id="buildInfo"></span><br />
+                        <span class="pull-right" id="valueinfo"></span>
                       </p>
-                      <br>
-                      <br>
-                      <div style="width:100%; height:248px" id='elt_dygraph'></div>
-                      <br>
-                      <br>
+                      <br />
+                      <br />
+                      <div
+                        style="width: 100%; height: 248px"
+                        id="elt_dygraph"
+                      ></div>
+                      <br />
+                      <br />
                     </div>
                   </div>
                 </div>
-                <table id="table_uilibone_regression" class="table  table-bordered table-stripped table-condensed"></table>
-                <table id="table_uilibone_compares" class="table table-stripped table-bordered table-condensed">
-                </table>
-                <div id="spongeLinks" class="col-md-12 col-sm-12 col-xs-12" hidden>
+                <table
+                  id="table_uilibone_regression"
+                  class="table table-bordered table-stripped table-condensed"
+                ></table>
+                <table
+                  id="table_uilibone_compares"
+                  class="table table-stripped table-bordered table-condensed"
+                ></table>
+                <div
+                  id="spongeLinks"
+                  class="col-md-12 col-sm-12 col-xs-12"
+                  hidden
+                >
                   <div class="x_panel">
                     <div class="x_title">
                       <h2>Sponge</h2>
                       <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                      <table id='datatable_sponge' class="table table-striped table-bordered">
+                      <table
+                        id="datatable_sponge"
+                        class="table table-striped table-bordered"
+                      >
                         <thead>
                           <tr>
                             <th>BuildId</th>
-                            <th width=30></th>
+                            <th width="30"></th>
                           </tr>
                         </thead>
-                        <tbody id='table_sponge'></tbody>
+                        <tbody id="table_sponge"></tbody>
                       </table>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="col-md-4 col-sm-4 col-xs-4">
-                <div id="unit" onloadedmetadata="" class="col-md-12 col-sm-12 col-xs-12">
+                <div
+                  id="unit"
+                  onloadedmetadata=""
+                  class="col-md-12 col-sm-12 col-xs-12"
+                >
                   <div class="x_panel">
                     <div class="x_content">
                       <div class="form-group">
                         <label>Unit</label>
-                        <select class="form-control" id="serieUnit">
-                        </select>
+                        <select class="form-control" id="serieUnit"></select>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div class="col-md-12 col-sm-12 col-xs-12">
-
                   <div class="x_panel">
                     <div class="x_content">
-
-                      <div class="" role="tabpanel" data-example-id="togglable-tabs">
-                        <ul id="myTab1" class="nav nav-tabs bar_tabs right" role="tablist">
+                      <div
+                        class=""
+                        role="tabpanel"
+                        data-example-id="togglable-tabs"
+                      >
+                        <ul
+                          id="myTab1"
+                          class="nav nav-tabs bar_tabs right"
+                          role="tablist"
+                        >
                           <li role="presentation" class="active">
-                            <a href="#tab_content11" id="home-tabb" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Comment</a>
+                            <a
+                              href="#tab_content11"
+                              id="home-tabb"
+                              role="tab"
+                              data-toggle="tab"
+                              aria-controls="home"
+                              aria-expanded="true"
+                              >Comment</a
+                            >
                           </li>
                           <li role="presentation" class="">
-                            <a href="#tab_content22" role="tab" id="profile22-tabb" data-toggle="tab" aria-controls="profile" aria-expanded="false">Analyse</a>
+                            <a
+                              href="#tab_content22"
+                              role="tab"
+                              id="profile22-tabb"
+                              data-toggle="tab"
+                              aria-controls="profile"
+                              aria-expanded="false"
+                              >Analyse</a
+                            >
                           </li>
                         </ul>
                         <div id="myTabContent2" class="tab-content">
-                          <div role="tabpanel" class="tab-pane active" id="tab_content11" aria-labelledby="comment-tab">
+                          <div
+                            role="tabpanel"
+                            class="tab-pane active"
+                            id="tab_content11"
+                            aria-labelledby="comment-tab"
+                          >
                             <form class="form-horizontal">
-                              <input type="hidden" value="<%=serieId%>" name="commentsSerieId"/>
+                              <input
+                                type="hidden"
+                                value="<%=serieId%>"
+                                name="commentsSerieId"
+                              />
                               <div class="form-group form-group-sm">
-                                <label class="col-sm-3 control-label">Text*</label>
+                                <label class="col-sm-3 control-label"
+                                  >Text*</label
+                                >
                                 <div class="col-sm-9">
-                                  <textarea class="form-control" rows="2" id="commentText" placeholder="Comment's text"></textarea>
+                                  <textarea
+                                    class="form-control"
+                                    rows="2"
+                                    id="commentText"
+                                    placeholder="Comment's text"
+                                  ></textarea>
                                 </div>
                               </div>
-                              <span class='pull-right'>
-                                <button id='serieAddComment' type="button" class="btn btn-danger btn-sm">Add</button>
+                              <span class="pull-right">
+                                <button
+                                  id="serieAddComment"
+                                  type="button"
+                                  class="btn btn-danger btn-sm"
+                                >
+                                  Add
+                                </button>
                               </span>
                             </form>
                           </div>
-                          <div role="tabpanel" class="tab-pane fade" id="tab_content22" aria-labelledby="analyse-tab">
+                          <div
+                            role="tabpanel"
+                            class="tab-pane fade"
+                            id="tab_content22"
+                            aria-labelledby="analyse-tab"
+                          >
                             <form class="form-horizontal">
-                              <input type="hidden" value="<%=serieId%>" name="serieId"/>
+                              <input
+                                type="hidden"
+                                value="<%=serieId%>"
+                                name="serieId"
+                              />
 
                               <div class="form-group form-group-sm" hidden>
-                                <label class="col-sm-3 control-label">Type</label>
+                                <label class="col-sm-3 control-label"
+                                  >Type</label
+                                >
                                 <div class="col-sm-9">
-                                  <select class="form-control" id="analyseType" disabled>
-                                    <option id='analyseTypeBenchmark' value='benchmark'>Benchmark</option>
-                                    <option id='analyseTypeTest' value='test'>test</option>
+                                  <select
+                                    class="form-control"
+                                    id="analyseType"
+                                    disabled
+                                  >
+                                    <option
+                                      id="analyseTypeBenchmark"
+                                      value="benchmark"
+                                    >
+                                      Benchmark
+                                    </option>
+                                    <option id="analyseTypeTest" value="test">
+                                      test
+                                    </option>
                                   </select>
                                 </div>
                               </div>
 
                               <div class="form-group form-group-sm">
-                                <label class="col-sm-3 control-label">Base</label>
+                                <label class="col-sm-3 control-label"
+                                  >Base</label
+                                >
                                 <div class="col-sm-9">
-                                  <select class="form-control js-example-placeholder-single" style="width: 100%" id="analyseBase">
+                                  <select
+                                    class="form-control js-example-placeholder-single"
+                                    style="width: 100%"
+                                    id="analyseBase"
+                                  >
                                     <option></option>
                                   </select>
                                 </div>
@@ -211,65 +306,176 @@
 
                               <span id="analyseTestForm" hidden>
                                 <div class="form-group form-group-sm">
-                                  <label class="col-sm-3 control-label">Propagate</label>
+                                  <label class="col-sm-3 control-label"
+                                    >Propagate</label
+                                  >
                                   <div class="col-sm-9">
-                                    <select class="form-control" id="analyseTestPropagate">
-                                      <option id='analyseTestPropagateTrue' value='true'>True</option>
-                                      <option id='analyseTestPropagateFalse' value='false'>False</option>
+                                    <select
+                                      class="form-control"
+                                      id="analyseTestPropagate"
+                                    >
+                                      <option
+                                        id="analyseTestPropagateTrue"
+                                        value="true"
+                                      >
+                                        True
+                                      </option>
+                                      <option
+                                        id="analyseTestPropagateFalse"
+                                        value="false"
+                                      >
+                                        False
+                                      </option>
                                     </select>
                                   </div>
                                 </div>
                               </span>
 
-                              <span id='analyseBenchmarkForm' hidden>
+                              <span id="analyseBenchmarkForm" hidden>
                                 <div class="form-group form-group-sm">
-                                  <label class="col-sm-3 control-label">Range</label>
+                                  <label class="col-sm-3 control-label"
+                                    >Range</label
+                                  >
                                   <div class="col-sm-9">
-                                    <input class="form-control col-sm-4" placeholder="Not defined" id="analyseBenchmarkRange">
+                                    <input
+                                      class="form-control col-sm-4"
+                                      placeholder="Not defined"
+                                      id="analyseBenchmarkRange"
+                                    />
                                   </div>
                                 </div>
                                 <div class="form-group form-group-sm">
-                                  <label class="col-sm-3 control-label">Trend</label>
+                                  <label class="col-sm-3 control-label"
+                                    >Trend</label
+                                  >
                                   <div class="col-sm-9">
-                                    <select class="form-control" id="analyseBenchmarkTrend">
-                                      <option id='analyseBenchmarkTrendHigher' value='higher'>Higher is better</option>
-                                      <option id='analyseBenchmarkTrendSmaller' value='smaller'>Smaller is better</option>
+                                    <select
+                                      class="form-control"
+                                      id="analyseBenchmarkTrend"
+                                    >
+                                      <option
+                                        id="analyseBenchmarkTrendHigher"
+                                        value="higher"
+                                      >
+                                        Higher is better
+                                      </option>
+                                      <option
+                                        id="analyseBenchmarkTrendSmaller"
+                                        value="smaller"
+                                      >
+                                        Smaller is better
+                                      </option>
                                     </select>
                                   </div>
                                 </div>
                                 <div class="form-group form-group-sm">
-                                  <label class="col-sm-3 control-label">Required</label>
+                                  <label class="col-sm-3 control-label"
+                                    >Required</label
+                                  >
                                   <div class="col-sm-9">
-                                    <select class="form-control" id="analyseBenchmarkRequired">
-                                      <option id='analyseBenchmarkRequired1' value='1'>1</option>
-                                      <option id='analyseBenchmarkRequired2' value='2'>2</option>
-                                      <option id='analyseBenchmarkRequired3' value='3'>3</option>
-                                      <option id='analyseBenchmarkRequired4' value='4'>4</option>
-                                      <option id='analyseBenchmarkRequired5' value='5'>5</option>
-                                      <option id='analyseBenchmarkRequired6' value='6'>6</option>
-                                      <option id='analyseBenchmarkRequired7' value='7'>7</option>
-                                      <option id='analyseBenchmarkRequired8' value='8'>8</option>
-                                      <option id='analyseBenchmarkRequired9' value='9'>9</option>
+                                    <select
+                                      class="form-control"
+                                      id="analyseBenchmarkRequired"
+                                    >
+                                      <option
+                                        id="analyseBenchmarkRequired1"
+                                        value="1"
+                                      >
+                                        1
+                                      </option>
+                                      <option
+                                        id="analyseBenchmarkRequired2"
+                                        value="2"
+                                      >
+                                        2
+                                      </option>
+                                      <option
+                                        id="analyseBenchmarkRequired3"
+                                        value="3"
+                                      >
+                                        3
+                                      </option>
+                                      <option
+                                        id="analyseBenchmarkRequired4"
+                                        value="4"
+                                      >
+                                        4
+                                      </option>
+                                      <option
+                                        id="analyseBenchmarkRequired5"
+                                        value="5"
+                                      >
+                                        5
+                                      </option>
+                                      <option
+                                        id="analyseBenchmarkRequired6"
+                                        value="6"
+                                      >
+                                        6
+                                      </option>
+                                      <option
+                                        id="analyseBenchmarkRequired7"
+                                        value="7"
+                                      >
+                                        7
+                                      </option>
+                                      <option
+                                        id="analyseBenchmarkRequired8"
+                                        value="8"
+                                      >
+                                        8
+                                      </option>
+                                      <option
+                                        id="analyseBenchmarkRequired9"
+                                        value="9"
+                                      >
+                                        9
+                                      </option>
                                     </select>
                                   </div>
                                 </div>
                               </span>
 
-                              <span class='pull-right'>
-                                <button id='analyseFormRestore' type="button" class="btn btn-primary btn-sm">Restore</button>
-                                <button id='analyseFormApply' type="button" class="btn btn-primary btn-sm">Apply on Graph</button>
+                              <span class="pull-right">
+                                <button
+                                  id="analyseFormRestore"
+                                  type="button"
+                                  class="btn btn-primary btn-sm"
+                                >
+                                  Restore
+                                </button>
+                                <button
+                                  id="analyseFormApply"
+                                  type="button"
+                                  class="btn btn-primary btn-sm"
+                                >
+                                  Apply on Graph
+                                </button>
                               </span>
-                              <br>
-                              <br>
-                              <span id='analyseChanged' hidden>
+                              <br />
+                              <br />
+                              <span id="analyseChanged" hidden>
                                 <div class="form-group form-group-sm">
-                                  <label class="col-sm-3 control-label">Text</label>
+                                  <label class="col-sm-3 control-label"
+                                    >Text</label
+                                  >
                                   <div class="col-sm-9">
-                                    <textarea class="form-control" rows="2" id="analyseText" placeholder="Comment's text"></textarea>
+                                    <textarea
+                                      class="form-control"
+                                      rows="2"
+                                      id="analyseText"
+                                      placeholder="Comment's text"
+                                    ></textarea>
                                   </div>
                                 </div>
-                                <span class='pull-right'>
-                                  <button id='analyseFormSave' type="button" class="btn btn-danger btn-sm">Save and refresh</button>
+                                <span class="pull-right">
+                                  <button
+                                    id="analyseFormSave"
+                                    type="button"
+                                    class="btn btn-danger btn-sm"
+                                  >
+                                    Save and refresh
+                                  </button>
                                 </span>
                               </span>
                             </form>
@@ -279,10 +485,14 @@
                     </div>
                   </div>
                 </div>
-                <div id="comments" onloadedmetadata="" class="col-md-12 col-sm-12 col-xs-12">
+                <div
+                  id="comments"
+                  onloadedmetadata=""
+                  class="col-md-12 col-sm-12 col-xs-12"
+                >
                   <div class="x_panel">
                     <div class="x_content">
-                      <span id='commentsArea'></span>
+                      <span id="commentsArea"></span>
                     </div>
                   </div>
                 </div>
@@ -295,90 +505,89 @@
         <!-- page content -->
 
         <%- include('modalAddBugLink') %>
-
       </div>
-
     </div>
 
     <%- include('footer') %>
+    <!-- jQuery -->
+
+    <script src="/third_party/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- FastClick -->
+    <script src="/third_party/fastclick/lib/fastclick.js"></script>
+    <!-- NProgress -->
+    <script src="/third_party/nprogress/nprogress.js"></script>
+
+    <!-- Datatables -->
+    <script src="/third_party/datatables.net/js/jquery.dataTables.min.js"></script>
+    <script src="/third_party/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+    <script src="/third_party/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/third_party/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+    <script src="/third_party/datatables.net-buttons/js/buttons.flash.min.js"></script>
+    <script src="/third_party/datatables.net-buttons/js/buttons.html5.min.js"></script>
+    <script src="/third_party/datatables.net-buttons/js/buttons.print.min.js"></script>
+    <script src="/third_party/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+    <script src="/third_party/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+    <script src="/third_party/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/third_party/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+    <script src="/third_party/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+
+    <!-- socket.io -->
+    <script src="/socket.io/socket.io.js"></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src="/third_party/gentelella/build/js/custom.js"></script>
+
+    <!-- Dygraph for sparklines -->
+    <script
+      type="text/javascript"
+      src="/third_party/dygraph/js/dygraph.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="/third_party/dygraph/js/synchronizer.js"
+    ></script>
+
+    <!-- Linkify -->
+    <script src="/third_party/linkify/linkify.min.js"></script>
+    <script src="/third_party/linkify/linkify-jquery.min.js"></script>
+
+    <!-- select2 -->
+    <script src="/third_party/select2/dist/js/select2.min.js"></script>
+
+    <script src="/js/uilibOne.js"></script>
+
+    <!-- Analyse -->
+    <script>
+      // Fake node.js module to reuse same code on server
+      var module = {
+        exports: {},
+      };
+    </script>
+    <script src="/js/analyse.js"></script>
+    <script src="/js/utils.js"></script>
+
+    <script>
+      var danaUrl = "https://<%=global.config.server.ip%>";
+      uiShowSerieClean();
+      uiShowSerie("showOneSerie", "<%=projectId%>", "<%=serieId%>");
+      $("#commentsArea").linkify({ target: "_blank" });
+      $("#analyseFormApply").click(function () {
+        applyAnalyse();
+      });
+      $("#analyseFormSave").click(function () {
+        saveCurrentAnalyse();
+      });
+      $("#serieAddComment").click(function () {
+        addNewComment();
+      });
+      $("#modalSaveAssignee").click(function () {
+        modalSaveAssignee();
+      });
+      $("#serieUnit").change(function () {
+        changeSerieUnit();
+      });
+    </script>
   </body>
-
-</html>
-
-<!-- jQuery -->
-
-<script src="/third_party/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap -->
-<script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
-<!-- FastClick -->
-<script src="/third_party/fastclick/lib/fastclick.js"></script>
-<!-- NProgress -->
-<script src="/third_party/nprogress/nprogress.js"></script>
-
-<!-- Datatables -->
-<script src="/third_party/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="/third_party/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-<script src="/third_party/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-<script src="/third_party/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-<script src="/third_party/datatables.net-buttons/js/buttons.flash.min.js"></script>
-<script src="/third_party/datatables.net-buttons/js/buttons.html5.min.js"></script>
-<script src="/third_party/datatables.net-buttons/js/buttons.print.min.js"></script>
-<script src="/third_party/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-<script src="/third_party/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-<script src="/third_party/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-<script src="/third_party/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-<script src="/third_party/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
-
-<!-- socket.io -->
-<script src="/socket.io/socket.io.js"></script>
-
-<!-- Custom Theme Scripts -->
-<script src="/third_party/gentelella/build/js/custom.js"></script>
-
-<!-- Dygraph for sparklines -->
-<script type="text/javascript" src="/third_party/dygraph/js/dygraph.js"></script>
-<script type="text/javascript" src="/third_party/dygraph/js/synchronizer.js"></script>
-
-<!-- Linkify -->
-<script src="/third_party/linkify/linkify.min.js"></script>
-<script src="/third_party/linkify/linkify-jquery.min.js"></script>
-
-<!-- select2 -->
-<script src="/third_party/select2/dist/js/select2.min.js"></script>
-
-<script src="/js/uilibOne.js"></script>
-
-<!-- Analyse -->
-<script>
-  // Fake node.js module to reuse same code on server
-  var module = {
-    exports: {}
-  }
-</script>
-<script src="/js/analyse.js"></script>
-<script src="/js/utils.js"></script>
-
-<script>
-var danaUrl = 'https://<%=global.config.server.ip%>';
-  uiShowSerieClean();
-  uiShowSerie('showOneSerie', '<%=projectId%>', '<%=serieId%>');
-  $('#commentsArea').linkify({target: "_blank"});
-  $('#analyseFormApply').click(function () {
-    applyAnalyse();
-  })
-  $('#analyseFormSave').click(function () {
-    saveCurrentAnalyse();
-  })
-  $('#serieAddComment').click(function () {
-    addNewComment();
-  })
-  $('#modalSaveAssignee').click(function () {
-    modalSaveAssignee();
-  })
-  $('#serieUnit').change(function () {
-    changeSerieUnit();
-  })
-</script>
-</body>
-
 </html>

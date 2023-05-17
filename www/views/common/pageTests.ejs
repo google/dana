@@ -1,611 +1,619 @@
-<!--
-/*
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
--->
-
 <!-- page content -->
-<div class="right_col" role="main" style="padding-top: 50px;">
-
+<div class="right_col" role="main" style="padding-top: 50px">
   <!-- top tiles -->
   <div class="row">
     <div class="row tile_count">
       <span id="topBanner" hidden>
         <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-          <span class="count_top">
-            Number of tests
-          </span>
-      <div id="topBanner_numTests" class="count"></div>
-    </div>
-    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-      <span class="count_top">
-            Passing tests
-          </span>
-      <div id="topBanner_numTestsPassing" class="count"></div>
-      <span id="topBanner_numTestsPassing_percent" class="count_bottom"></span>
-    </div>
-    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-      <span class="count_top">
-            Failing tests</span>
-      <div id="topBanner_numTestsFailing" class="count"></div>
-      <span id="topBanner_numTestsFailing_percent" class="count_bottom"></span>
-    </div>
-    </span>
-  </div>
-</div>
-
-<!-- /top tiles -->
-<div class="">
-
-  <div class="clearfix"></div>
-
-  <style>
-    td namedic {
-      width: 100px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  </style>
-
-  <div id="rowNoDataToShow" class="row" hidden>
-    <div class="col-md-12 col-sm-12 col-xs-12">
-      <div class="x_panel">
-        <div class="x_title">
-          <h2>Tests</h2>
-          <div class="clearfix"></div>
+          <span class="count_top"> Number of tests </span>
+          <div id="topBanner_numTests" class="count"></div>
         </div>
-        <div class="x_content">
-          <p>No failing tests to show</p>
+        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+          <span class="count_top"> Passing tests </span>
+          <div id="topBanner_numTestsPassing" class="count"></div>
+          <span
+            id="topBanner_numTestsPassing_percent"
+            class="count_bottom"
+          ></span>
+        </div>
+        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+          <span class="count_top"> Failing tests</span>
+          <div id="topBanner_numTestsFailing" class="count"></div>
+          <span
+            id="topBanner_numTestsFailing_percent"
+            class="count_bottom"
+          ></span>
+        </div>
+      </span>
+    </div>
+  </div>
+
+  <!-- /top tiles -->
+  <div class="">
+    <div class="clearfix"></div>
+
+    <style>
+      td namedic {
+        width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    </style>
+
+    <div id="rowNoDataToShow" class="row" hidden>
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Tests</h2>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <p>No failing tests to show</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div id='rowTests' class="row" hidden>
-    <div id='rowTable' class="col-md-12 col-sm-12 col-xs-12" hidden>
-      <div class="x_panel">
-        <div class="x_title">
-          <h2>Tests
-            </h2>
-          <ul class="nav navbar-right panel_toolbox">
-            <!-- <li class="dropdown">
+    <div id="rowTests" class="row" hidden>
+      <div id="rowTable" class="col-md-12 col-sm-12 col-xs-12" hidden>
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Tests</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <!-- <li class="dropdown">
                 <a href="#download"><i class="fa fa-download"></i></a>
               </li> -->
-            <li>
-              <button id='btnShowFailed' type="button" class="btn btn-primary btn-xs active">Failed</button>
-            </li>
-            <li>
-              <button id='btnShowPassing' type="button" class="btn btn-primary btn-xs">Passing</button>
-            </li>
-            <li>
-              <button id='btnShowAll' type="button" class="btn btn-primary btn-xs">All</button>
-            </li>
-          </ul>
-          <div class="clearfix"></div>
-        </div>
-        <div id="testsContent" class="x_content">
-          <table id="testsDatatable" class="table table-striped table-bordered table-condensed">
-            <thead id='table_head'></thead>
-            <tbody id='table_content'></tbody>
-          </table>
+              <li>
+                <button
+                  id="btnShowFailed"
+                  type="button"
+                  class="btn btn-primary btn-xs active"
+                >
+                  Failed
+                </button>
+              </li>
+              <li>
+                <button
+                  id="btnShowPassing"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  Passing
+                </button>
+              </li>
+              <li>
+                <button
+                  id="btnShowAll"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  All
+                </button>
+              </li>
+            </ul>
+            <div class="clearfix"></div>
+          </div>
+          <div id="testsContent" class="x_content">
+            <table
+              id="testsDatatable"
+              class="table table-striped table-bordered table-condensed"
+            >
+              <thead id="table_head"></thead>
+              <tbody id="table_content"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 </div>
 <!-- /page content -->
 
-<%- include('modalAddBugLink') %>
+<%- include('modalAddBugLink') %> <%- include('../common/footer') %>
 
-  <%- include('../common/footer') %>
+<!-- jQuery -->
+<script src="/third_party/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="/third_party/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/third_party/nprogress/nprogress.js"></script>
 
-    <!-- jQuery -->
-    <script src="/third_party/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- FastClick -->
-    <script src="/third_party/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="/third_party/nprogress/nprogress.js"></script>
+<!-- Datatables -->
+<script src="/third_party/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/third_party/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/third_party/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/third_party/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/third_party/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/third_party/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/third_party/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/third_party/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/third_party/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/third_party/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/third_party/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/third_party/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
 
-    <!-- Datatables -->
-    <script src="/third_party/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="/third_party/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-    <script src="/third_party/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="/third_party/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-    <script src="/third_party/datatables.net-buttons/js/buttons.flash.min.js"></script>
-    <script src="/third_party/datatables.net-buttons/js/buttons.html5.min.js"></script>
-    <script src="/third_party/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="/third_party/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-    <script src="/third_party/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-    <script src="/third_party/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="/third_party/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-    <script src="/third_party/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<!-- socket.io -->
+<script src="/socket.io/socket.io.js"></script>
 
-    <!-- socket.io -->
-    <script src="/socket.io/socket.io.js"></script>
+<!-- Dygraph for sparklines -->
+<script
+  type="text/javascript"
+  src="/third_party/dygraph/js/dygraph.js"
+></script>
+<script
+  type="text/javascript"
+  src="/third_party/dygraph/js/synchronizer.js"
+></script>
 
-    <!-- Dygraph for sparklines -->
-    <script type="text/javascript" src="/third_party/dygraph/js/dygraph.js"></script>
-    <script type="text/javascript" src="/third_party/dygraph/js/synchronizer.js"></script>
+<!-- Linkify -->
+<script src="/third_party/linkify/linkify.min.js"></script>
+<script src="/third_party/linkify/linkify-jquery.min.js"></script>
 
-    <!-- Linkify -->
-    <script src="/third_party/linkify/linkify.min.js"></script>
-    <script src="/third_party/linkify/linkify-jquery.min.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="/third_party/gentelella/build/js/custom.js"></script>
 
-    <!-- Custom Theme Scripts -->
-    <script src="/third_party/gentelella/build/js/custom.js"></script>
+<!-- Custom ui lib -->
+<script src="/js/uilib.js"></script>
+<script src="/js/uilibOne.js"></script>
 
-    <!-- Custom ui lib -->
-    <script src="/js/uilib.js"></script>
-    <script src="/js/uilibOne.js"></script>
+<script>
+  var debug = false;
+  var serieId, projectId;
+  var tests, builds, compares, projects;
+  var dataTableObject;
+  var defLength = 15;
 
-    <script>
-      var debug = false;
-      var serieId,
-        projectId;
-      var tests,
-        builds,
-        compares,
-        projects;
-      var dataTableObject;
-      var defLength = 15;
+  var numTests = 0;
+  var numTestsPassing = 0;
+  var numTestsFailing = 0;
 
-      var numTests = 0;
-      var numTestsPassing = 0;
-      var numTestsFailing = 0;
+  function testsStart(tprojectId) {
+    projectId = tprojectId;
+    $("#page_title_description").html(
+      "Tests status for " +
+        projectId +
+        " <small>Based on latest results</small>"
+    );
+    socket = io();
+    socket.on("receiveFileInfo", function (req) {
+      if (debug) console.log("receiveFileInfo", req);
+      NProgress.inc();
+      if (req.fileId === "builds") builds = req.file;
+      if (req.fileId === "tests.series") tests = req.file;
+      if (req.fileId === "compares") compares = req.file;
+      if (req.fileId === "projects") projects = req.file;
+      if (builds && tests && compares && projects) iAmReadyToProcessData();
+    });
+    socket.on("serverError", function (req) {
+      if (debug) console.log("serverError", req);
+      alert(req);
+    });
+    if (debug) console.log("getBuilds");
+    NProgress.start();
+    socket.emit("getFileInfo", {
+      projectId: projectId,
+      fileId: "builds",
+    });
+    socket.emit("getFileInfo", {
+      projectId: projectId,
+      fileId: "tests.series",
+    });
+    socket.emit("getFileInfo", {
+      projectId: "admin",
+      fileId: "compares",
+    });
+    socket.emit("getFileInfo", {
+      projectId: "admin",
+      fileId: "projects",
+    });
+  }
 
-      function testsStart(tprojectId) {
-        projectId = tprojectId;
-        $('#page_title_description').html('Tests status for ' + projectId + ' <small>Based on latest results</small>');
-        socket = io();
-        socket.on('receiveFileInfo', function(req) {
-          if (debug)
-            console.log('receiveFileInfo', req);
-          NProgress.inc();
-          if (req.fileId === 'builds')
-            builds = req.file;
-          if (req.fileId === 'tests.series')
-            tests = req.file;
-          if (req.fileId === 'compares')
-            compares = req.file;
-          if (req.fileId === 'projects')
-            projects = req.file;
-          if ((builds) && (tests) && (compares) && (projects))
-            iAmReadyToProcessData();
-        });
-        socket.on('serverError', function(req) {
-          if (debug)
-            console.log('serverError', req);
-          alert(req)
-        });
-        if (debug)
-          console.log('getBuilds');
-        NProgress.start();
-        socket.emit('getFileInfo', {
-          projectId: projectId,
-          fileId: 'builds'
-        });
-        socket.emit('getFileInfo', {
-          projectId: projectId,
-          fileId: 'tests.series'
-        });
-        socket.emit('getFileInfo', {
-          projectId: 'admin',
-          fileId: 'compares'
-        });
-        socket.emit('getFileInfo', {
-          projectId: 'admin',
-          fileId: 'projects'
-        });
+  function iAmReadyToProcessData() {
+    NProgress.done();
+
+    var k = Object.keys(tests);
+    if (k.length === 0) {
+      $("#rowNoDataToShow").show();
+      return;
+    }
+    if (tests.numPassingNotShown) {
+      numTests += tests.numPassingNotShown;
+      numTestsPassing += tests.numPassingNotShown;
+      delete tests.numPassingNotShown;
+    }
+    numTests += k.length;
+    for (var ii = 0; ii < k.length; ii++) {
+      var s = tests[k[ii]];
+      if (s.status.isPassing) numTestsPassing++;
+      else numTestsFailing++;
+    }
+
+    $("#topBanner_numTests").html(numTests);
+    $("#topBanner_numTestsFailing").html(numTestsFailing);
+    if (numTestsFailing === 0)
+      $("#topBanner_numTestsFailing").addClass("green");
+    else $("#topBanner_numTestsFailing").addClass("red");
+
+    $("#topBanner_numTestsPassing").html(numTestsPassing);
+    if (numTestsPassing === 0) $("#topBanner_numTestsPassing").addClass("red");
+    else $("#topBanner_numTestsPassing").addClass("green");
+
+    if (numTestsFailing === 0) {
+      $("#topBanner_numTestsPassing_percent").html("100%");
+      $("#topBanner_numTestsFailing_percent").html("0%");
+    } else {
+      if (numTestsFailing === 0) {
+        $("#topBanner_numTestsFailing_percent").html("100%");
+        $("#topBanner_numTestsPassing_percent").html("0%");
+      } else {
+        var p = (numTestsFailing / numTests) * 100;
+        $("#topBanner_numTestsFailing_percent").html(p.toFixed(2) + "%");
+        $("#topBanner_numTestsPassing_percent").html(
+          (100 - p).toFixed(2) + "%"
+        );
+      }
+    }
+    $("#btnShowAll").hide();
+    $("#btnShowPassing").hide();
+
+    if (numTestsFailing === 0) {
+      $("#btnShowFailed").hide();
+      $("#testsContent").html("<p>No failing test to show.</p>");
+    } else {
+      $("#btnShowFailed").addClass("active");
+      testsShowTable("failing");
+    }
+
+    $("#btnShowPassing").click(function () {
+      $("#btnShowPassing").addClass("active");
+      $("#btnShowFailed").removeClass("active");
+      $("#btnShowAll").removeClass("active");
+      testsShowTable("passing");
+    });
+    $("#btnShowFailed").click(function () {
+      $("#btnShowPassing").removeClass("active");
+      $("#btnShowFailed").addClass("active");
+      $("#btnShowAll").removeClass("active");
+      testsShowTable("failing");
+    });
+    $("#btnShowAll").click(function () {
+      $("#btnShowPassing").removeClass("active");
+      $("#btnShowFailed").removeClass("active");
+      $("#btnShowAll").addClass("active");
+      testsShowTable("all");
+    });
+
+    $(document).ready(function () {
+      $("#topBanner").show();
+      $("#rowTable").show();
+      $("#rowTests").show();
+    });
+  }
+
+  function myChangeAssignee(sel, serieId) {
+    socket.emit("serieUpdateAssignee", {
+      projectId: projectId,
+      serieId: serieId,
+      assignee: sel.value,
+    });
+    tests[serieId].assignee = sel.value;
+  }
+
+  function myGetAssigneeTd(assignee, serieId) {
+    if (!projects[projectId].useBugTracker) {
+      let h = "";
+      h = '<td data-order="' + assignee + '" data-filter="' + assignee + '">';
+      h +=
+        '<select name="assignee" onchange="myChangeAssignee(this,\'' +
+        serieId +
+        "');\">";
+      h += '<option value="">None</option>';
+      var k = projects[projectId].users.split(",");
+      for (var ii = 0; ii < k.length; ii++) {
+        h += "<option ";
+        if (assignee === k[ii]) h += "selected ";
+        h += 'value="' + k[ii] + '">' + k[ii] + "</option>";
+      }
+      h += "</select></td>";
+      return h;
+    }
+    return "";
+  }
+
+  function changeState(sel, serieId) {
+    socket.emit("serieUpdateSeriesState", {
+      projectId: projectId,
+      serieId: serieId,
+      state: sel.value,
+      // assignee: assignee, stateTarget: stateTarget, comment: comment
+    });
+    tests[serieId].state = sel.value;
+    if (sel.value === "failingConfirmed") {
+      if (!tests[serieId].bugLink) addBugLink(serieId);
+    }
+  }
+
+  function getStateTdDesc(serieId, state) {
+    let h = "";
+    h = '<td data-order="' + state + '" data-filter="' + state + '">';
+    h +=
+      '<select name="state" onchange="changeState(this,\'' + serieId + "');\">";
+
+    if (state.indexOf("failing") !== -1) {
+      h += "<option ";
+      if (state === "failingNeedstriage") h += "selected ";
+      h += 'value="failingNeedstriage">Needs Triage</option>';
+
+      h += "<option ";
+      if (state === "failingConfirmed") h += "selected ";
+      h += 'value="failingConfirmed">Confirmed</option>';
+
+      if (!projects[projectId].useBugTracker) {
+        h += "<option ";
+        if (state === "failingAssigned") h += "selected ";
+        h += 'value="failingAssigned">Assigned</option>';
+
+        h += "<option ";
+        if (state === "failingFixed") h += "selected ";
+        h += 'value="failingFixed">Fixed</option>';
       }
 
-      function iAmReadyToProcessData() {
-        NProgress.done();
+      h += "<option ";
+      if (state === "failingReset") h += "selected ";
+      h += 'value="failingReset">Reset Base</option>';
+    } else {
+      h += "<option ";
+      if (state === "passing") h += "selected ";
+      h += 'value="passing">Passing</option>';
+    }
 
-        var k = Object.keys(tests);
-        if (k.length === 0) {
-          $('#rowNoDataToShow').show()
-          return;
-        }
-        if (tests.numPassingNotShown) {
-          numTests += tests.numPassingNotShown;
-          numTestsPassing += tests.numPassingNotShown;
-          delete tests.numPassingNotShown;
-        }
-        numTests += k.length;
-        for (var ii = 0; ii < k.length; ii++) {
-          var s = tests[k[ii]];
-          if (s.status.isPassing)
-            numTestsPassing++;
-          else
-            numTestsFailing++;
-        }
+    h += "</select></td>";
 
-        $('#topBanner_numTests').html(numTests);
-        $('#topBanner_numTestsFailing').html(numTestsFailing);
-        if (numTestsFailing === 0)
-          $('#topBanner_numTestsFailing').addClass('green')
-        else
-          $('#topBanner_numTestsFailing').addClass('red')
+    return h;
+  }
 
-        $('#topBanner_numTestsPassing').html(numTestsPassing);
-        if (numTestsPassing === 0)
-          $('#topBanner_numTestsPassing').addClass('red')
-        else
-          $('#topBanner_numTestsPassing').addClass('green')
+  function testsShowTable(mode) {
+    if (debug) console.log("testsShowTable", mode);
 
-        if (numTestsFailing === 0) {
-          $('#topBanner_numTestsPassing_percent').html("100%");
-          $('#topBanner_numTestsFailing_percent').html("0%");
-        } else {
-          if (numTestsFailing === 0) {
-            $('#topBanner_numTestsFailing_percent').html("100%");
-            $('#topBanner_numTestsPassing_percent').html("0%");
-          } else {
-            var p = numTestsFailing / numTests * 100;
-            $('#topBanner_numTestsFailing_percent').html(p.toFixed(2) + "%");
-            $('#topBanner_numTestsPassing_percent').html((100 - p).toFixed(2) + "%");
-          }
-        }
-        $('#btnShowAll').hide();
-        $('#btnShowPassing').hide();
+    if (dataTableObject !== undefined) {
+      dataTableObject.destroy();
+    }
 
-        if (numTestsFailing === 0) {
-          $('#btnShowFailed').hide();
-          $('#testsContent').html('<p>No failing test to show.</p>');
-        } else {
-          $('#btnShowFailed').addClass('active')
-          testsShowTable('failing');
-        }
+    var h = "";
+    h += "<tr>";
+    h += '<th style="width: 70px">State</th>';
+    if (!projects[projectId].useBugTracker) {
+      h += "<th>Assignee</th>";
+    }
+    h += "<th>Serie Id</th>";
+    h += '<th style="width: 60px">Analysis</th>';
+    h += '<th style="width: 60px">Last passing buildId</th>';
+    h += '<th style="width: 60px">Failing since buildId</th>';
+    h += '<th style="width: 60px">Last executed buildId</th>';
+    h += '<th style="width: 80px" class="no-sort"></th>';
+    h += "</tr>";
+    $("#table_head").html(h);
 
-        $('#btnShowPassing').click(function() {
-          $('#btnShowPassing').addClass('active')
-          $('#btnShowFailed').removeClass('active')
-          $('#btnShowAll').removeClass('active')
-          testsShowTable('passing');
-        })
-        $('#btnShowFailed').click(function() {
-          $('#btnShowPassing').removeClass('active')
-          $('#btnShowFailed').addClass('active')
-          $('#btnShowAll').removeClass('active')
-          testsShowTable('failing');
-        })
-        $('#btnShowAll').click(function() {
-          $('#btnShowPassing').removeClass('active')
-          $('#btnShowFailed').removeClass('active')
-          $('#btnShowAll').addClass('active')
-          testsShowTable('all');
-        })
+    h = "";
+    var k = Object.keys(tests);
+    for (var ii = 0; ii < k.length; ii++) {
+      var s = tests[k[ii]];
 
-        $(document).ready(function() {
-          $('#topBanner').show();
-          $('#rowTable').show();
-          $('#rowTests').show();
-        });
+      if (s.status.isPassing) continue;
+
+      // convert an existing database
+      if (s.state === "assigned") s.state = "failingAssigned";
+      if (s.state === "fixed") s.state = "failingFixed";
+      if (s.state === "new") s.state = "failingNeedstriage";
+      if (s.state === "wontfix") s.state = "failingIntended";
+
+      h += "<tr>";
+      h += getStateTdDesc(k[ii], s.state);
+      var ass;
+      if (s.assignee) if (s.assignee !== "none");
+      ass = s.assignee;
+      h += myGetAssigneeTd(ass, k[ii]);
+
+      h +=
+        '<td><div style="word-wrap: break-word; word-break: break-all; white-space: normal;">' +
+        k[ii] +
+        "</div></td>";
+      // h += '<td>'; if (s.description)   h += s.description; h += '</td>';
+      if (s.status.isPassing) h += '<td class="green"><b>Passing</b></td>';
+      else h += '<td class="red"><b>Failed</b></td>';
+
+      if (s.status.lastPassing)
+        h +=
+          '<td><a target="_blank" href="' +
+          builds[s.status.lastPassing].infos.url +
+          '"' +
+          builds[s.status.lastPassing].infos.hash +
+          '">' +
+          s.status.lastPassing +
+          "</a></td>";
+      else h += "<td>---</td>";
+
+      if (s.status.isPassing) h += "<td>--</td>";
+      else
+        h +=
+          '<td><a target="_blank" href="' +
+          builds[s.status.failingSince].infos.url +
+          '"' +
+          builds[s.status.failingSince].infos.hash +
+          '">' +
+          s.status.failingSince +
+          "</a></td>";
+
+      h +=
+        '<td><a target="_blank" href="' +
+        builds[s.status.lastExecuted].infos.url +
+        '"' +
+        builds[s.status.lastExecuted].infos.hash +
+        '">' +
+        s.status.lastExecuted +
+        "</a></td>";
+      h += "<td><center>";
+      h += '<div class="btn-group">';
+      h +=
+        '<button type="button" onclick="openEditSerie(\'' +
+        k[ii] +
+        '\')" class="btn btn-danger btn-xs"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
+      if (s.url)
+        h +=
+          '<button type="button" onclick="openSpongelink(\'' +
+          k[ii] +
+          '\')" class="btn btn-primary btn-xs"><i class="fa fa-external-link" aria-hidden="true"></i></button>';
+      else
+        h +=
+          '<button type="button" disabled class="btn btn-primary btn-xs"><i class="fa fa-external-link" aria-hidden="true"></i></button>';
+      h +=
+        '<button type="button" onclick="addBugLink(\'' +
+        k[ii] +
+        '\')" class="btn btn-danger btn-xs"><i class="fa fa-bug" aria-hidden="true"></i></button>';
+      if (s.bugLink) {
+        h +=
+          '<button type="button" onclick="showOpenBugLink(\'' +
+          k[ii] +
+          '\')" class="btn btn-primary btn-xs"><i class="fa fa-bug" aria-hidden="true"></i></button>';
+      } else {
+        h +=
+          '<button type="button" disabled class="btn btn-primary btn-xs"><i class="fa fa-bug" aria-hidden="true"></i></button>';
       }
+      h += "</div>";
+      h += "</center></td>";
+      h += "</tr>";
+    }
+    $("#table_content").html(h);
 
-      function myChangeAssignee(sel, serieId) {
-        socket.emit('serieUpdateAssignee', {
-          projectId: projectId,
-          serieId: serieId,
-          assignee: sel.value
-        });
-        tests[serieId].assignee = sel.value;
-      }
+    dataTableObject = $("#testsDatatable").DataTable({
+      language: {
+        decimal: ".",
+      },
+      paging: true, // paging: true if > to 10 entries
+      info: true,
+      bFilter: true,
+      columnDefs: [
+        {
+          targets: "no-sort",
+          orderable: false,
+        },
+      ],
+      order: [[2, "desc"]],
+      pageLength: defLength,
+      lengthMenu: [
+        [10, 15, 20, 25, 50, -1],
+        [10, 15, 20, 25, 50, "All"],
+      ],
+    });
+    $("#testsDatatable").on("length.dt", function (e, s, l) {
+      defLength = l;
+    });
+  }
 
-      function myGetAssigneeTd(assignee, serieId) {
-        if (!projects[projectId].useBugTracker) {
-          let h = '';
-          h = '<td data-order="' + assignee + '" data-filter="' + assignee + '">';
-          h += '<select name="assignee" onchange="myChangeAssignee(this,\'' + serieId + '\');">';
-          h += '<option value="">None</option>';
-          var k = projects[projectId].users.split(',');
-          for (var ii = 0; ii < k.length; ii++) {
-            h += '<option ';
-            if (assignee === k[ii])
-              h += 'selected ';
-            h += 'value="' + k[ii] + '">' + k[ii] + '</option>';
-          }
-          h += '</select></td>';
-          return (h);
-        }
-        return '';
-      }
+  function addBugLink(theSerieId) {
+    serieId = theSerieId;
+    var s = tests[theSerieId];
+    if (s.bugLink) {
+      $("#AddBugLink_Link").val(s.bugLink);
+    } else $("#AddBugLink_Link").val("");
+    var report = "";
+    report += "New test failing";
+    $("#proposalSubjectForBugReport").val(report);
+    report = "";
+    report += "Test: " + theSerieId;
+    report += "\r\n\r\n";
+    if (s.description) report += "Description: " + s.description + "\r\n\r\n";
+    report += "Regression analysis details:";
+    report += "\r\n";
+    report += "- last passing buildId: " + s.status.lastPassing;
+    report += "\r\n";
+    report += "- test failing since buildId: " + s.status.failingSince;
+    report += "\r\n";
+    report += "- last executed buildId: : " + s.status.lastExecuted;
+    var danaUrl = "https://<%=global.config.server.ip%>";
+    report += "\r\n\r\n";
+    report += "Links:";
+    report += "\r\n";
+    report +=
+      "- test: " +
+      danaUrl +
+      "/serie?" +
+      projectId +
+      "?" +
+      encodeURIComponent(serieId);
+    report += "\r\n";
+    report +=
+      "- project tests status: " + danaUrl + "/" + projectId + "/statusTests";
+    report += "\r\n";
+    report += "- dana instance: " + danaUrl;
+    $("#proposalForBugReport").val(report);
+    $("#myModalAddBugLink").modal();
+  }
+  $("#modalSaveBugLink").click(function () {
+    var bugLink = $("#AddBugLink_Link").val();
+    socket.emit("serieUpdateBugLink", {
+      projectId: projectId,
+      serieId: serieId,
+      bugLink: bugLink,
+    });
+    tests[serieId].bugLink = bugLink;
+  });
+  $("#modalCopySubjectClipboard").click(function () {
+    var copyText = document.getElementById("proposalSubjectForBugReport");
+    copyText.select();
+    document.execCommand("Copy");
+  });
+  $("#modalCopyClipboard").click(function () {
+    var copyText = document.getElementById("proposalForBugReport");
+    copyText.select();
+    document.execCommand("Copy");
+  });
 
-      function changeState(sel, serieId) {
-        socket.emit('serieUpdateSeriesState', {
-          projectId: projectId,
-          serieId: serieId,
-          state: sel.value,
-          // assignee: assignee, stateTarget: stateTarget, comment: comment
-        });
-        tests[serieId].state = sel.value;
-        if (sel.value === 'failingConfirmed') {
-          if (!tests[serieId].bugLink)
-            addBugLink(serieId);
-        }
-      }
+  function openModal(theSerieId) {
+    serieId = theSerieId;
+    uiShowSerieClean();
+    $("#myModal").modal();
+  }
 
-      function getStateTdDesc(serieId, state) {
-        let h = '';
-        h = '<td data-order="' + state + '" data-filter="' + state + '">';
-        h += '<select name="state" onchange="changeState(this,\'' + serieId + '\');">';
+  function testsLegendFormatter(data) {
+    return "";
+  }
 
-        if (state.indexOf('failing') !== -1) {
-          h += '<option ';
-          if (state === 'failingNeedstriage')
-            h += 'selected ';
-          h += 'value="failingNeedstriage">Needs Triage</option>'
-
-          h += '<option ';
-          if (state === 'failingConfirmed')
-            h += 'selected ';
-          h += 'value="failingConfirmed">Confirmed</option>'
-
-          if (!projects[projectId].useBugTracker) {
-            h += '<option ';
-            if (state === 'failingAssigned')
-              h += 'selected ';
-            h += 'value="failingAssigned">Assigned</option>'
-
-            h += '<option ';
-            if (state === 'failingFixed')
-              h += 'selected ';
-            h += 'value="failingFixed">Fixed</option>'
-          }
-
-          h += '<option ';
-          if (state === 'failingReset')
-            h += 'selected ';
-          h += 'value="failingReset">Reset Base</option>'
-
-        } else {
-          h += '<option ';
-          if (state === 'passing')
-            h += 'selected ';
-          h += 'value="passing">Passing</option>'
-        }
-
-        h += '</select></td>';
-
-        return (h)
-      }
-
-      function testsShowTable(mode) {
-
-        if (debug)
-          console.log('testsShowTable', mode);
-
-        if (dataTableObject !== undefined) {
-          dataTableObject.destroy();
-        }
-
-        var h = '';
-        h += '<tr>';
-        h += '<th style="width: 70px">State</th>';
-        if (!projects[projectId].useBugTracker) {
-          h += '<th>Assignee</th>';
-        }
-        h += '<th>Serie Id</th>';
-        h += '<th style="width: 60px">Analysis</th>';
-        h += '<th style="width: 60px">Last passing buildId</th>';
-        h += '<th style="width: 60px">Failing since buildId</th>';
-        h += '<th style="width: 60px">Last executed buildId</th>';
-        h += '<th style="width: 80px" class="no-sort"></th>';
-        h += '</tr>';
-        $('#table_head').html(h);
-
-        h = '';
-        var k = Object.keys(tests);
-        for (var ii = 0; ii < k.length; ii++) {
-          var s = tests[k[ii]];
-
-          if (s.status.isPassing)
-            continue;
-
-          // convert an existing database
-          if (s.state === 'assigned')
-            s.state = 'failingAssigned';
-          if (s.state === 'fixed')
-            s.state = 'failingFixed';
-          if (s.state === 'new')
-            s.state = 'failingNeedstriage';
-          if (s.state === 'wontfix')
-            s.state = 'failingIntended';
-
-          h += '<tr>';
-          h += getStateTdDesc(k[ii], s.state);
-          var ass;
-          if (s.assignee)
-            if (s.assignee !== 'none')
-          ;
-          ass = s.assignee
-          h += myGetAssigneeTd(ass, k[ii]);
-
-          h += '<td><div style="word-wrap: break-word; word-break: break-all; white-space: normal;">' + k[ii] + '</div></td>';
-          // h += '<td>'; if (s.description)   h += s.description; h += '</td>';
-          if (s.status.isPassing)
-            h += '<td class="green"><b>Passing</b></td>';
-          else
-            h += '<td class="red"><b>Failed</b></td>';
-
-          if (s.status.lastPassing)
-            h += '<td><a target="_blank" href="' + builds[s.status.lastPassing].infos.url + '"' + builds[s.status.lastPassing].infos.hash + '">' + s.status.lastPassing + '</a></td>';
-          else
-            h += '<td>---</td>';
-
-          if (s.status.isPassing)
-            h += '<td>--</td>';
-          else
-            h += '<td><a target="_blank" href="' + builds[s.status.failingSince].infos.url + '"' + builds[s.status.failingSince].infos.hash + '">' + s.status.failingSince + '</a></td>';
-
-          h += '<td><a target="_blank" href="' + builds[s.status.lastExecuted].infos.url + '"' + builds[s.status.lastExecuted].infos.hash + '">' + s.status.lastExecuted + '</a></td>';
-          h += '<td><center>';
-          h += '<div class="btn-group">';
-          h += '<button type="button" onclick="openEditSerie(\'' + k[ii] + '\')" class="btn btn-danger btn-xs"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
-          if (s.url)
-            h += '<button type="button" onclick="openSpongelink(\'' + k[ii] + '\')" class="btn btn-primary btn-xs"><i class="fa fa-external-link" aria-hidden="true"></i></button>';
-          else
-            h += '<button type="button" disabled class="btn btn-primary btn-xs"><i class="fa fa-external-link" aria-hidden="true"></i></button>';
-          h += '<button type="button" onclick="addBugLink(\'' + k[ii] + '\')" class="btn btn-danger btn-xs"><i class="fa fa-bug" aria-hidden="true"></i></button>';
-          if (s.bugLink) {
-            h += '<button type="button" onclick="showOpenBugLink(\'' + k[ii] + '\')" class="btn btn-primary btn-xs"><i class="fa fa-bug" aria-hidden="true"></i></button>';
-          } else {
-            h += '<button type="button" disabled class="btn btn-primary btn-xs"><i class="fa fa-bug" aria-hidden="true"></i></button>';
-          }
-          h += '</div>';
-          h += '</center></td>';
-          h += '</tr>';
-
-        }
-        $('#table_content').html(h);
-
-        dataTableObject = $('#testsDatatable').DataTable({
-          "language": {
-            "decimal": "."
-          },
-          paging: true, // paging: true if > to 10 entries
-          info: true,
-          "bFilter": true,
-          "columnDefs": [{
-            "targets": 'no-sort',
-            "orderable": false
-          }],
-          "order": [
-            [2, "desc"]
-          ],
-          "pageLength": defLength,
-          "lengthMenu": [
-            [
-              10,
-              15,
-              20,
-              25,
-              50, -1
-            ],
-            [
-              10,
-              15,
-              20,
-              25,
-              50,
-              "All"
-            ]
-          ]
-        });
-        $('#testsDatatable').on('length.dt', function(e, s, l) {
-          defLength = l;
-        });
-      }
-
-      function addBugLink(theSerieId) {
-        serieId = theSerieId;
-        var s = tests[theSerieId];
-        if (s.bugLink) {
-          $('#AddBugLink_Link').val(s.bugLink);
-        } else
-          $('#AddBugLink_Link').val('');
-        var report = '';
-        report += 'New test failing';
-        $('#proposalSubjectForBugReport').val(report);
-        report = '';
-        report += 'Test: ' + theSerieId;
-        report += '\r\n\r\n';
-        if (s.description)
-          report += 'Description: ' + s.description + '\r\n\r\n';
-        report += 'Regression analysis details:';
-        report += '\r\n';
-        report += '- last passing buildId: ' + s.status.lastPassing;
-        report += '\r\n';
-        report += '- test failing since buildId: ' + s.status.failingSince;
-        report += '\r\n';
-        report += '- last executed buildId: : ' + s.status.lastExecuted;
-        var danaUrl = 'https://<%=global.config.server.ip%>';
-        report += '\r\n\r\n';
-        report += 'Links:';
-        report += '\r\n';
-        report += '- test: ' + danaUrl + '/serie?' + projectId + '?' + encodeURIComponent(serieId);
-        report += '\r\n';
-        report += '- project tests status: ' + danaUrl + '/' + projectId + '/statusTests';
-        report += '\r\n';
-        report += '- dana instance: ' + danaUrl;
-        $('#proposalForBugReport').val(report);
-        $('#myModalAddBugLink').modal();
-      }
-      $('#modalSaveBugLink').click(function() {
-        var bugLink = $('#AddBugLink_Link').val();
-        socket.emit('serieUpdateBugLink', {
-          projectId: projectId,
-          serieId: serieId,
-          bugLink: bugLink
-        });
-        tests[serieId].bugLink = bugLink;
+  $(document).ready(function () {
+    testsStart(userPage.projectId);
+    $("#myModal").on("shown.bs.modal", function (e) {
+      uiShowSerie("statusSeries", projectId, serieId);
+      $("#commentsArea").linkify({
+        target: "_blank",
       });
-      $('#modalCopySubjectClipboard').click(function() {
-        var copyText = document.getElementById("proposalSubjectForBugReport");
-        copyText.select();
-        document.execCommand("Copy");
-      })
-      $('#modalCopyClipboard').click(function() {
-        var copyText = document.getElementById("proposalForBugReport");
-        copyText.select();
-        document.execCommand("Copy");
-      })
+    });
+    $("#commentsArea").linkify({
+      target: "_blank",
+    });
+  });
 
-      function openModal(theSerieId) {
-        serieId = theSerieId;
-        uiShowSerieClean();
-        $('#myModal').modal();
-      }
+  function openEditSerie(serieId) {
+    console.log("testsOpenEditSerie", serieId);
+    window.open(
+      "/serie?" + projectId + "?" + encodeURIComponent(serieId),
+      "_blank"
+    );
+  }
 
-      function testsLegendFormatter(data) {
-        return '';
-      }
+  function openSpongeLink(serieId) {
+    console.log("testsOpenSpongeLink", serieId);
+    window.open(tests[serieId].url, "_blank");
+  }
 
-      $(document).ready(function() {
-        testsStart(userPage.projectId);
-        $('#myModal').on('shown.bs.modal', function(e) {
-          uiShowSerie('statusSeries', projectId, serieId);
-          $('#commentsArea').linkify({
-            target: "_blank"
-          });
-        })
-        $('#commentsArea').linkify({
-          target: "_blank"
-        });
-      });
+  function showOpenBugLink(serieId) {
+    window.open(tests[serieId].bugLink, "_blank");
+  }
+  var userPage;
 
-      function openEditSerie(serieId) {
-        console.log('testsOpenEditSerie', serieId)
-        window.open("/serie?" + projectId + '?' + encodeURIComponent(serieId), "_blank");
-      }
-
-      function openSpongeLink(serieId) {
-        console.log('testsOpenSpongeLink', serieId)
-        window.open(tests[serieId].url, "_blank");
-      }
-
-      function showOpenBugLink(serieId) {
-        window.open(tests[serieId].bugLink, "_blank");
-      }
-      var userPage;
-
-      function testsSetPage(obj) {
-        userPage = obj;
-      }
-    </script>
+  function testsSetPage(obj) {
+    userPage = obj;
+  }
+</script>

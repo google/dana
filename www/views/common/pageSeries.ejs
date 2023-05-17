@@ -1,1178 +1,1235 @@
-<!--
-/*
- * Copyright 2017 Google Inc. All rights reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
--->
-
 <!-- page content -->
-<div class="right_col" role="main" style="padding-top: 50px;">
+<div class="right_col" role="main" style="padding-top: 50px">
   <!-- top tiles -->
   <div class="row">
-
     <div class="row tile_count">
       <span id="topBanner" hidden="hidden">
         <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-          <span class="count_top">
-            Benchmarks</span>
-      <div id="topBanner_numSeries" class="count"></div>
-    </div>
-    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-      <span class="count_top">
-            Improved
-          </span>
-      <div id="topBanner_numSeriesImproved" class="count"></div>
-      <span id="topBanner_numSeriesImproved_percent" class="count_bottom"></span>
-    </div>
-    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-      <span class="count_top">
-            Similar
-          </span>
-      <div id="topBanner_numSeriesSimilar" class="count"></div>
-      <span id="topBanner_numSeriesSimilar_percent" class="count_bottom"></span>
-    </div>
-    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-      <span class="count_top">
-            Regressions</span>
-      <div id="topBanner_numRegressions" class="count"></div>
-      <span id="topBanner_numRegressions_percent" class="count_bottom"></span>
-    </div>
-    <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
-      <span class="count_top">
-            Not available</span>
-      <div id="topBanner_numSeriesUndefined" class="count"></div>
-      <span id="topBanner_numSeriesUndefined_percent" class="count_bottom"></span>
-    </div>
-    </span>
-  </div>
-</div>
-
-<!-- /top tiles -->
-<div class="">
-
-  <div class="clearfix"></div>
-
-  <div id="rowNoDataToShow" class="row" hidden>
-    <div class="col-md-12 col-sm-12 col-xs-12">
-      <div class="x_panel">
-        <div class="x_title">
-          <h2>Benchmarks</h2>
-          <div class="clearfix"></div>
+          <span class="count_top"> Benchmarks</span>
+          <div id="topBanner_numSeries" class="count"></div>
         </div>
-        <div class="x_content">
-          <p>No benchmarks to show.</p>
+        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+          <span class="count_top"> Improved </span>
+          <div id="topBanner_numSeriesImproved" class="count"></div>
+          <span
+            id="topBanner_numSeriesImproved_percent"
+            class="count_bottom"
+          ></span>
+        </div>
+        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+          <span class="count_top"> Similar </span>
+          <div id="topBanner_numSeriesSimilar" class="count"></div>
+          <span
+            id="topBanner_numSeriesSimilar_percent"
+            class="count_bottom"
+          ></span>
+        </div>
+        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+          <span class="count_top"> Regressions</span>
+          <div id="topBanner_numRegressions" class="count"></div>
+          <span
+            id="topBanner_numRegressions_percent"
+            class="count_bottom"
+          ></span>
+        </div>
+        <div class="col-md-2 col-sm-4 col-xs-6 tile_stats_count">
+          <span class="count_top"> Not available</span>
+          <div id="topBanner_numSeriesUndefined" class="count"></div>
+          <span
+            id="topBanner_numSeriesUndefined_percent"
+            class="count_bottom"
+          ></span>
+        </div>
+      </span>
+    </div>
+  </div>
+
+  <!-- /top tiles -->
+  <div class="">
+    <div class="clearfix"></div>
+
+    <div id="rowNoDataToShow" class="row" hidden>
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Benchmarks</h2>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <p>No benchmarks to show.</p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="row">
-    <div id='rowTable' class="col-md-12 col-sm-12 col-xs-12" hidden="hidden">
-      <div class="x_panel">
-        <div class="x_title">
-          <h2>Benchmarks
-            </h2>
-          <ul class="nav navbar-right panel_toolbox">
-            <!-- <li class="dropdown"> <a href="#download"><i class="fa fa-download"></i></a> </li> -->
-            <li>
-              <button id='btnShowCommonBuilds' type="button" class="btn btn-danger btn-xs">Show last 50 builds of project</button>
-            </li>
-            &nbsp;&nbsp;&nbsp;
-            <li>
-              <button id='btnShowUndefined' type="button" class="btn btn-primary btn-xs">Not available</button>
-            </li>
-            <li>
-              <button id='btnShowRegressions' type="button" class="btn btn-primary btn-xs active">Regression</button>
-            </li>
-            <li>
-              <button id='btnShowSimilar' type="button" class="btn btn-primary btn-xs">Similar</button>
-            </li>
-            <li>
-              <button id='btnShowImproved' type="button" class="btn btn-primary btn-xs">Improved</button>
-            </li>
-            <li>
-              <button id='btnShowActive' type="button" class="btn btn-primary btn-xs">Active</button>
-            </li>
-            <li>
-              <button id='btnShowAll' type="button" class="btn btn-primary btn-xs">All</button>
-            </li>
-          </ul>
-          <div class="clearfix"></div>
-          <br>
-          <p id="buildInfos" class='pull-right'>Build infos to be shown</p>
-          <div class="clearfix"></div>
-
-        </div>
-        <div id="serieContent" class="x_content">
-          <table id="serieDatatable" class="table table-stripped table-bordered table-condensed">
-            <thead id='table_head'>
-            </thead>
-            <tbody id='table_content'></tbody>
-          </table>
+    <div class="row">
+      <div id="rowTable" class="col-md-12 col-sm-12 col-xs-12" hidden="hidden">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>Benchmarks</h2>
+            <ul class="nav navbar-right panel_toolbox">
+              <!-- <li class="dropdown"> <a href="#download"><i class="fa fa-download"></i></a> </li> -->
+              <li>
+                <button
+                  id="btnShowCommonBuilds"
+                  type="button"
+                  class="btn btn-danger btn-xs"
+                >
+                  Show last 50 builds of project
+                </button>
+              </li>
+              &nbsp;&nbsp;&nbsp;
+              <li>
+                <button
+                  id="btnShowUndefined"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  Not available
+                </button>
+              </li>
+              <li>
+                <button
+                  id="btnShowRegressions"
+                  type="button"
+                  class="btn btn-primary btn-xs active"
+                >
+                  Regression
+                </button>
+              </li>
+              <li>
+                <button
+                  id="btnShowSimilar"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  Similar
+                </button>
+              </li>
+              <li>
+                <button
+                  id="btnShowImproved"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  Improved
+                </button>
+              </li>
+              <li>
+                <button
+                  id="btnShowActive"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  Active
+                </button>
+              </li>
+              <li>
+                <button
+                  id="btnShowAll"
+                  type="button"
+                  class="btn btn-primary btn-xs"
+                >
+                  All
+                </button>
+              </li>
+            </ul>
+            <div class="clearfix"></div>
+            <br />
+            <p id="buildInfos" class="pull-right">Build infos to be shown</p>
+            <div class="clearfix"></div>
+          </div>
+          <div id="serieContent" class="x_content">
+            <table
+              id="serieDatatable"
+              class="table table-stripped table-bordered table-condensed"
+            >
+              <thead id="table_head"></thead>
+              <tbody id="table_content"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
+    <div class="clearfix"></div>
   </div>
-  <div class="clearfix"></div>
-</div>
 </div>
 <!-- /page content -->
 
-<%- include('modalAddBugLink') %>
+<%- include('modalAddBugLink') %> <%- include('footer') %>
 
-  <%- include('footer') %>
+<!-- jQuery -->
+<script src="/third_party/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
+<!-- FastClick -->
+<script src="/third_party/fastclick/lib/fastclick.js"></script>
+<!-- NProgress -->
+<script src="/third_party/nprogress/nprogress.js"></script>
 
-    <!-- jQuery -->
-    <script src="/third_party/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
-    <!-- FastClick -->
-    <script src="/third_party/fastclick/lib/fastclick.js"></script>
-    <!-- NProgress -->
-    <script src="/third_party/nprogress/nprogress.js"></script>
+<!-- Datatables -->
+<script src="/third_party/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="/third_party/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
+<script src="/third_party/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+<script src="/third_party/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
+<script src="/third_party/datatables.net-buttons/js/buttons.flash.min.js"></script>
+<script src="/third_party/datatables.net-buttons/js/buttons.html5.min.js"></script>
+<script src="/third_party/datatables.net-buttons/js/buttons.print.min.js"></script>
+<script src="/third_party/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
+<script src="/third_party/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+<script src="/third_party/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+<script src="/third_party/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
+<script src="/third_party/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
 
-    <!-- Datatables -->
-    <script src="/third_party/datatables.net/js/jquery.dataTables.min.js"></script>
-    <script src="/third_party/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
-    <script src="/third_party/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="/third_party/datatables.net-buttons-bs/js/buttons.bootstrap.min.js"></script>
-    <script src="/third_party/datatables.net-buttons/js/buttons.flash.min.js"></script>
-    <script src="/third_party/datatables.net-buttons/js/buttons.html5.min.js"></script>
-    <script src="/third_party/datatables.net-buttons/js/buttons.print.min.js"></script>
-    <script src="/third_party/datatables.net-fixedheader/js/dataTables.fixedHeader.min.js"></script>
-    <script src="/third_party/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
-    <script src="/third_party/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="/third_party/datatables.net-responsive-bs/js/responsive.bootstrap.js"></script>
-    <script src="/third_party/datatables.net-scroller/js/dataTables.scroller.min.js"></script>
+<!-- socket.io -->
+<script src="/socket.io/socket.io.js"></script>
 
-    <!-- socket.io -->
-    <script src="/socket.io/socket.io.js"></script>
+<!-- Dygraph for sparklines -->
+<script
+  type="text/javascript"
+  src="/third_party/dygraph/js/dygraph.js"
+></script>
+<script
+  type="text/javascript"
+  src="/third_party/dygraph/js/synchronizer.js"
+></script>
 
-    <!-- Dygraph for sparklines -->
-    <script type="text/javascript" src="/third_party/dygraph/js/dygraph.js"></script>
-    <script type="text/javascript" src="/third_party/dygraph/js/synchronizer.js"></script>
+<!-- Linkify -->
+<script src="/third_party/linkify/linkify.min.js"></script>
+<script src="/third_party/linkify/linkify-jquery.min.js"></script>
 
-    <!-- Linkify -->
-    <script src="/third_party/linkify/linkify.min.js"></script>
-    <script src="/third_party/linkify/linkify-jquery.min.js"></script>
+<!-- Custom Theme Scripts -->
+<script src="/third_party/gentelella/build/js/custom.js"></script>
 
-    <!-- Custom Theme Scripts -->
-    <script src="/third_party/gentelella/build/js/custom.js"></script>
+<script>
+  // Fake node.js module to reuse same code on server
+  var module = {
+    exports: {},
+  };
+</script>
+<script src="/js/analyse.js"></script>
 
-    <script>
-      // Fake node.js module to reuse same code on server
-      var module = {
-        exports: {}
+<!-- Custom ui lib -->
+<!-- <script src="/js/uilib.js"></script> <script src="/js/uilibOne.js"></script> -->
+
+<script>
+  var debug = false;
+  var serieId, projectId, serieFilter;
+  var series, builds, compares, projects;
+  var largestBuildId;
+  var graphBuilds = [];
+  var dataTableObject;
+  var numSeries;
+  var numActive;
+  var numSeriesSimilar;
+  var numSeriesImproved;
+  var numSeriesRegression;
+  var numSeriesUndefined;
+  var tableMode;
+  var usingAllSameLast50Builds = false;
+
+  //    alert($(window).height())  if ($(window).height() > 1000)  defLength = 20;
+  var defLength = 15;
+  var socket = io();
+
+  function start(tprojectId, tSerieFilter, title) {
+    projectId = tprojectId;
+    serieFilter = tSerieFilter;
+    $("#page_title_description").html(
+      (title ?? "") +
+        " Benchmark Status for " +
+        projectId +
+        " <small>Based on latest results</small>"
+    );
+
+    socket.on("receiveFileInfo", function (req) {
+      if (debug) console.log("receiveFileInfo", req);
+      NProgress.inc();
+      if (req.fileId === "builds") {
+        builds = req.file;
+        var k = Object.keys(builds);
+        k.sort(function (a, b) {
+          return b * 1 - a * 1;
+        });
+        if (k.length) largestBuildId = Number(k[0]);
+        var l = 50;
+        if (k.length < 50) l = k.length;
+        for (var ii = 0; ii < l; ii++) graphBuilds.push(builds[k[ii]]);
+        graphBuilds.reverse();
       }
-    </script>
-    <script src="/js/analyse.js"></script>
+      if (req.fileId === "compares") compares = req.file;
+      if (req.fileId === "benchmarks.series") series = req.file;
+      if (req.fileId === "projects") projects = req.file;
+      if (builds && series && compares && projects) iAmReadyToProcessData();
+    });
 
-    <!-- Custom ui lib -->
-    <!-- <script src="/js/uilib.js"></script> <script src="/js/uilibOne.js"></script> -->
+    socket.on("serverError", function (req) {
+      if (debug) console.log("serverError", req);
+      alert(req);
+    });
 
-    <script>
-      var debug = false;
-      var serieId,
-        projectId,
-        serieFilter;
-      var series,
-        builds,
-        compares,
-        projects;
-      var largestBuildId;
-      var graphBuilds = [];
-      var dataTableObject;
-      var numSeries;
-      var numActive;
-      var numSeriesSimilar;
-      var numSeriesImproved;
-      var numSeriesRegression;
-      var numSeriesUndefined;
-      var tableMode;
-      var usingAllSameLast50Builds = false;
+    if (debug) console.log("getFiles");
 
-      //    alert($(window).height())  if ($(window).height() > 1000)  defLength = 20;
-      var defLength = 15;
-      var socket = io();
+    NProgress.start();
+    socket.emit("getFileInfo", {
+      projectId: projectId,
+      fileId: "builds",
+    });
+    socket.emit("getFileInfo", {
+      projectId: "admin",
+      fileId: "compares",
+    });
+    socket.emit("getFileInfo", {
+      projectId: projectId,
+      fileId: "benchmarks.series",
+    });
+    socket.emit("getFileInfo", {
+      projectId: "admin",
+      fileId: "projects",
+    });
+  }
 
-      function start(tprojectId, tSerieFilter, title) {
-        projectId = tprojectId;
-        serieFilter = tSerieFilter;
-        $('#page_title_description').html((title ?? '') + ' Benchmark Status for ' + projectId + ' <small>Based on latest results</small>');
+  function showHeader() {
+    numSeries = 0;
+    numSeriesSimilar = 0;
+    numSeriesImproved = 0;
+    numSeriesRegression = 0;
+    numSeriesUndefined = 0;
+    var k = Object.keys(series);
+    for (var ii = 0; ii < k.length; ii++) {
+      var s = series[k[ii]];
+      if (serieFilter) if (s.serieName.search(serieFilter) === -1) continue;
 
-        socket.on('receiveFileInfo', function(req) {
-          if (debug)
-            console.log('receiveFileInfo', req);
-          NProgress.inc();
-          if (req.fileId === 'builds') {
-            builds = req.file;
-            var k = Object.keys(builds);
-            k.sort(function(a, b) {
-              return b * 1 - a * 1
-            });
-            if (k.length)
-              largestBuildId = Number(k[0]);
-            var l = 50;
-            if (k.length < 50)
-              l = k.length;
-            for (var ii = 0; ii < l; ii++)
-              graphBuilds.push(builds[k[ii]])
-            graphBuilds.reverse();
-          }
-          if (req.fileId === 'compares')
-            compares = req.file;
-          if (req.fileId === 'benchmarks.series')
-            series = req.file;
-          if (req.fileId === 'projects')
-            projects = req.file;
-          if ((builds) && (series) && (compares) && (projects))
-            iAmReadyToProcessData();
-        });
+      numSeries++;
 
-        socket.on('serverError', function(req) {
-          if (debug)
-            console.log('serverError', req);
-          alert(req)
-        });
+      if (s.status.lastBuildId + 10 > largestBuildId) numActive++;
 
-        if (debug)
-          console.log('getFiles');
+      if (s.status.error) {
+        numSeriesUndefined++;
+      } else {
+        // convert an existing database
+        if (s.state === "none") {
+          if (s.status.status === "improvement")
+            s.state = "improvementNeedstriage";
+          else s.state = "similarNeedstriage";
+        }
+        if (s.state === "assigned") s.state = "regressionAssigned";
+        if (s.state === "fixed") s.state = "regressionFixed";
+        if (s.state === "new") s.state = "regressionNeedstriage";
+        if (s.state === "wontfix") s.state = "regressionIntended";
 
-        NProgress.start();
-        socket.emit('getFileInfo', {
-          projectId: projectId,
-          fileId: 'builds'
-        });
-        socket.emit('getFileInfo', {
-          projectId: 'admin',
-          fileId: 'compares'
-        });
-        socket.emit('getFileInfo', {
-          projectId: projectId,
-          fileId: 'benchmarks.series'
-        });
-        socket.emit('getFileInfo', {
-          projectId: 'admin',
-          fileId: 'projects'
-        });
+        if (s.state.indexOf("similar") !== -1) numSeriesSimilar++;
+        if (s.state.indexOf("regression") !== -1) numSeriesRegression++;
+        if (s.state.indexOf("improvement") !== -1) numSeriesImproved++;
       }
+    }
 
-      function showHeader() {
-        numSeries = 0;
-        numSeriesSimilar = 0;
-        numSeriesImproved = 0;
-        numSeriesRegression = 0;
-        numSeriesUndefined = 0;
-        var k = Object.keys(series);
-        for (var ii = 0; ii < k.length; ii++) {
-          var s = series[k[ii]];
-          if (serieFilter)
-            if (s.serieName.search(serieFilter) === -1)
-              continue;
+    $("#topBanner_numSeries").html(numSeries);
+    $("#topBanner_numRegressions").html(numSeriesRegression);
+    if (numSeriesRegression === 0)
+      $("#topBanner_numRegressions").addClass("green");
+    else $("#topBanner_numRegressions").addClass("red");
+    var p = (numSeriesRegression / numSeries) * 100;
+    $("#topBanner_numRegressions_percent").html(p.toFixed(2) + "%");
 
-          numSeries++;
+    $("#topBanner_numSeriesSimilar").html(numSeriesSimilar);
+    if (numSeriesSimilar === 0)
+      $("#topBanner_numSeriesSimilar").addClass("red");
+    else $("#topBanner_numSeriesSimilar").addClass("green");
+    var p = (numSeriesSimilar / numSeries) * 100;
+    $("#topBanner_numSeriesSimilar_percent").html(p.toFixed(2) + "%");
 
-          if (s.status.lastBuildId + 10 > largestBuildId)
-            numActive++;
+    $("#topBanner_numSeriesImproved").html(numSeriesImproved);
+    if (numSeriesImproved !== 0)
+      $("#topBanner_numSeriesImproved").addClass("green");
+    var p = (numSeriesImproved / numSeries) * 100;
+    $("#topBanner_numSeriesImproved_percent").html(p.toFixed(2) + "%");
 
-          if (s.status.error) {
-            numSeriesUndefined++;
-          } else {
-            // convert an existing database
-            if (s.state === 'none') {
-              if (s.status.status === "improvement")
-                s.state = 'improvementNeedstriage';
-              else
-                s.state = 'similarNeedstriage';
-            }
-            if (s.state === 'assigned')
-              s.state = 'regressionAssigned';
-            if (s.state === 'fixed')
-              s.state = 'regressionFixed';
-            if (s.state === 'new')
-              s.state = 'regressionNeedstriage';
-            if (s.state === 'wontfix')
-              s.state = 'regressionIntended';
+    $("#topBanner_numSeriesUndefined").html(numSeriesUndefined);
+    var p = (numSeriesUndefined / numSeries) * 100;
+    $("#topBanner_numSeriesUndefined_percent").html(p.toFixed(2) + "%");
 
-            if (s.state.indexOf('similar') !== -1)
-              numSeriesSimilar++;
-            if (s.state.indexOf('regression') !== -1)
-              numSeriesRegression++;
-            if (s.state.indexOf('improvement') !== -1)
-              numSeriesImproved++;
-          }
-        }
+    if (numActive === numSeries) $("#btnShowActive").hide();
 
-        $('#topBanner_numSeries').html(numSeries);
-        $('#topBanner_numRegressions').html(numSeriesRegression);
-        if (numSeriesRegression === 0)
-          $('#topBanner_numRegressions').addClass('green')
-        else
-          $('#topBanner_numRegressions').addClass('red')
-        var p = numSeriesRegression / numSeries * 100;
-        $('#topBanner_numRegressions_percent').html(p.toFixed(2) + "%");
+    if (
+      numSeriesUndefined === numSeries ||
+      numSeriesRegression === numSeries ||
+      numSeriesSimilar === numSeries ||
+      numSeriesImproved === numSeries
+    ) {
+      $("#btnShowAll").hide();
+    }
 
-        $('#topBanner_numSeriesSimilar').html(numSeriesSimilar);
-        if (numSeriesSimilar === 0)
-          $('#topBanner_numSeriesSimilar').addClass('red')
-        else
-          $('#topBanner_numSeriesSimilar').addClass('green')
-        var p = numSeriesSimilar / numSeries * 100;
-        $('#topBanner_numSeriesSimilar_percent').html(p.toFixed(2) + "%");
+    if (numSeriesRegression === 0) $("#btnShowRegressions").hide();
 
-        $('#topBanner_numSeriesImproved').html(numSeriesImproved);
-        if (numSeriesImproved !== 0)
-          $('#topBanner_numSeriesImproved').addClass('green')
-        var p = numSeriesImproved / numSeries * 100;
-        $('#topBanner_numSeriesImproved_percent').html(p.toFixed(2) + "%");
+    if (numSeriesUndefined === 0) $("#btnShowUndefined").hide();
 
-        $('#topBanner_numSeriesUndefined').html(numSeriesUndefined);
-        var p = numSeriesUndefined / numSeries * 100;
-        $('#topBanner_numSeriesUndefined_percent').html(p.toFixed(2) + "%");
+    if (numSeriesSimilar === 0) $("#btnShowSimilar").hide();
 
-        if (numActive === numSeries)
-          $('#btnShowActive').hide();
+    if (numSeriesImproved === 0) $("#btnShowImproved").hide();
+  }
 
-        if ((numSeriesUndefined === numSeries) || (numSeriesRegression === numSeries) || (numSeriesSimilar === numSeries) || (numSeriesImproved === numSeries)) {
-          $('#btnShowAll').hide();
-        }
+  function iAmReadyToProcessData() {
+    NProgress.done();
 
-        if (numSeriesRegression === 0)
-          $('#btnShowRegressions').hide();
+    var k = Object.keys(series);
+    if (k.length === 0) {
+      $("#rowNoDataToShow").show();
+      return;
+    }
 
-        if (numSeriesUndefined === 0)
-          $('#btnShowUndefined').hide();
+    showHeader();
 
-        if (numSeriesSimilar === 0)
-          $('#btnShowSimilar').hide();
+    if (numSeriesRegression !== 0) {
+      $("#btnShowRegressions").addClass("active");
+      showTable("regression");
+    } else if (numSeriesSimilar !== 0) {
+      $("#btnShowSimilar").addClass("active");
+      showTable("similar");
+    } else if (numSeriesImproved != 0) {
+      $("#btnShowImproved").addClass("active");
+      showTable("improvement");
+    } else {
+      $("#btnShowUndefined").addClass("active");
+      showTable("undefined");
+    }
 
-        if (numSeriesImproved === 0)
-          $('#btnShowImproved').hide();
-
+    $("#btnShowCommonBuilds").removeClass("active");
+    $("#btnShowCommonBuilds").click(function () {
+      if (usingAllSameLast50Builds) {
+        usingAllSameLast50Builds = false;
+        $("#btnShowCommonBuilds").removeClass("active");
+      } else {
+        usingAllSameLast50Builds = true;
+        $("#btnShowCommonBuilds").addClass("active");
       }
+      showTable(tableMode);
+    });
 
-      function iAmReadyToProcessData() {
+    $("#btnShowSimilar").click(function () {
+      $("#btnShowImproved").removeClass("active");
+      $("#btnShowUndefined").removeClass("active");
+      $("#btnShowSimilar").addClass("active");
+      $("#btnShowRegressions").removeClass("active");
+      $("#btnShowActive").removeClass("active");
+      $("#btnShowAll").removeClass("active");
+      showTable("similar");
+    });
+    $("#btnShowRegressions").click(function () {
+      $("#btnShowImproved").removeClass("active");
+      $("#btnShowUndefined").removeClass("active");
+      $("#btnShowSimilar").removeClass("active");
+      $("#btnShowRegressions").addClass("active");
+      $("#btnShowActive").removeClass("active");
+      $("#btnShowAll").removeClass("active");
+      showTable("regression");
+    });
+    $("#btnShowUndefined").click(function () {
+      $("#btnShowImproved").removeClass("active");
+      $("#btnShowUndefined").addClass("active");
+      $("#btnShowSimilar").removeClass("active");
+      $("#btnShowRegressions").removeClass("active");
+      $("#btnShowActive").removeClass("active");
+      $("#btnShowAll").removeClass("active");
+      showTable("undefined");
+    });
+    $("#btnShowImproved").click(function () {
+      $("#btnShowImproved").addClass("active");
+      $("#btnShowUndefined").removeClass("active");
+      $("#btnShowSimilar").removeClass("active");
+      $("#btnShowRegressions").removeClass("active");
+      $("#btnShowActive").removeClass("active");
+      $("#btnShowAll").removeClass("active");
+      showTable("improvement");
+    });
+    $("#btnShowActive").click(function () {
+      $("#btnShowImproved").removeClass("active");
+      $("#btnShowUndefined").removeClass("active");
+      $("#btnShowSimilar").removeClass("active");
+      $("#btnShowRegressions").removeClass("active");
+      $("#btnShowActive").addClass("active");
+      $("#btnShowAll").removeClass("active");
+      showTable("active");
+    });
+    $("#btnShowAll").click(function () {
+      $("#btnShowImproved").removeClass("active");
+      $("#btnShowUndefined").removeClass("active");
+      $("#btnShowSimilar").removeClass("active");
+      $("#btnShowRegressions").removeClass("active");
+      $("#btnShowActive").removeClass("active");
+      $("#btnShowAll").addClass("active");
+      showTable("all");
+    });
+    $(document).ready(function () {
+      $("#topBanner").show();
+      $("#rowTable").show();
+      dataTableObject.columns.adjust().draw();
+    });
+  }
 
-        NProgress.done();
-
-        var k = Object.keys(series);
-        if (k.length === 0) {
-          $('#rowNoDataToShow').show()
-          return;
-        }
-
-        showHeader();
-
-        if (numSeriesRegression !== 0) {
-          $('#btnShowRegressions').addClass('active')
-          showTable('regression');
-        } else if (numSeriesSimilar !== 0) {
-          $('#btnShowSimilar').addClass('active')
-          showTable('similar');
-        } else if (numSeriesImproved != 0) {
-          $('#btnShowImproved').addClass('active')
-          showTable('improvement');
+  function changeState(sel, serieId, index) {
+    function refresh(serieId, index) {
+      if (tableMode != "all") {
+        if (tableMode != "similar") {
+          dataTableObject
+            .row("#row_" + index)
+            .remove()
+            .draw();
         } else {
-          $('#btnShowUndefined').addClass('active')
-          showTable('undefined')
+          $("#row_" + index).html(getRow(serieId, index));
+          drawRawGraph(graphs[serieId]);
         }
+      } else {
+        $("#row_" + index).html(getRow(serieId, index));
+        drawRawGraph(graphs[serieId]);
+      }
+      showHeader();
+    }
 
-        $('#btnShowCommonBuilds').removeClass('active');
-        $('#btnShowCommonBuilds').click(function() {
-          if (usingAllSameLast50Builds) {
-            usingAllSameLast50Builds = false;
-            $('#btnShowCommonBuilds').removeClass('active')
-          }
-          else {
-            usingAllSameLast50Builds = true;
-            $('#btnShowCommonBuilds').addClass('active')
-          }
-          showTable(tableMode)
-        })
+    function setBaseLast(textComment) {
+      var s = graphs[serieId].serie;
+      var newBase =
+        graphs[serieId].serieBuilds[
+          s.analyseResult.averages[s.analyseResult.averages.length - 1].start
+        ];
+      s.analyse.base = newBase;
+      analyse(s);
+      socket.emit("serieUpdateAnalyse", {
+        projectId: projectId,
+        serieId: serieId,
+        analyse: s.analyse,
+        comment: {
+          text: textComment,
+        },
+      });
+      series[serieId].state = "similarTriage";
+      series[serieId].status = s.analyseResult.summary;
+      refresh(serieId, index);
+    }
 
-        $('#btnShowSimilar').click(function() {
-          $('#btnShowImproved').removeClass('active')
-          $('#btnShowUndefined').removeClass('active')
-          $('#btnShowSimilar').addClass('active')
-          $('#btnShowRegressions').removeClass('active')
-          $('#btnShowActive').removeClass('active')
-          $('#btnShowAll').removeClass('active')
-          showTable('similar');
-        })
-        $('#btnShowRegressions').click(function() {
-          $('#btnShowImproved').removeClass('active')
-          $('#btnShowUndefined').removeClass('active')
-          $('#btnShowSimilar').removeClass('active')
-          $('#btnShowRegressions').addClass('active')
-          $('#btnShowActive').removeClass('active')
-          $('#btnShowAll').removeClass('active')
-          showTable('regression')
-        })
-        $('#btnShowUndefined').click(function() {
-          $('#btnShowImproved').removeClass('active')
-          $('#btnShowUndefined').addClass('active')
-          $('#btnShowSimilar').removeClass('active')
-          $('#btnShowRegressions').removeClass('active')
-          $('#btnShowActive').removeClass('active')
-          $('#btnShowAll').removeClass('active')
-          showTable('undefined')
-        })
-        $('#btnShowImproved').click(function() {
-          $('#btnShowImproved').addClass('active')
-          $('#btnShowUndefined').removeClass('active')
-          $('#btnShowSimilar').removeClass('active')
-          $('#btnShowRegressions').removeClass('active')
-          $('#btnShowActive').removeClass('active')
-          $('#btnShowAll').removeClass('active')
-          showTable('improvement')
-        })
-        $('#btnShowActive').click(function() {
-          $('#btnShowImproved').removeClass('active')
-          $('#btnShowUndefined').removeClass('active')
-          $('#btnShowSimilar').removeClass('active')
-          $('#btnShowRegressions').removeClass('active')
-          $('#btnShowActive').addClass('active')
-          $('#btnShowAll').removeClass('active')
-          showTable('active')
-        })
-        $('#btnShowAll').click(function() {
-          $('#btnShowImproved').removeClass('active')
-          $('#btnShowUndefined').removeClass('active')
-          $('#btnShowSimilar').removeClass('active')
-          $('#btnShowRegressions').removeClass('active')
-          $('#btnShowActive').removeClass('active')
-          $('#btnShowAll').addClass('active')
-          showTable('all')
-        })
-        $(document).ready(function() {
-          $('#topBanner').show();
-          $('#rowTable').show();
-          dataTableObject.columns.adjust().draw();
-        });
+    function serieGetMinRangeDicho() {
+      var s = graphs[serieId].serie;
+      let min, max;
+      let k = Object.keys(s.samples);
+      for (let ii in k) {
+        let sa = s.samples[k[ii]];
+        if (!min) min = max = sa;
+        if (sa < min) min = sa;
+        if (sa > max) max = sa;
+      }
+      max = max - min;
+      min = 0;
+      let currentRange = Math.floor((max - min) / 2);
+      let maxit = 0;
+      while (maxit < 100000) {
+        maxit++;
+        if (debug) console.log("Testing range", currentRange);
+        s.analyse.benchmark.range = currentRange;
+        analyse(s);
+        if (s.analyseResult.averages.length === 1) {
+          if (debug) console.log("Changing max.");
+          max = currentRange;
+          currentRange -= Math.floor((max - min) / 2);
+          if (debug)
+            console.log(
+              "New working range is ",
+              min,
+              max,
+              " currentRange",
+              currentRange
+            );
+          if (currentRange === max) {
+            if (debug) console.log("currentRange equals max", max);
+            break;
+          }
+        } else {
+          if (debug) console.log("Changing min.");
+          min = currentRange;
+          currentRange += Math.floor((max - min) / 2);
+          if (debug)
+            console.log(
+              "New working range is ",
+              min,
+              max,
+              " currentRange",
+              currentRange
+            );
+          if (currentRange === min) {
+            if (debug) console.log("currentRange equals min", min);
+            break;
+          }
+        }
+      }
+      if (debug)
+        console.log(
+          "DICHOTOMIC",
+          "min=",
+          min,
+          "max=",
+          max,
+          "minRange=",
+          currentRange
+        );
+      s.analyse.benchmark.range = max;
+      analyse(s);
+      socket.emit("serieUpdateAnalyse", {
+        projectId: projectId,
+        serieId: serieId,
+        analyse: s.analyse,
+        comment: {
+          text:
+            "Computing range to " +
+            s.analyse.benchmark.range +
+            " to manage noise",
+        },
+      });
+      series[serieId].state = "similarTriage";
+      series[serieId].status = s.analyseResult.summary;
+      refresh(serieId, index);
+    }
+
+    function serieGetMinRangePrecise() {
+      var s = graphs[serieId].serie;
+      let min, max;
+      let k = Object.keys(s.samples);
+      for (let ii in k) {
+        let sa = s.samples[k[ii]];
+        if (!min) min = max = sa;
+        if (sa < min) min = sa;
+        if (sa > max) max = sa;
+      }
+      let currentRange = max - min;
+      if (debug)
+        console.log("min=", min, "max=", max, "maxrange=", currentRange);
+      while (true) {
+        s.analyse.benchmark.range = currentRange;
+        analyse(s);
+        console.log(s.analyseResult.averages.length);
+        if (s.analyseResult.averages.length !== 1) break;
+        else currentRange--;
+      }
+      s.analyse.benchmark.range = currentRange + 1;
+      analyse(s);
+      if (debug)
+        console.log("min=", min, "max=", max, "minRange=", currentRange);
+      socket.emit("serieUpdateAnalyse", {
+        projectId: projectId,
+        serieId: serieId,
+        analyse: s.analyse,
+        comment: {
+          text:
+            "Computing range to " +
+            s.analyse.benchmark.range +
+            " to manage noise",
+        },
+      });
+      series[serieId].state = "similarTriage";
+      series[serieId].status = s.analyseResult.summary;
+      refresh(serieId, index);
+    }
+    if (sel.value === "regressionIntended") {
+      if (debug) console.log("serieChangeState", sel.value);
+      setBaseLast("Regression Intended behavior, changing base");
+    } else if (sel.value === "improvementConfirmed") {
+      if (debug) console.log("serieChangeState", sel.value);
+      setBaseLast("Improvement Confirmed, changing base");
+    } else if (sel.value === "regressionNoisy") {
+      serieGetMinRangeDicho();
+    } else if (sel.value === "improvementNoisy") {
+      serieGetMinRangeDicho();
+    } else if (sel.value === "similarNoisy") {
+      serieGetMinRangeDicho();
+    } else {
+      socket.emit("serieUpdateSeriesState", {
+        projectId: projectId,
+        serieId: serieId,
+        state: sel.value,
+      });
+      series[serieId].state = sel.value;
+      if (sel.value === "regressionConfirmed") {
+        if (!series[serieId].bugLink) addBugLink(serieId);
+      }
+    }
+    createSerieGraph(serieId);
+  }
+
+  function getStateTdDesc(serieId, state, index) {
+    let h = "";
+    h = '<td data-order="' + state + '" data-filter="' + state + '">';
+    h +=
+      '<select name="state" onchange="changeState(this,\'' +
+      serieId +
+      "','" +
+      index +
+      "');\">";
+
+    if (state.indexOf("regression") !== -1) {
+      h += "<option ";
+      if (state === "regressionNeedstriage") h += "selected ";
+      h += 'value="regressionNeedstriage">Needs Triage</option>';
+
+      h += "<option ";
+      if (state === "regressionNoisy") h += "selected ";
+      h += 'value="regressionNoisy">Noisy -> similar</option>';
+
+      h += "<option ";
+      if (state === "regressionConfirmed") h += "selected ";
+      h += 'value="regressionConfirmed">Regression confirmed</option>';
+
+      if (!projects[projectId].useBugTracker) {
+        h += "<option ";
+        if (state === "regressionAssigned") h += "selected ";
+        h += 'value="regressionAssigned">Assigned</option>';
+
+        h += "<option ";
+        if (state === "regressionFixed") h += "selected ";
+        h += 'value="regressionFixed">Fixed</option>';
+      }
+      h += "<option ";
+      if (state === "regressionIntended") h += "selected ";
+      h += 'value="regressionIntended">Intended behavior</option>';
+    }
+
+    if (state.indexOf("improvement") !== -1) {
+      h += "<option ";
+      if (state === "improvementNeedstriage") h += "selected ";
+      h += 'value="improvementNeedstriage">Needs Triage</option>';
+
+      h += "<option ";
+      if (state === "improvementNoisy") h += "selected ";
+      h += 'value="improvementNoisy">Noisy -> similar</option>';
+
+      h += "<option ";
+      if (state === "improvementConfirmed") h += "selected ";
+      h += 'value="improvementConfirmed">Improvement confirmed</option>';
+    }
+
+    if (state.indexOf("similar") !== -1) {
+      h += "<option ";
+      if (state === "similarNeedstriage") h += "selected ";
+      h += 'value="similarNeedstriage">Needs Triage</option>';
+
+      h += "<option ";
+      if (state === "similarNoisy") h += "selected ";
+      h += 'value="similarNoisy">Noisy similar</option>';
+
+      if (!projects[projectId].useBugTracker) {
+        h += "<option ";
+        if (state === "similarConfirmed") h += "selected ";
+        h += 'value="similarConfirmed">Similar confirmed</option>';
+      }
+    }
+    h += "</select></td>";
+
+    return h;
+  }
+
+  function myChangeAssignee(sel, serieId) {
+    socket.emit("serieUpdateAssignee", {
+      projectId: projectId,
+      serieId: serieId,
+      assignee: sel.value,
+    });
+    series[serieId].assignee = sel.value;
+  }
+
+  function myGetAssigneeTd(assignee, serieId, index) {
+    let h = "";
+    h = '<td data-order="' + assignee + '" data-filter="' + assignee + '">';
+    h +=
+      '<select name="assignee" onchange="myChangeAssignee(this,\'' +
+      serieId +
+      "'," +
+      index +
+      ');">';
+    h += '<option value="">None</option>';
+    var k = projects[projectId].users.split(",");
+    for (var ii = 0; ii < k.length; ii++) {
+      h += "<option ";
+      if (assignee === k[ii]) h += "selected ";
+      h += 'value="' + k[ii] + '">' + k[ii] + "</option>";
+    }
+    h += "</select></td>";
+    return h;
+  }
+
+  var graphs = {};
+
+  function getRow(serieId, index) {
+    let h = "";
+    let s = series[serieId];
+    // h += '<td>'; if (s.description)   h += s.description; h += '</td>';
+    if (s.status.error) {
+      h += "<td>--</td>";
+      if (!projects[projectId].useBugTracker) {
+        h += "<td>--</td>";
+      }
+      h +=
+        '<td><div style="word-wrap: break-word; word-break: break-all; white-space: normal;" id="serieId_' +
+        serieId +
+        '">' +
+        s.serieName +
+        "</div></td>";
+      h +=
+        '<td><div style="height:16px;" id="graphId_' +
+        index +
+        '"><center><i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i></center></div></td>';
+      h += "<td>--</td>";
+    } else {
+      h += getStateTdDesc(serieId, s.state, index);
+      if (!projects[projectId].useBugTracker) {
+        let ass;
+        if (s.assignee) if (s.assignee !== "none") ass = s.assignee;
+        h += myGetAssigneeTd(ass, serieId);
+      }
+      h +=
+        '<td><div style="word-wrap: break-word; word-break: break-all; white-space: normal;" id="serieId_' +
+        serieId +
+        '">' +
+        s.serieName +
+        "</div></td>";
+      h +=
+        '<td><div style="height:16px;" id="graphId_' +
+        index +
+        '"><center><i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i></center></div></td>';
+      let ttip = "";
+      if (s.state.indexOf("similar") !== -1) ttip += "Status: similar";
+      else if (s.state.indexOf("regression") !== -1)
+        ttip += "Status: regression";
+      else if (s.state.indexOf("improvement") !== -1)
+        ttip += "Status: improvement";
+      else ttip += "Status: undefined";
+      ttip += "\r\n";
+      ttip += "LastBuildId: " + s.status.lastBuildId;
+      ttip += "\r\n";
+      ttip += "Base average: " + s.status.base.average;
+      ttip += "\r\n";
+      ttip += "Current average: " + s.status.current.average;
+      ttip += "\r\n";
+      ttip += "Current diff: " + s.status.current.diff;
+      h +=
+        '<td id="tdRatio' +
+        index +
+        '" data-toggle="tooltip" title="' +
+        ttip +
+        '"><b>' +
+        s.status.current.ratio * 1 +
+        "%</b></td>";
+    }
+    h += "<td><center>";
+    h += '<div class="btn-group">';
+    h +=
+      '<button type="button" onclick="openEditSerie(\'' +
+      serieId +
+      '\')" class="btn btn-danger btn-xs"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
+    if (s.url)
+      h +=
+        '<button type="button" onclick="openSpongelink(\'' +
+        serieId +
+        '\')" class="btn btn-primary btn-xs"><i class="fa fa-external-link" aria-hidden="true"></i></button>';
+    else
+      h +=
+        '<button type="button" disabled class="btn btn-primary btn-xs"><i class="fa fa-external-link" aria-hidden="true"></i></button>';
+    h +=
+      '<button type="button" onclick="addBugLink(\'' +
+      serieId +
+      '\')" class="btn btn-danger btn-xs"><i class="fa fa-bug" aria-hidden="true"></i></button>';
+    if (s.bugLink)
+      h +=
+        '<button type="button" onclick="showOpenBugLink(\'' +
+        serieId +
+        '\')" class="btn btn-primary btn-xs"><i class="fa fa-bug" aria-hidden="true"></i></button>';
+    else
+      h +=
+        '<button type="button" disabled class="btn btn-primary btn-xs"><i class="fa fa-bug" aria-hidden="true"></i></button>';
+    h += "</div>";
+    h += "</center></td>";
+    return h;
+  }
+
+  function showTable(mode) {
+    if (debug) console.log("showTable", mode);
+
+    tableMode = mode;
+
+    $("#serieContentGood").hide();
+    $("#serieContent").show();
+
+    if (dataTableObject !== undefined) {
+      dataTableObject.destroy();
+    }
+
+    var h = "";
+    h += "<tr>";
+    h += '<th style="width: 70px">State</th>';
+    if (!projects[projectId].useBugTracker) {
+      h += "<th>Assignee</th>";
+    }
+    h += "<th>Serie Name</th>";
+    h += '<th style="width: 250px">Graph</th>';
+    h += '<th style="width: 40px">Ratio</th>';
+    h += '<th style="width: 80px" class="no-sort"></th>';
+    h += "</tr>";
+    $("#table_head").html(h);
+
+    h = "";
+    var k = Object.keys(series);
+    for (var ii = 0; ii < k.length; ii++) {
+      var s = series[k[ii]];
+      if (debug) console.log(s);
+
+      graphs[k[ii]] = {
+        graphId: ii,
+      };
+
+      if (serieFilter) if (s.serieName.search(serieFilter) === -1) continue;
+
+      if (mode === "undefined") {
+        if (!s.status.error) continue;
+      } else if (mode === "active") {
+        if (s.status.lastBuildId + 10 <= largestBuildId) continue;
+      } else if (mode !== "all") {
+        if (s.state.indexOf(mode) === -1) continue;
+        // For similar benchmarks, also filter out inactive ones.
+        if (mode === "similar" && s.status.lastBuildId + 10 <= largestBuildId)
+          continue;
       }
 
-      function changeState(sel, serieId, index) {
-        function refresh(serieId, index) {
-          if (tableMode != 'all') {
-            if (tableMode != 'similar') {
-              dataTableObject.row('#row_' + index).remove().draw();
+      h += '<tr id="row_' + ii + '">';
+      h += getRow(k[ii], ii);
+      h += "</tr>";
+    }
+
+    $("#table_content").html(h);
+    var orderColumn = 3;
+    if (!projects[projectId].useBugTracker) orderColumn = 4;
+    dataTableObject = $("#serieDatatable").DataTable({
+      language: {
+        decimal: ".",
+      },
+      paging: true, // paging: true if > to 10 entries
+      info: true,
+      bFilter: true,
+      columnDefs: [
+        {
+          targets: "no-sort",
+          orderable: false,
+        },
+      ],
+      order: [[orderColumn, "desc"]],
+      pageLength: defLength,
+      lengthMenu: [
+        [10, 15, 20, 25, 50, -1],
+        [10, 15, 20, 25, 50, "All"],
+      ],
+      drawCallback: function (settings) {
+        var api = this.api();
+        var data = api
+          .rows({
+            page: "current",
+          })
+          .data();
+        for (var ii = 0; ii < data.length; ii++) {
+          var t;
+          if (!projects[projectId].useBugTracker) t = data[ii][2];
+          else t = data[ii][1];
+          var is = t.indexOf('">');
+          var ie = t.indexOf("</");
+          var serieId;
+          if (!projects[projectId].useBugTracker)
+            serieId = data[ii][2].match(/\"serieId_(.+)\"/)[1];
+          else serieId = data[ii][1].match(/\"serieId_(.+)\"/)[1];
+          if (graphs[serieId].serie) continue;
+          socket.emit("getOneSerie", {
+            projectId: projectId,
+            serieId: serieId,
+          });
+        }
+        // Output the data for the visible rows to the browser's console
+        if (debug)
+          console.log(
+            api
+              .rows({
+                page: "current",
+              })
+              .data()
+          );
+      },
+    });
+    $("#serieDatatable").on("length.dt", function (e, s, l) {
+      defLength = l;
+    });
+  }
+
+  function dumpBuildIdInfos(b) {
+    //var b = builds[buildId];
+    var i =
+      b.buildId +
+      " - " +
+      b.infos.abbrevHash +
+      " - " +
+      b.infos.authorName +
+      " - " +
+      b.infos.subject;
+    i = i.substring(0, 160);
+    if (b.infos.url)
+      $("#buildInfos").html(
+        '<a href="' + b.infos.url + '"><b style="color:grey;">' + i + "</b></a>"
+      );
+    else $("#buildInfos").html("<a><b>" + i + "</b></a>");
+  }
+
+  function drawRawGraph(graph) {
+    function getColorRegression(ar) {
+      if (ar.summary.error) return ["rgb(22,22,22)"];
+      if (ar.summary.status === "similar") return ["rgb(20,20,250)"];
+      if (ar.summary.status === "improvement") return ["rgb(20,140,20)"];
+      if (ar.summary.status === "regression") return ["rgb(250,16,16)"];
+    }
+
+    function dataConvert(data) {
+      var d = [];
+      var e;
+      for (var ii = 0; ii < data.length; ii++) {
+        e = [ii, data[ii]];
+        d.push(e);
+      }
+      return d;
+    }
+    var stackedGraph = true;
+    var colors = ["#3557B2"];
+    var colors = getColorRegression(graph.serie.analyseResult);
+
+    var e = document.getElementById("graphId_" + graph.graphId);
+    if (e === undefined) return;
+    var d = dataConvert(graph.data);
+    eltg = new Dygraph(e, d, {
+      axes: {
+        x: {
+          drawGrid: false,
+          drawAxis: false,
+        },
+        y: {
+          drawGrid: false,
+          drawAxis: false,
+        },
+      },
+      strokeWidth: 1.0,
+      labelsDiv: "",
+      labels: ["", ""],
+      drawPoints: false,
+      pointSize: 2,
+      highlightCircleSize: 4,
+      legend: "",
+      legendFormatter: legendFormatter,
+      stackedGraph: stackedGraph,
+      connectSeparatedPoints: true,
+      colors: colors,
+      highlightCallback: function (e, x, pts, row) {
+        //alert('highlightCallback '+graph.builds)
+        dumpBuildIdInfos(graph.builds[row]);
+      },
+      unhighlightCallback: function (e) {},
+      clickCallback: function (e, x, pts) {
+        if (debug) console.log("Click", this, e, x, pts);
+        window.open(
+          "/serie?" + projectId + "?" + encodeURIComponent(graph.serieId),
+          "_blank"
+        );
+      },
+    });
+
+    //    globalSetSelectionRaw(graph.data.length - 1);
+  }
+
+  socket.on("receiveOneSerie", function (req) {
+    if (debug) console.log("receiveOneSerie", req);
+    let serie = req.serie;
+    let serieId = req.serieId;
+    graphs[serieId].serieId = serieId;
+    graphs[serieId].samples = serie.samples;
+    graphs[serieId].serie = serie;
+    createSerieGraph(serieId);
+  });
+
+  function createSerieGraph(serieId) {
+    let serie = graphs[serieId].serie;
+    if (serie.samples) {
+      var k = Object.keys(serie.samples);
+      k.sort(function (a, b) {
+        return b * 1 - a * 1;
+      });
+      var a = [];
+      if (usingAllSameLast50Builds) {
+        for (var ii = 0; ii < graphBuilds.length; ii++) {
+          let v = null;
+          if (serie.samples[graphBuilds[ii].buildId]) {
+            if (serie.analyse.base) {
+              if (graphBuilds[ii].buildId >= serie.analyse.base)
+                v = serie.samples[graphBuilds[ii].buildId];
             } else {
-              $('#row_' + index).html(getRow(serieId, index));
-              drawRawGraph(graphs[serieId]);
-            }
-          } else {
-            $('#row_' + index).html(getRow(serieId, index));
-            drawRawGraph(graphs[serieId]);
-          }
-          showHeader();
-        }
-
-        function setBaseLast(textComment) {
-          var s = graphs[serieId].serie;
-          var newBase = graphs[serieId].serieBuilds[s.analyseResult.averages[s.analyseResult.averages.length - 1].start];
-          s.analyse.base = newBase;
-          analyse(s);
-          socket.emit('serieUpdateAnalyse', {
-            projectId: projectId,
-            serieId: serieId,
-            analyse: s.analyse,
-            comment: {
-              text: textComment
-            }
-          });
-          series[serieId].state = 'similarTriage';
-          series[serieId].status = s.analyseResult.summary;
-          refresh(serieId, index);
-        }
-
-        function serieGetMinRangeDicho() {
-          var s = graphs[serieId].serie;
-          let min, max;
-          let k = Object.keys(s.samples);
-          for (let ii in k) {
-            let sa = s.samples[k[ii]];
-            if (!min) min = max = sa;
-            if (sa < min) min = sa;
-            if (sa > max) max = sa;
-          }
-          max = (max - min);
-          min = 0;
-          let currentRange = Math.floor((max - min) / 2);
-          let maxit = 0;
-          while (maxit < 100000) {
-            maxit++;
-            if (debug) console.log('Testing range', currentRange);
-            s.analyse.benchmark.range = currentRange;
-            analyse(s);
-            if (s.analyseResult.averages.length === 1) {
-              if (debug) console.log('Changing max.');
-              max = currentRange;
-              currentRange -= Math.floor((max - min) / 2);
-              if (debug) console.log('New working range is ', min, max, ' currentRange', currentRange);
-              if (currentRange === max) {
-                if (debug) console.log('currentRange equals max', max)
-                break;
-              }
-            } else {
-              if (debug) console.log('Changing min.')
-              min = currentRange;
-              currentRange += Math.floor((max - min) / 2);
-              if (debug) console.log('New working range is ', min, max, ' currentRange', currentRange);
-              if (currentRange === min) {
-                if (debug) console.log('currentRange equals min', min)
-                break;
-              }
+              v = serie.samples[graphBuilds[ii].buildId];
             }
           }
-          if (debug) console.log('DICHOTOMIC', 'min=', min, 'max=', max, 'minRange=', currentRange);
-          s.analyse.benchmark.range = max;
-          analyse(s);
-          socket.emit('serieUpdateAnalyse', {
-            projectId: projectId,
-            serieId: serieId,
-            analyse: s.analyse,
-            comment: {
-              text: 'Computing range to ' + s.analyse.benchmark.range + ' to manage noise'
-            }
-          });
-          series[serieId].state = 'similarTriage';
-          series[serieId].status = s.analyseResult.summary;
-          refresh(serieId, index);
+          a.push(v);
         }
-
-        function serieGetMinRangePrecise() {
-          var s = graphs[serieId].serie;
-          let min, max;
-          let k = Object.keys(s.samples);
-          for (let ii in k) {
-            let sa = s.samples[k[ii]];
-            if (!min) min = max = sa;
-            if (sa < min) min = sa;
-            if (sa > max) max = sa;
-          }
-          let currentRange = max - min;
-          if (debug) console.log('min=', min, 'max=', max, 'maxrange=', currentRange);
-          while (true) {
-            s.analyse.benchmark.range = currentRange;
-            analyse(s);
-            console.log(s.analyseResult.averages.length)
-            if (s.analyseResult.averages.length !== 1) break;
-            else currentRange--;
-          }
-          s.analyse.benchmark.range = currentRange + 1;
-          analyse(s);
-          if (debug) console.log('min=', min, 'max=', max, 'minRange=', currentRange);
-          socket.emit('serieUpdateAnalyse', {
-            projectId: projectId,
-            serieId: serieId,
-            analyse: s.analyse,
-            comment: {
-              text: 'Computing range to ' + s.analyse.benchmark.range + ' to manage noise'
-            }
-          });
-          series[serieId].state = 'similarTriage';
-          series[serieId].status = s.analyseResult.summary;
-          refresh(serieId, index);
-        }
-        if (sel.value === 'regressionIntended') {
-          if (debug)
-            console.log('serieChangeState', sel.value)
-          setBaseLast('Regression Intended behavior, changing base');
-        } else if (sel.value === 'improvementConfirmed') {
-          if (debug)
-            console.log('serieChangeState', sel.value)
-          setBaseLast('Improvement Confirmed, changing base');
-        } else if (sel.value === 'regressionNoisy') {
-          serieGetMinRangeDicho();
-        } else if (sel.value === 'improvementNoisy') {
-          serieGetMinRangeDicho();
-        } else if (sel.value === 'similarNoisy') {
-          serieGetMinRangeDicho();
-        } else {
-          socket.emit('serieUpdateSeriesState', {
-            projectId: projectId,
-            serieId: serieId,
-            state: sel.value,
-          });
-          series[serieId].state = sel.value;
-          if (sel.value === 'regressionConfirmed') {
-            if (!series[serieId].bugLink)
-              addBugLink(serieId);
-          }
-        }
-        createSerieGraph(serieId)
-      }
-
-      function getStateTdDesc(serieId, state, index) {
-        let h = '';
-        h = '<td data-order="' + state + '" data-filter="' + state + '">';
-        h += '<select name="state" onchange="changeState(this,\'' + serieId + '\',\'' + index + '\');">';
-
-        if (state.indexOf('regression') !== -1) {
-          h += '<option ';
-          if (state === 'regressionNeedstriage')
-            h += 'selected ';
-          h += 'value="regressionNeedstriage">Needs Triage</option>'
-
-          h += '<option ';
-          if (state === 'regressionNoisy')
-            h += 'selected ';
-          h += 'value="regressionNoisy">Noisy -> similar</option>'
-
-          h += '<option ';
-          if (state === 'regressionConfirmed')
-            h += 'selected ';
-          h += 'value="regressionConfirmed">Regression confirmed</option>'
-
-          if (!projects[projectId].useBugTracker) {
-            h += '<option ';
-            if (state === 'regressionAssigned')
-              h += 'selected ';
-            h += 'value="regressionAssigned">Assigned</option>'
-
-            h += '<option ';
-            if (state === 'regressionFixed')
-              h += 'selected ';
-            h += 'value="regressionFixed">Fixed</option>'
-          }
-          h += '<option ';
-          if (state === 'regressionIntended')
-            h += 'selected ';
-          h += 'value="regressionIntended">Intended behavior</option>'
-        }
-
-        if (state.indexOf('improvement') !== -1) {
-          h += '<option ';
-          if (state === 'improvementNeedstriage')
-            h += 'selected ';
-          h += 'value="improvementNeedstriage">Needs Triage</option>'
-
-          h += '<option ';
-          if (state === 'improvementNoisy')
-            h += 'selected ';
-          h += 'value="improvementNoisy">Noisy -> similar</option>'
-
-          h += '<option ';
-          if (state === 'improvementConfirmed')
-            h += 'selected ';
-          h += 'value="improvementConfirmed">Improvement confirmed</option>'
-        }
-
-        if (state.indexOf('similar') !== -1) {
-          h += '<option ';
-          if (state === 'similarNeedstriage')
-            h += 'selected ';
-          h += 'value="similarNeedstriage">Needs Triage</option>'
-
-          h += '<option ';
-          if (state === 'similarNoisy')
-            h += 'selected ';
-          h += 'value="similarNoisy">Noisy similar</option>'
-
-          if (!projects[projectId].useBugTracker) {
-            h += '<option ';
-            if (state === 'similarConfirmed')
-              h += 'selected ';
-            h += 'value="similarConfirmed">Similar confirmed</option>'
-          }
-        }
-        h += '</select></td>';
-
-        return (h)
-      }
-
-      function myChangeAssignee(sel, serieId) {
-        socket.emit('serieUpdateAssignee', {
-          projectId: projectId,
-          serieId: serieId,
-          assignee: sel.value
-        });
-        series[serieId].assignee = sel.value;
-      }
-
-      function myGetAssigneeTd(assignee, serieId, index) {
-        let h = '';
-        h = '<td data-order="' + assignee + '" data-filter="' + assignee + '">';
-        h += '<select name="assignee" onchange="myChangeAssignee(this,\'' + serieId + '\',' + index + ');">';
-        h += '<option value="">None</option>';
-        var k = projects[projectId].users.split(',');
+        graphs[serieId].builds = graphBuilds;
+      } else {
+        var b = [];
         for (var ii = 0; ii < k.length; ii++) {
-          h += '<option ';
-          if (assignee === k[ii])
-            h += 'selected ';
-          h += 'value="' + k[ii] + '">' + k[ii] + '</option>';
+          if (serie.analyse.base) {
+            if (k[ii] >= serie.analyse.base) b.push(builds[k[ii]]);
+          } else b.push(builds[k[ii]]);
         }
-        h += '</select></td>';
-        return (h);
+        b.reverse();
+        graphs[serieId].builds = b;
+        for (var ii = 0; ii < b.length; ii++) {
+          a.push(serie.samples[b[ii].buildId]);
+        }
       }
+      graphs[serieId].serieBuilds = k.reverse();
+      graphs[serieId].data = a;
+      drawRawGraph(graphs[serieId]);
+    }
+  }
 
-      var graphs = {};
+  function addBugLink(theSerieId) {
+    serieId = theSerieId;
+    if (series[serieId].bugLink) {
+      $("#AddBugLink_Link").val(series[serieId].bugLink);
+    } else $("#AddBugLink_Link").val("");
+    var report = "";
+    var s = series[theSerieId];
+    if (s.status.error) {
+      report += "Regression status: undefined";
+    } else {
+      if (s.state.indexOf("similar") !== -1)
+        report += "Regression status: similar";
+      else if (s.state.indexOf("regression") !== -1)
+        report += "Regression status: regression";
+      else if (s.state.indexOf("improvement") !== -1)
+        report += "Regression status: improvement";
+      else report += "Regression status: undefined";
+    }
+    report += " ";
+    if (!s.status.error) {
+      if (s.status.current.ratio > 0) report += "+";
+      report += s.status.current.ratio + "% confirmed";
+    }
+    $("#proposalSubjectForBugReport").val(report);
+    report = "";
+    report += "Benchmark: " + theSerieId;
+    report += "\r\n\r\n";
+    if (s.description) report += "Description: " + s.description + "\r\n\r\n";
+    report += "Regression analysis details:";
+    report += "\r\n";
+    if (s.status.error) {
+      report += "- status: undefined";
+    } else {
+      if (s.state.indexOf("similar") !== -1) report += "- status: similar";
+      else if (s.state.indexOf("regression") !== -1)
+        report += "- status: regression";
+      else if (s.state.indexOf("improvement") !== -1)
+        report += "- status: improvement";
+      else report += "- status: undefined";
+    }
+    report += "\r\n";
+    report += "- last buildId run: " + s.status.lastBuildId;
+    if (!s.status.error) {
+      report += "\r\n";
+      report +=
+        "- computed base average for analysis computation: " +
+        s.status.base.average;
+      report += "\r\n";
+      report += "- last computed average: : " + s.status.current.average;
+      report += "\r\n";
+      report += "- current difference with base: ";
+      if (s.status.current.diff > 0) report += "+";
+      report += s.status.current.diff;
+      report += "\r\n";
+      report += "- current ratio with base: ";
+      if (s.status.current.ratio > 0) report += "+";
+      report += s.status.current.ratio + "%";
+    }
+    var danaUrl = "https://<%=global.config.server.ip%>";
+    report += "\r\n\r\n";
+    report += "Links:";
+    report += "\r\n";
+    report +=
+      "- benchmark: " +
+      danaUrl +
+      "/serie?" +
+      projectId +
+      "?" +
+      encodeURIComponent(serieId);
+    report += "\r\n";
+    report +=
+      "- project benchmark status: " +
+      danaUrl +
+      "/" +
+      projectId +
+      "/statusSeries";
+    report += "\r\n";
+    report += "- dana instance: " + danaUrl;
+    $("#proposalForBugReport").val(report);
+    $("#myModalAddBugLink").modal();
+  }
+  $("#modalSaveBugLink").click(function () {
+    var bugLink = $("#AddBugLink_Link").val();
+    socket.emit("serieUpdateBugLink", {
+      projectId: projectId,
+      serieId: serieId,
+      bugLink: bugLink,
+    });
+    series[serieId].bugLink = bugLink;
+  });
+  $("#modalCopySubjectClipboard").click(function () {
+    var copyText = document.getElementById("proposalSubjectForBugReport");
+    copyText.select();
+    document.execCommand("Copy");
+  });
+  $("#modalCopyClipboard").click(function () {
+    var copyText = document.getElementById("proposalForBugReport");
+    copyText.select();
+    document.execCommand("Copy");
+  });
 
-      function getRow(serieId, index) {
-        let h = '';
-        let s = series[serieId];
-        // h += '<td>'; if (s.description)   h += s.description; h += '</td>';
-        if (s.status.error) {
-          h += '<td>--</td>';
-          if (!projects[projectId].useBugTracker) {
-            h += '<td>--</td>';
-          }
-          h += '<td><div style="word-wrap: break-word; word-break: break-all; white-space: normal;" id="serieId_' + serieId + '">' + s.serieName + '</div></td>';
-          h += '<td><div style="height:16px;" id="graphId_' + index + '"><center><i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i></center></div></td>';
-          h += '<td>--</td>';
-        } else {
-          h += getStateTdDesc(serieId, s.state, index);
-          if (!projects[projectId].useBugTracker) {
-            let ass;
-            if (s.assignee)
-              if (s.assignee !== 'none')
-                ass = s.assignee
-            h += myGetAssigneeTd(ass, serieId);
-          }
-          h += '<td><div style="word-wrap: break-word; word-break: break-all; white-space: normal;" id="serieId_' + serieId + '">' + s.serieName + '</div></td>';
-          h += '<td><div style="height:16px;" id="graphId_' + index + '"><center><i class="fa fa-circle-o-notch fa-spin fa-1x fa-fw"></i></center></div></td>';
-          let ttip = "";
-          if (s.state.indexOf('similar') !== -1)
-            ttip += 'Status: similar';
-          else if (s.state.indexOf('regression') !== -1)
-            ttip += 'Status: regression';
-          else if (s.state.indexOf('improvement') !== -1)
-            ttip += 'Status: improvement';
-          else
-            ttip += 'Status: undefined';
-          ttip += '\r\n';
-          ttip += 'LastBuildId: ' + s.status.lastBuildId;
-          ttip += '\r\n';
-          ttip += 'Base average: ' + s.status.base.average;
-          ttip += '\r\n';
-          ttip += 'Current average: ' + s.status.current.average;
-          ttip += '\r\n';
-          ttip += 'Current diff: ' + s.status.current.diff;
-          h += '<td id="tdRatio' + index + '" data-toggle="tooltip" title="' + ttip + '"><b>' + s.status.current.ratio * 1 + '%</b></td>';
-        }
-        h += '<td><center>';
-        h += '<div class="btn-group">';
-        h += '<button type="button" onclick="openEditSerie(\'' + serieId + '\')" class="btn btn-danger btn-xs"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
-        if (s.url)
-          h += '<button type="button" onclick="openSpongelink(\'' + serieId + '\')" class="btn btn-primary btn-xs"><i class="fa fa-external-link" aria-hidden="true"></i></button>';
-        else
-          h += '<button type="button" disabled class="btn btn-primary btn-xs"><i class="fa fa-external-link" aria-hidden="true"></i></button>';
-        h += '<button type="button" onclick="addBugLink(\'' + serieId + '\')" class="btn btn-danger btn-xs"><i class="fa fa-bug" aria-hidden="true"></i></button>';
-        if (s.bugLink)
-          h += '<button type="button" onclick="showOpenBugLink(\'' + serieId + '\')" class="btn btn-primary btn-xs"><i class="fa fa-bug" aria-hidden="true"></i></button>';
-        else
-          h += '<button type="button" disabled class="btn btn-primary btn-xs"><i class="fa fa-bug" aria-hidden="true"></i></button>';
-        h += '</div>';
-        h += '</center></td>';
-        return h;
-      }
-
-      function showTable(mode) {
-        if (debug)
-          console.log('showTable', mode);
-
-        tableMode = mode;
-
-        $('#serieContentGood').hide();
-        $('#serieContent').show();
-
-        if (dataTableObject !== undefined) {
-          dataTableObject.destroy();
-        }
-
-        var h = '';
-        h += '<tr>';
-        h += '<th style="width: 70px">State</th>';
-        if (!projects[projectId].useBugTracker) {
-          h += '<th>Assignee</th>';
-        }
-        h += '<th>Serie Name</th>';
-        h += '<th style="width: 250px">Graph</th>';
-        h += '<th style="width: 40px">Ratio</th>';
-        h += '<th style="width: 80px" class="no-sort"></th>';
-        h += '</tr>';
-        $('#table_head').html(h);
-
-        h = '';
-        var k = Object.keys(series);
-        for (var ii = 0; ii < k.length; ii++) {
-          var s = series[k[ii]];
-          if (debug)
-            console.log(s);
-
-          graphs[k[ii]] = {
-            graphId: ii
-          }
-
-          if (serieFilter)
-            if (s.serieName.search(serieFilter) === -1)
-              continue;
-
-          if (mode === 'undefined') {
-            if (!s.status.error)
-              continue;
-          } else if (mode === 'active') {
-            if (s.status.lastBuildId + 10 <= largestBuildId)
-              continue;
-          } else if (mode !== 'all') {
-            if (s.state.indexOf(mode) === -1)
-              continue;
-            // For similar benchmarks, also filter out inactive ones.
-            if (mode === 'similar' && s.status.lastBuildId + 10 <= largestBuildId)
-              continue;
-          }
-
-          h += '<tr id="row_' + ii + '">';
-          h += getRow(k[ii], ii)
-          h += '</tr>';
-        }
-
-        $('#table_content').html(h);
-        var orderColumn = 3;
-        if (!projects[projectId].useBugTracker) orderColumn = 4;
-        dataTableObject = $('#serieDatatable').DataTable({
-          "language": {
-            "decimal": "."
-          },
-          paging: true, // paging: true if > to 10 entries
-          info: true,
-          "bFilter": true,
-          "columnDefs": [{
-            "targets": 'no-sort',
-            "orderable": false
-          }],
-          "order": [
-            [orderColumn, "desc"]
-          ],
-          "pageLength": defLength,
-          "lengthMenu": [
-            [
-              10,
-              15,
-              20,
-              25,
-              50, -1
-            ],
-            [
-              10,
-              15,
-              20,
-              25,
-              50,
-              "All"
-            ]
-          ],
-          "drawCallback": function(settings) {
-            var api = this.api();
-            var data = api.rows({
-              page: 'current'
-            }).data();
-            for (var ii = 0; ii < data.length; ii++) {
-              var t;
-              if (!projects[projectId].useBugTracker)
-                t = data[ii][2];
-              else
-                t = data[ii][1];
-              var is = t.indexOf('">');
-              var ie = t.indexOf('</');
-              var serieId;
-              if (!projects[projectId].useBugTracker)
-                serieId = data[ii][2].match(/\"serieId_(.+)\"/)[1];
-              else
-                serieId = data[ii][1].match(/\"serieId_(.+)\"/)[1];
-              if (graphs[serieId].serie)
-                continue;
-              socket.emit('getOneSerie', {
-                projectId: projectId,
-                serieId: serieId
-              });
-            }
-            // Output the data for the visible rows to the browser's console
-            if (debug)
-              console.log(api.rows({
-                page: 'current'
-              }).data());
-          }
-        });
-        $('#serieDatatable').on('length.dt', function(e, s, l) {
-          defLength = l;
-        });
-      }
-
-      function dumpBuildIdInfos(b) {
-        //var b = builds[buildId];
-        var i = b.buildId + ' - ' + b.infos.abbrevHash + ' - ' + b.infos.authorName + ' - ' + b.infos.subject;
-        i = i.substring(0, 160);
-        if (b.infos.url)
-          $('#buildInfos').html('<a href="' + b.infos.url + '"><b style="color:grey;">' + i + '</b></a>');
-        else
-          $('#buildInfos').html('<a><b>' + i + '</b></a>');
-      }
-
-      function drawRawGraph(graph) {
-        function getColorRegression(ar) {
-          if (ar.summary.error)
-            return ["rgb(22,22,22)"];
-          if (ar.summary.status === 'similar')
-            return ["rgb(20,20,250)"];
-          if (ar.summary.status === 'improvement')
-            return ["rgb(20,140,20)"];
-          if (ar.summary.status === 'regression')
-            return ["rgb(250,16,16)"];
-        }
-
-        function dataConvert(data) {
-          var d = [];
-          var e;
-          for (var ii = 0; ii < data.length; ii++) {
-            e = [
-              ii, data[ii]
-            ];
-            d.push(e);
-          }
-          return d;
-        };
-        var stackedGraph = true;
-        var colors = ['#3557B2'];
-        var colors = getColorRegression(graph.serie.analyseResult)
-
-        var e = document.getElementById('graphId_' + graph.graphId);
-        if (e === undefined)
-          return;
-        var d = dataConvert(graph.data);
-        eltg = new Dygraph(e, d, {
-          axes: {
-            x: {
-              drawGrid: false,
-              drawAxis: false
-            },
-            y: {
-              drawGrid: false,
-              drawAxis: false
-            }
-          },
-          strokeWidth: 1.0,
-          labelsDiv: '',
-          labels: [
-            '', ''
-          ],
-          drawPoints: false,
-          pointSize: 2,
-          highlightCircleSize: 4,
-          legend: '',
-          legendFormatter: legendFormatter,
-          stackedGraph: stackedGraph,
-          connectSeparatedPoints: true,
-          colors: colors,
-          highlightCallback: function(e, x, pts, row) {
-            //alert('highlightCallback '+graph.builds)
-            dumpBuildIdInfos(graph.builds[row]);
-          },
-          unhighlightCallback: function(e) {},
-          clickCallback: function(e, x, pts) {
-            if (debug)
-              console.log("Click", this, e, x, pts);
-            window.open("/serie?" + projectId + '?' + encodeURIComponent(graph.serieId), "_blank");
-          }
-        });
-
-        //    globalSetSelectionRaw(graph.data.length - 1);
-      }
-
-      socket.on('receiveOneSerie', function(req) {
-        if (debug)
-          console.log('receiveOneSerie', req);
-        let serie = req.serie;
-        let serieId = req.serieId;
-        graphs[serieId].serieId = serieId;
-        graphs[serieId].samples = serie.samples;
-        graphs[serieId].serie = serie;
-        createSerieGraph(serieId);
+  function legendFormatter(data) {
+    return "";
+  }
+  $(document).ready(function () {
+    start(userPage.projectId, userPage.serieFilter, userPage.title);
+    $("#myModal").on("shown.bs.modal", function (e) {
+      uiShowSerie("statusSeries", projectId, serieId);
+      $("#commentsArea").linkify({
+        target: "_blank",
       });
+    });
+    $("#commentsArea").linkify({
+      target: "_blank",
+    });
+  });
 
-      function createSerieGraph(serieId) {
-        let serie = graphs[serieId].serie;
-        if (serie.samples) {
-          var k = Object.keys(serie.samples);
-          k.sort(function(a, b) {
-            return b * 1 - a * 1
-          });
-          var a = [];
-          if (usingAllSameLast50Builds) {
-            for (var ii = 0; ii < graphBuilds.length; ii++) {
-              let v = null;
-              if (serie.samples[graphBuilds[ii].buildId]) {
-                if (serie.analyse.base) {
-                  if (graphBuilds[ii].buildId >= serie.analyse.base)
-                    v = serie.samples[graphBuilds[ii].buildId];
-                } else {
-                  v = serie.samples[graphBuilds[ii].buildId];
-                }
-              }
-              a.push(v);
-            }
-            graphs[serieId].builds = graphBuilds;
-          } else {
-            var b = [];
-            for (var ii = 0; ii < k.length; ii++) {
-              if (serie.analyse.base) {
-                if (k[ii] >= serie.analyse.base)
-                  b.push(builds[k[ii]]);
-              } else
-                b.push(builds[k[ii]]);
-            }
-            b.reverse();
-            graphs[serieId].builds = b;
-            for (var ii = 0; ii < b.length; ii++) {
-              a.push(serie.samples[b[ii].buildId])
-            }
-          }
-          graphs[serieId].serieBuilds = k.reverse();
-          graphs[serieId].data = a;
-          drawRawGraph(graphs[serieId])
-        }
-      }
+  function openEditSerie(serieId) {
+    console.log("openEditSerie", projectId, serieId);
+    window.open(
+      "/serie?" + projectId + "?" + encodeURIComponent(serieId),
+      "_blank"
+    );
+  }
 
-      function addBugLink(theSerieId) {
-        serieId = theSerieId;
-        if (series[serieId].bugLink) {
-          $('#AddBugLink_Link').val(series[serieId].bugLink);
-        } else
-          $('#AddBugLink_Link').val('');
-        var report = '';
-        var s = series[theSerieId];
-        if (s.status.error) {
-          report += 'Regression status: undefined';
-        } else {
-          if (s.state.indexOf('similar') !== -1)
-            report += 'Regression status: similar';
-          else if (s.state.indexOf('regression') !== -1)
-            report += 'Regression status: regression';
-          else if (s.state.indexOf('improvement') !== -1)
-            report += 'Regression status: improvement';
-          else
-            report += 'Regression status: undefined';
-        }
-        report += ' ';
-        if (!s.status.error) {
-          if (s.status.current.ratio > 0)
-            report += '+';
-          report += s.status.current.ratio + '% confirmed';
-        }
-        $('#proposalSubjectForBugReport').val(report);
-        report = '';
-        report += 'Benchmark: ' + theSerieId;
-        report += '\r\n\r\n';
-        if (s.description)
-          report += 'Description: ' + s.description + '\r\n\r\n';
-        report += 'Regression analysis details:';
-        report += '\r\n';
-        if (s.status.error) {
-          report += '- status: undefined';
-        } else {
-          if (s.state.indexOf('similar') !== -1)
-            report += '- status: similar';
-          else if (s.state.indexOf('regression') !== -1)
-            report += '- status: regression';
-          else if (s.state.indexOf('improvement') !== -1)
-            report += '- status: improvement';
-          else
-            report += '- status: undefined';
-        }
-        report += '\r\n';
-        report += '- last buildId run: ' + s.status.lastBuildId;
-        if (!s.status.error) {
-          report += '\r\n';
-          report += '- computed base average for analysis computation: ' + s.status.base.average;
-          report += '\r\n';
-          report += '- last computed average: : ' + s.status.current.average;
-          report += '\r\n';
-          report += '- current difference with base: ';
-          if (s.status.current.diff > 0)
-            report += '+';
-          report += s.status.current.diff;
-          report += '\r\n';
-          report += '- current ratio with base: ';
-          if (s.status.current.ratio > 0)
-            report += '+';
-          report += s.status.current.ratio + '%';
-        }
-        var danaUrl = 'https://<%=global.config.server.ip%>';
-        report += '\r\n\r\n';
-        report += 'Links:';
-        report += '\r\n';
-        report += '- benchmark: ' + danaUrl + '/serie?' + projectId + '?' + encodeURIComponent(serieId);
-        report += '\r\n';
-        report += '- project benchmark status: ' + danaUrl + '/' + projectId + '/statusSeries';
-        report += '\r\n';
-        report += '- dana instance: ' + danaUrl;
-        $('#proposalForBugReport').val(report);
-        $('#myModalAddBugLink').modal();
-      }
-      $('#modalSaveBugLink').click(function() {
-        var bugLink = $('#AddBugLink_Link').val();
-        socket.emit('serieUpdateBugLink', {
-          projectId: projectId,
-          serieId: serieId,
-          bugLink: bugLink
-        });
-        series[serieId].bugLink = bugLink;
-      });
-      $('#modalCopySubjectClipboard').click(function() {
-        var copyText = document.getElementById("proposalSubjectForBugReport");
-        copyText.select();
-        document.execCommand("Copy");
-      })
-      $('#modalCopyClipboard').click(function() {
-        var copyText = document.getElementById("proposalForBugReport");
-        copyText.select();
-        document.execCommand("Copy");
-      })
+  function openSpongelink(serieId) {
+    console.log("openSpongelink", projectId, serieId);
+    window.open(series[serieId].url, "_blank");
+  }
 
-      function legendFormatter(data) {
-        return '';
-      }
-      $(document).ready(function() {
-        start(userPage.projectId, userPage.serieFilter, userPage.title);
-        $('#myModal').on('shown.bs.modal', function(e) {
-          uiShowSerie('statusSeries', projectId, serieId);
-          $('#commentsArea').linkify({
-            target: "_blank"
-          });
-        })
-        $('#commentsArea').linkify({
-          target: "_blank"
-        });
-      });
+  function showOpenBugLink(serieId) {
+    window.open(series[serieId].bugLink, "_blank");
+  }
 
-      function openEditSerie(serieId) {
-        console.log('openEditSerie', projectId, serieId)
-        window.open("/serie?" + projectId + '?' + encodeURIComponent(serieId), "_blank");
-      }
+  var userPage;
 
-      function openSpongelink(serieId) {
-        console.log('openSpongelink', projectId, serieId)
-        window.open(series[serieId].url, "_blank");
-      }
-
-      function showOpenBugLink(serieId) {
-        window.open(series[serieId].bugLink, "_blank");
-      }
-
-      var userPage;
-
-      function setSeriesPage(obj) {
-        userPage = obj;
-      }
-    </script>
+  function setSeriesPage(obj) {
+    userPage = obj;
+  }
+</script>
