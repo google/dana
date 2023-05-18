@@ -1,169 +1,148 @@
+<!--
+/*
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('../../common/head') %>
 
-  <body class="nav-md">
-    <div class="container body">
-      <div class="main_container">
-        <%- include('sidebar') %>
+<%- include('../../common/head') %>
 
-        <!-- top navigation -->
-        <div class="top_nav navbar-fixed-top">
-          <div class="nav_menu">
-            <nav class="" role="navigation">
-              <div class="nav toggle">
-                <a id="menu_toggle">
-                  <i class="fa fa-bars"></i>
-                </a>
-              </div>
-              <ul class="nav navbar-nav">
-                <h3 id="page-title" class="navbar-text">
-                  <span id="page_title_description"></span>
-                </h3>
-              </ul>
-            </nav>
-          </div>
-        </div>
+<body class="nav-md">
+  <div class="container body">
+    <div class="main_container">
+      <%- include('sidebar') %>
 
-        <% var guest=true; if (user!==undefined) { if (user.username=='admin') {
-        guest=false; } } %>
-        <!-- page content -->
-        <div class="right_col" role="main" style="padding-top: 50px">
-          <!-- top tiles -->
-          <div class="row">
-            <div class="container" id="formulaire">
-              <div class="row">
-                <div class="col-md-12">
-                  <br />
-                  <br />
-                  <center>
-                    <h1>Edit a project</h1>
-                    <h4>
-                      Please look to the documentation on how to add pages for
-                      this project
-                    </h4>
-                  </center>
-                  <br />
-                </div>
-                <div class="col-md-offset-4 col-md-4">
-                  <form action="/admin/saveProject" method="post">
-                    <input
-                      type="hidden"
-                      value="<%=projectId%>"
-                      name="projectId"
-                    />
-                    <div class="form-group">
-                      <label>ProjectId</label>
-                      <input
-                        type="text"
-                        disabled
-                        class="form-control"
-                        value="<%=projectId%>"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label>Description</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        value="<%=project.description%>"
-                        name="description"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label>
-                        Default page (if not defined will use
-                        <i>statusSeries</i>)
-                      </label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        value="<%=project.defaultPage%>"
-                        name="defaultPage"
-                      />
-                    </div>
-                    <div class="form-group">
-                      <label>Infos</label>
-                      <textarea class="form-control" rows="10" name="infos">
-						<%=project.infos%>
-					</textarea
-                      >
-                    </div>
-                    <div class="form-group">
-                      <label>Users (one per line)</label>
-                      <% var us=project.users.replace(/,/g, "\r\n"); %>
-                      <textarea class="form-control" rows="10" name="users">
-<%=us%></textarea
-                      >
-                    </div>
-                    <div class="form-group">
-                      <% if (project.useBugTracker) { %>
-                      <input
-                        class="js-switch"
-                        checked
-                        type="checkbox"
-                        name="bugtracker"
-                        value="bugtracker"
-                      />
-                      <% } else { %>
-                      <input
-                        class="js-switch"
-                        type="checkbox"
-                        name="bugtracker"
-                        value="bugtracker"
-                      />
-                      <% } %>
-                      <label>
-                        Prefer to use a bug tracker to follow working state of a
-                        regression
-                      </label>
-                    </div>
-                    <center>
-                      <br />
-                      <button
-                        class="btn btn-danger btn-block"
-                        type="submit"
-                        id="submitButton"
-                      >
-                        Save
-                      </button>
-                    </center>
-                  </form>
-                </div>
-              </div>
+      <!-- top navigation -->
+      <div class="top_nav navbar-fixed-top">
+        <div class="nav_menu">
+          <nav class="" role="navigation">
+            <div class="nav toggle">
+              <a id="menu_toggle">
+                <i class="fa fa-bars"></i>
+              </a>
             </div>
-          </div>
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <div class="clearfix"></div>
-
-          <%- include('../footer') %>
+            <ul class="nav navbar-nav">
+              <h3 id='page-title' class="navbar-text">
+                <span id='page_title_description'></span>
+              </h3>
+            </ul>
+          </nav>
         </div>
       </div>
+
+      <% var guest=true;
+          if (user!==undefined) {
+            if (user.username=='admin') {
+              guest=false;
+            }
+          } %>
+
+      <!-- page content -->
+
+      <div class="right_col" role="main" style="padding-top: 50px;">
+        <!-- top tiles -->
+        <div class="row">
+
+          <div class="container" id="formulaire">
+            <div class="row">
+              <div class="col-md-12">
+                <br>
+                <br>
+                <center>
+                  <h1>Edit a project</h1>
+                  <h4>Please look to the documentation on how to add pages for this project</h4>
+                </center>
+                <br>
+              </div>
+              <form action="/admin/saveProject" method="post">
+                <div class="col-md-offset-4 col-md-4">
+                  <input type="hidden" value="<%=projectId%>" name="projectId" />
+                  <div class="form-group">
+                    <label>ProjectId</label>
+                    <input type="text" disabled class="form-control" value="<%=projectId%>" />
+                  </div>
+                  <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" class="form-control" value="<%=project.description%>" name="description" />
+                  </div>
+                  <div class="form-group">
+                    <label>Default page (if not defined will use <i>statusSeries</i>)</label>
+                    <input type="text" class="form-control" value="<%=project.defaultPage%>" name="defaultPage" />
+                  </div>
+                  <div class="form-group">
+                    <label>Infos</label>
+                    <textarea class="form-control" rows="10" name="infos"><%=project.infos%></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Users (one per line)</label>
+                    <% var us=project.users.replace(/,/g, "\r\n"); %>
+                    <textarea class="form-control" rows="10" name="users"><%=us%></textarea>
+                  </div>
+                  <div class="form-group">
+                    <% if (project.useBugTracker) { %>
+                    <input class="js-switch" checked type="checkbox" name="bugtracker" value="bugtracker">
+                    <% } else { %>
+                    <input class="js-switch" type="checkbox" name="bugtracker" value="bugtracker">
+                    <% } %>
+                    <label>Prefer to use a bug tracker to follow working state of a regression</label>
+                  </div>
+                  <center>
+                    <br>
+                    <button class="btn btn-danger btn-block" type="submit" id="submitButton">Save</button>
+                  </center>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <div class="clearfix"></div>
+
+      <%- include('../footer') %>
+
     </div>
-    <!-- jQuery -->
-    <script src="/third_party/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
+  </div>
+  </div>
+  <!-- jQuery -->
+  <script src="/third_party/jquery/dist/jquery.min.js"></script>
+  <!-- Bootstrap -->
+  <script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
 
-    <!-- Switchery -->
-    <script src="/third_party/switchery/dist/switchery.js"></script>
+  <!-- Switchery -->
+  <script src="/third_party/switchery/dist/switchery.js"></script>
 
-    <script>
-      $(document).ready(function () {
-        var elem = document.querySelector(".js-switch");
-        var init = new Switchery(elem);
-      });
-    </script>
-  </body>
+  <script>
+    $(document).ready(function() {
+      var elem = document.querySelector('.js-switch');
+      var init = new Switchery(elem);
+    });
+  </script>
+
+</body>
+
 </html>

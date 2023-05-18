@@ -1,393 +1,279 @@
+<!--
+/*
+ * Copyright 2017 Google Inc. All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+-->
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('../../common/head') %>
 
-  <body class="nav-md">
-    <div class="container body">
-      <div class="main_container">
-        <%- include('sidebar') %>
+<%- include('../../common/head') %>
 
-        <!-- top navigation -->
-        <div class="top_nav navbar-fixed-top">
-          <div class="nav_menu">
-            <nav class="" role="navigation">
-              <div class="nav toggle">
-                <a id="menu_toggle">
-                  <i class="fa fa-bars"></i>
-                </a>
-              </div>
-              <ul class="nav navbar-nav">
-                <h3 id="page-title" class="navbar-text">
-                  <span id="page_title_description"></span>
-                </h3>
-              </ul>
-            </nav>
-          </div>
+<body class="nav-md">
+  <div class="container body">
+    <div class="main_container">
+      <%- include('sidebar') %>
+
+      <!-- top navigation -->
+      <div class="top_nav navbar-fixed-top">
+        <div class="nav_menu">
+          <nav class="" role="navigation">
+            <div class="nav toggle">
+              <a id="menu_toggle">
+                <i class="fa fa-bars"></i>
+              </a>
+            </div>
+            <ul class="nav navbar-nav">
+              <h3 id='page-title' class="navbar-text">
+                <span id='page_title_description'></span>
+              </h3>
+            </ul>
+          </nav>
         </div>
+      </div>
 
-        <% var guest=true; if (user!==undefined) { if (user.username=='admin') {
-        guest=false; } } %>
-        <!-- page content -->
-        <div class="right_col" role="main" style="padding-top: 50px">
-          <!-- top tiles -->
-          <div class="row">
-            <div class="container" id="formulaire">
-              <div class="row">
-                <div class="col-md-12">
-                  <br />
-                  <br />
-                  <center>
-                    <h1>Edit a comparator</h1>
-                    <p class="help-block">
-                      A comparator provides a support to compare two scores of
-                      benchmark series and indicate if it is lower, similar or
-                      higher.
-                    </p>
-                  </center>
-                  <br />
+      <%
+          var guest=true;
+          if (user!==undefined) {
+            if (user.username=='admin') {
+              guest=false;
+            }
+          }
+          %>
+      <!-- page content -->
+      <div class="right_col" role="main" style="padding-top: 50px;">
+        <!-- top tiles -->
+        <div class="row">
+
+          <div class="container" id="formulaire">
+            <div class="row">
+              <div class="col-md-12">
+                <br>
+                <br>
+                <center>
+                  <h1>Edit a comparator</h1>
+                  <p class="help-block">A comparator provides a support to compare two scores of benchmark series and indicate if it is lower, similar or higher.</p>
+                </center>
+                <br>
+              </div>
+              <form action="/admin/saveComparator" method="post">
+                <div class="col-md-offset-2 col-md-8">
+                  <input type="hidden" value="<%=compare.compareId%>" name="compareId" />
+                  <div class="form-group">
+                    <label>Comparator Id*</label>
+                    <input type="text" disabled class="form-control" value="<%=compare.compareId%>" />
+                    <p class="help-block">Define an Id for that comparator</p>
+                  </div>
+                  <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" class="form-control" value="<%=compare.description%>" name="description" />
+                    <p class="help-block">Add a description for that comparator</p>
+                  </div>
+                </div>
+                <div class="col-md-offset-2 col-md-4">
+                  <div class="form-group">
+                    <label>ProjectId of series you want to compare</label>
+                    <select class="form-control" name="projectId">
+                      <% var k=Object.keys(global.projects); %>
+                      <% for (var ii=0; ii < k.length; ii++) { %>
+                      <% if (compare.projectId===k[ii]) { %>
+                      <option selected><%=k[ii]%></option>
+                      <% } else { %>
+                      <option><%=k[ii]%></option>
+                      <%  } %>
+                      <%  } %>
+                    </select>
+                    <p class="help-block">In which projectId are located the series to compare</p>
+                  </div>
+                  <div class="form-group">
+                    <label>Filter on series to compare</label>
+                    <% if (compare.filter) { %>
+                    <input type="text" value="<%=compare.filter%>" class="form-control" name="filter" />
+                    <% } else { %>
+                    <input type="text" class="form-control" name="filter" />
+                    <%  } %>
+                    <p class="help-block">Only series with an Id containing the filter string will be compared</p>
+                  </div>
+                  <div class="form-group">
+                    <% if (compare.useAverage) { %>
+                    <input id='sw1' class="js-switch" checked type="checkbox" name="useAverage" value="useAverage">
+                    <% } else { %>
+                    <input id='sw1' class="js-switch" type="checkbox" name="useAverage" value="useAverage">
+                    <%  } %>
+                    <label>Use regression analysis computed average</label>
+                    <p class="help-block">Use the last computed average for series to compare. If not enabled, use the last build sample available</p>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>ProjectId of series you want to compare with</label>
+                    <select id="select_with_projectId" class="form-control" name="with_projectId" onchange="setWithProjectId()">
+                      <% var k=Object.keys(global.projects); %>
+                      <% for (var ii=0; ii < k.length; ii++) { %>
+                      <option><%=k[ii]%></option>
+                      <%  } %>
+                    </select>
+                    <p class="help-block">In which projectId are located the series to compare with</p>
+                  </div>
+                  <div class="form-group">
+                    <% if (compare.compareWith.replace) { %>
+                    <input id='sw3' class="js-switch" checked type="checkbox" name="with_useReplace" value="with_useReplace">
+                    <% } else { %>
+                    <input id='sw3' class="js-switch" type="checkbox" name="with_useReplace" value="with_useReplace">
+                    <%  } %>
+                    <label>Replace strings in serieId</label>
+                    <p class="help-block">If enabled, the Id used to identify the series to compare with is computed by replacing the substr with newSubStr below</p>
+                    <div class="col-md-6">
+                      <label>substr</label>
+                      <% if (compare.compareWith.replace) { %>
+                      <input type="text" class="form-control" value="<%=compare.compareWith.replace.substr%>" name="with_useReplace_substr" />
+                      <% } else { %>
+                      <input type="text" class="form-control" name="with_useReplace_substr" />
+                      <%  } %>
+                    </div>
+                    <div class="col-md-6">
+                      <label>newSubStr</label>
+                      <% if (compare.compareWith.replace) { %>
+                      <input type="text" class="form-control" value="<%=compare.compareWith.replace.newSubStr%>" name="with_useReplace_newSubStr" />
+                      <% } else { %>
+                      <input type="text" class="form-control" name="with_useReplace_newSubStr" />
+                      <%  } %>
+                    </div>
+                  </div><br><br><br><br>
+                  <div class="form-group">
+                    <label>BuildId to use for series you want to compare with</label>
+                    <select id='select_with_buildId' class="form-control" name="with_buildId">
+                    </select>
+                    <p class="help-block">In which projectId are located the series to compare with</p>
+                  </div>
+                  <div class="form-group">
+                    <% if (compare.compareWith.useAverage) { %>
+                    <input id='sw2' class="js-switch" checked type="checkbox" name="with_useAverage" value="with_useAverage">
+                    <% } else { %>
+                    <input id='sw2' class="js-switch" type="checkbox" name="with_useAverage" value="with_useAverage">
+                    <%  } %>
+                    <label>Use regression analysis computed average</label>
+                    <p class="help-block">if enabled use the last computed average for series to compare with (if a buildId is specified, the average containing the buildId is used). If disabled use the last build sample available (if a buildId is specified, the sample of that buildId is used). </label>
+                  </div>
                 </div>
                 <div class="col-md-offset-2 col-md-8">
-                  <form action="/admin/saveComparator" method="post">
-                    <input
-                      type="hidden"
-                      value="<%=compare.compareId%>"
-                      name="compareId"
-                    />
-                    <div class="form-group">
-                      <label>Comparator Id*</label>
-                      <input
-                        type="text"
-                        disabled
-                        class="form-control"
-                        value="<%=compare.compareId%>"
-                      />
-                      <p class="help-block">Define an Id for that comparator</p>
-                    </div>
-                    <div class="form-group">
-                      <label>Description</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        value="<%=compare.description%>"
-                        name="description"
-                      />
-                      <p class="help-block">
-                        Add a description for that comparator
-                      </p>
-                    </div>
-                    <div class="col-md-offset-2 col-md-4">
-                      <div class="form-group">
-                        <label>ProjectId of series you want to compare</label>
-                        <select class="form-control" name="projectId">
-                          <% var k=Object.keys(global.projects); %> <% for (var
-                          ii=0; ii < k.length; ii++) { %> <% if
-                          (compare.projectId===k[ii]) { %>
-                          <option selected><%=k[ii]%></option>
-                          <% } else { %>
-                          <option><%=k[ii]%></option>
-                          <% } %> <% } %>
-                        </select>
-                        <p class="help-block">
-                          In which projectId are located the series to compare
-                        </p>
-                      </div>
-                      <div class="form-group">
-                        <label>Filter on series to compare</label>
-                        <% if (compare.filter) { %>
-                        <input
-                          type="text"
-                          value="<%=compare.filter%>"
-                          class="form-control"
-                          name="filter"
-                        />
-                        <% } else { %>
-                        <input type="text" class="form-control" name="filter" />
-                        <% } %>
-                        <p class="help-block">
-                          Only series with an Id containing the filter string
-                          will be compared
-                        </p>
-                      </div>
-                      <div class="form-group">
-                        <% if (compare.useAverage) { %>
-                        <input
-                          id="sw1"
-                          class="js-switch"
-                          checked
-                          type="checkbox"
-                          name="useAverage"
-                          value="useAverage"
-                        />
-                        <% } else { %>
-                        <input
-                          id="sw1"
-                          class="js-switch"
-                          type="checkbox"
-                          name="useAverage"
-                          value="useAverage"
-                        />
-                        <% } %>
-                        <label>Use regression analysis computed average</label>
-                        <p class="help-block">
-                          Use the last computed average for series to compare.
-                          If not enabled, use the last build sample available
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-md-4">
-                      <div class="form-group">
-                        <label
-                          >ProjectId of series you want to compare with</label
-                        >
-                        <select
-                          id="select_with_projectId"
-                          class="form-control"
-                          name="with_projectId"
-                          onchange="setWithProjectId()"
-                        >
-                          <% var k=Object.keys(global.projects); %> <% for (var
-                          ii=0; ii < k.length; ii++) { %>
-                          <option><%=k[ii]%></option>
-                          <% } %>
-                        </select>
-                        <p class="help-block">
-                          In which projectId are located the series to compare
-                          with
-                        </p>
-                      </div>
-                      <div class="form-group">
-                        <% if (compare.compareWith.replace) { %>
-                        <input
-                          id="sw3"
-                          class="js-switch"
-                          checked
-                          type="checkbox"
-                          name="with_useReplace"
-                          value="with_useReplace"
-                        />
-                        <% } else { %>
-                        <input
-                          id="sw3"
-                          class="js-switch"
-                          type="checkbox"
-                          name="with_useReplace"
-                          value="with_useReplace"
-                        />
-                        <% } %>
-                        <label>Replace strings in serieId</label>
-                        <p class="help-block">
-                          If enabled, the Id used to identify the series to
-                          compare with is computed by replacing the substr with
-                          newSubStr below
-                        </p>
-                        <div class="col-md-6">
-                          <label>substr</label>
-                          <% if (compare.compareWith.replace) { %>
-                          <input
-                            type="text"
-                            class="form-control"
-                            value="<%=compare.compareWith.replace.substr%>"
-                            name="with_useReplace_substr"
-                          />
-                          <% } else { %>
-                          <input
-                            type="text"
-                            class="form-control"
-                            name="with_useReplace_substr"
-                          />
-                          <% } %>
-                        </div>
-                        <div class="col-md-6">
-                          <label>newSubStr</label>
-                          <% if (compare.compareWith.replace) { %>
-                          <input
-                            type="text"
-                            class="form-control"
-                            value="<%=compare.compareWith.replace.newSubStr%>"
-                            name="with_useReplace_newSubStr"
-                          />
-                          <% } else { %>
-                          <input
-                            type="text"
-                            class="form-control"
-                            name="with_useReplace_newSubStr"
-                          />
-                          <% } %>
-                        </div>
-                      </div>
-                      <br /><br /><br /><br />
-                      <div class="form-group">
-                        <label
-                          >BuildId to use for series you want to compare
-                          with</label
-                        >
-                        <select
-                          id="select_with_buildId"
-                          class="form-control"
-                          name="with_buildId"
-                        ></select>
-                        <p class="help-block">
-                          In which projectId are located the series to compare
-                          with
-                        </p>
-                      </div>
-                      <div class="form-group">
-                        <% if (compare.compareWith.useAverage) { %>
-                        <input
-                          id="sw2"
-                          class="js-switch"
-                          checked
-                          type="checkbox"
-                          name="with_useAverage"
-                          value="with_useAverage"
-                        />
-                        <% } else { %>
-                        <input
-                          id="sw2"
-                          class="js-switch"
-                          type="checkbox"
-                          name="with_useAverage"
-                          value="with_useAverage"
-                        />
-                        <% } %>
-                        <label>Use regression analysis computed average</label>
-                        <p class="help-block">
-                          if enabled use the last computed average for series to
-                          compare with (if a buildId is specified, the average
-                          containing the buildId is used). If disabled use the
-                          last build sample available (if a buildId is
-                          specified, the sample of that buildId is used).
-                        </p>
-                      </div>
-                    </div>
-                    <div class="col-md-offset-2 col-md-8">
-                      <center>
-                        <br />
-                        <button
-                          class="btn btn-danger btn-block"
-                          type="submit"
-                          id="submitButton"
-                        >
-                          Save comparator
-                        </button>
-                      </center>
-                    </div>
-                  </form>
+                  <center>
+                    <br>
+                    <button class="btn btn-danger btn-block" type="submit" id="submitButton">Save comparator</button>
+                  </center>
                 </div>
-              </div>
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <br />
-              <div class="clearfix"></div>
-
-              <%- include('../footer') %>
+              </form>
             </div>
           </div>
         </div>
-
-        <!-- socket.io -->
-        <script src="/socket.io/socket.io.js"></script>
-
-        <!-- jQuery -->
-        <script src="/third_party/jquery/dist/jquery.min.js"></script>
-
-        <!-- Bootstrap -->
-        <script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
-
-        <!-- Switchery -->
-        <script src="/third_party/switchery/dist/switchery.js"></script>
-
-        <script>
-          var debug = false;
-          var dumpedOnceBuildids = false;
-          if (compare.compareWith.buildId) {
-            var compareWithBuildId = compare.compareWith.buildId;
-          } else {
-            var compareWithBuildId;
-          }
-          $(document).ready(function () {
-            var elem = document.getElementById("sw1");
-            var init = new Switchery(elem);
-            elem = document.getElementById("sw2");
-            init = new Switchery(elem);
-            elem = document.getElementById("sw3");
-            init = new Switchery(elem);
-          });
-
-          var socket = io();
-          socket.on("receiveFileInfo", function (req) {
-            if (debug) console.log("receiveFileInfo", req);
-            if (req.fileId === "builds") {
-              if (dumpedOnceBuildids) {
-                var k = Object.keys(req.file);
-                var h = "<option>None</option>";
-                for (var ii = 0; ii < k.length; ii++) {
-                  var b = req.file[k[ii]];
-                  var s =
-                    b.buildId +
-                    " - " +
-                    b.infos.abbrevHash +
-                    " - " +
-                    b.infos.authorName +
-                    " - " +
-                    b.infos.subject;
-                  s = s.substring(0, 90);
-                  h += '<option value="' + b.buildId + '">' + s + "</option>";
-                }
-              } else {
-                var k = Object.keys(req.file);
-                var h = "";
-                if (compareWithBuildId) {
-                  h += "<option>None</option>";
-                } else {
-                  h += "<option selected>None</option>";
-                }
-                for (var ii = 0; ii < k.length; ii++) {
-                  var b = req.file[k[ii]];
-                  var s =
-                    b.buildId +
-                    " - " +
-                    b.infos.abbrevHash +
-                    " - " +
-                    b.infos.authorName +
-                    " - " +
-                    b.infos.subject;
-                  s = s.substring(0, 90);
-                  if (compareWithBuildId === b.buildId)
-                    h +=
-                      '<option selected value="' +
-                      b.buildId +
-                      '">' +
-                      s +
-                      "</option>";
-                  else
-                    h += '<option value="' + b.buildId + '">' + s + "</option>";
-                }
-                dumpedOnceBuildids = true;
-              }
-              $("#select_with_buildId").html(h);
-            }
-          });
-          setWithProjectId();
-          function setWithProjectId() {
-            var pId = $("#select_with_projectId")[0].value;
-            console.log("setWithProjectId", pId);
-            socket.emit("getFileInfo", {
-              projectId: pId,
-              fileId: "builds",
-            });
-          }
-        </script>
       </div>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <br>
+      <div class="clearfix"></div>
+
+      <%- include('../footer') %>
+
     </div>
-  </body>
+  </div>
+  </div>
+  <!-- socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <!-- jQuery -->
+  <script src="/third_party/jquery/dist/jquery.min.js"></script>
+
+  <!-- Bootstrap -->
+  <script src="/third_party/bootstrap/dist/js/bootstrap.min.js"></script>
+
+  <!-- Switchery -->
+  <script src="/third_party/switchery/dist/switchery.js"></script>
+
+  <script>
+    var debug = false;
+    var dumpedOnceBuildids = false;
+    if (compare.compareWith.buildId) {
+      var compareWithBuildId = compare.compareWith.buildId;
+    } else {
+      var compareWithBuildId;
+    }
+    $(document).ready(function() {
+      var elem = document.getElementById('sw1');
+      var init = new Switchery(elem);
+      elem = document.getElementById('sw2');
+      init = new Switchery(elem);
+      elem = document.getElementById('sw3');
+      init = new Switchery(elem);
+
+    });
+
+    var socket = io();
+    socket.on('receiveFileInfo', function(req) {
+      if (debug)
+        console.log('receiveFileInfo', req);
+      if (req.fileId === 'builds') {
+        if (dumpedOnceBuildids) {
+          var k = Object.keys(req.file);
+          var h = '<option>None</option>';
+          for (var ii = 0; ii < k.length; ii++) {
+            var b = req.file[k[ii]];
+            var s = b.buildId + ' - ' + b.infos.abbrevHash + ' - ' + b.infos.authorName + ' - ' + b.infos.subject;
+            s = s.substring(0, 90);
+            h += '<option value="' + b.buildId + '">' + s + '</option>'
+          }
+        } else {
+          var k = Object.keys(req.file);
+          var h = '';
+          if (compareWithBuildId) {
+            h += '<option>None</option>';
+          } else {
+            h += '<option selected>None</option>';
+          }
+          for (var ii = 0; ii < k.length; ii++) {
+            var b = req.file[k[ii]];
+            var s = b.buildId + ' - ' + b.infos.abbrevHash + ' - ' + b.infos.authorName + ' - ' + b.infos.subject;
+            s = s.substring(0, 90);
+            if (compareWithBuildId === b.buildId)
+              h += '<option selected value="' + b.buildId + '">' + s + '</option>'
+            else
+              h += '<option value="' + b.buildId + '">' + s + '</option>'
+          }
+          dumpedOnceBuildids = true;
+        }
+        $('#select_with_buildId').html(h);
+      }
+    });
+    setWithProjectId();
+
+    function setWithProjectId() {
+      var pId = $('#select_with_projectId')[0].value;
+      console.log('setWithProjectId', pId)
+      socket.emit('getFileInfo', {
+        projectId: pId,
+        fileId: 'builds'
+      });
+    }
+  </script>
+</body>
+
 </html>
