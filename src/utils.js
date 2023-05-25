@@ -37,6 +37,9 @@ function convertValue(value, srcRatio, dstRatio) {
 }
 
 function unitConversion(value, srcUnit, dstUnit) {
+  if (srcUnit === "number") {
+    return value;
+  }
   if (srcUnit in TIME_UNITS) {
     return convertValue(value, TIME_UNITS[srcUnit], TIME_UNITS[dstUnit]);
   }
