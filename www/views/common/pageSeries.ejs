@@ -83,6 +83,7 @@
         <div class="x_title">
           <h2>Benchmarks
             </h2>
+	  <div id="extraInfo" class="col-md-12"></div>
           <ul class="nav navbar-right panel_toolbox">
             <!-- <li class="dropdown"> <a href="#download"><i class="fa fa-download"></i></a> </li> -->
             <li>
@@ -206,10 +207,11 @@
       var defLength = 15;
       var socket = io();
 
-      function start(tprojectId, tSerieFilter, title) {
+      function start(tprojectId, tSerieFilter, title, extraInfo) {
         projectId = tprojectId;
         serieFilter = tSerieFilter;
         $('#page_title_description').html((title ?? '') + ' Benchmark Status for ' + projectId + ' <small>Based on latest results</small>');
+        $('#extraInfo').html((extraInfo ?? ''));
 
         socket.on('receiveFileInfo', function(req) {
           if (debug)
@@ -1144,7 +1146,7 @@
         return '';
       }
       $(document).ready(function() {
-        start(userPage.projectId, userPage.serieFilter, userPage.title);
+        start(userPage.projectId, userPage.serieFilter, userPage.title, userPage.extraInfo);
         $('#myModal').on('shown.bs.modal', function(e) {
           uiShowSerie('statusSeries', projectId, serieId);
           $('#commentsArea').linkify({
