@@ -68,7 +68,7 @@
     <script>
       setSeriesPage({
         projectId: 'IREE',
-        serieFilter: 'experimental-flags.+(IREE-LLVM-CPU|local_sync|local_task).+@',
+        serieFilter: 'llvm_cpu[^\\s]+experimental-flags.+@',
         title: 'IREE LLVM CPU Experimental Flags'
       });
     </script>
