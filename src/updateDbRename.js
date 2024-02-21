@@ -43,9 +43,9 @@ if (global.admin.existsSync('projects')) {
   global.projectsConfig = global.admin.readSync('projects');
 }
 
-const serieIdFind = "stringToFindInSerieId";
+const serieIdFind = /stringToFindInSerieId/; // regex
 const serieIdReplace = "stringToReplaceInSerieId";
-const serieInfosFind = "stringToFindInInfos";
+const serieInfosFind = /stringToFindInInfos/; // regex
 const serieInfosReplace = "stringToReplaceInInfos";
 
 let k = Object.keys(global.projectsConfig);
@@ -72,60 +72,59 @@ var kProjects = Object.keys(global.projects);
 for (var ii = 0; ii < kProjects.length; ii++) {
   let series, kSeries;
   projectId = kProjects[ii];
-  if (!global.projects[projectId].infos.existsSync('tests.series')) {
-    console.log('Database integrity error - tests.series doesnt exist',
-      projectId, serieId);
-    process.exit(1);
-  }
-  series = global.projects[projectId].infos
-    .readSync('tests.series');
-  kSeries = Object.keys(series);
-  for (let ii = 0; ii < kSeries.length; ii++) {
-    let serie;
-    serieId = kSeries[ii];
-    if (serieId.indexOf(serieIdFind) !== -1) {
-      if (!global.projects[projectId].series.existsSync(serieId)) {
-        console.log('Database integrity error - ', projectId, serieId);
-        process.exit(1);
+  if (global.projects[projectId].infos.existsSync('tests.series')) {
+    series = global.projects[projectId].infos
+      .readSync('tests.series');
+    kSeries = Object.keys(series);
+    for (let ii = 0; ii < kSeries.length; ii++) {
+      let serie;
+      serieId = kSeries[ii];
+      if (serieId.search(serieIdFind) !== -1) {
+        if (!global.projects[projectId].series.existsSync(serieId)) {
+          console.log('Database integrity error - ', projectId, serieId);
+          process.exit(1);
+        }
+        serie = global.projects[projectId].series.readSync(serieId);
+        let newSerieId = serieId.replace(serieIdFind, serieIdReplace);
+        if (serie.infos)
+          serie.infos = serie.infos.replace(serieInfosFind, serieInfosReplace);
+        console.log(projectId, 'Tests.series converting "', serieId, '" into "', newSerieId, '"');
+        global.projects[projectId].series.writeSync(newSerieId, serie);
+        global.projects[projectId].series.deleteSync(serieId);
+        series[newSerieId] = series[serieId];
+        delete series[serieId];
       }
-      serie = global.projects[projectId].series.readSync(serieId);
-      let newSerieId = serieId.replace(serieIdFind, serieIdReplace);
-      if (serie.infos)
-        serie.infos = serie.infos.replace(serieInfosFind, serieInfosReplace);
-      console.log(projectId, 'Tests.series converting', serieId, 'in', newSerieId);
-      global.projects[projectId].series.writeSync(newSerieId, serie);
-      global.projects[projectId].series.deleteSync(serieId);
-      series[newSerieId] = series[serieId];
-      delete series[serieId];
     }
+    series = global.projects[projectId].infos
+      .writeSync('tests.series', series);
   }
-  series = global.projects[projectId].infos
-    .writeSync('tests.series', series);
 
-  series = global.projects[projectId].infos
-    .readSync('benchmarks.series');
-  kSeries = Object.keys(series);
-  for (let ii = 0; ii < kSeries.length; ii++) {
-    let serie;
-    serieId = kSeries[ii];
-    if (serieId.indexOf(serieIdFind) !== -1) {
-      if (!global.projects[projectId].series.existsSync(serieId)) {
-        console.log('Database integrity error - ', projectId, serieId);
-        process.exit(1);
+  if (global.projects[projectId].infos.existsSync('benchmarks.series')) {
+    series = global.projects[projectId].infos
+      .readSync('benchmarks.series');
+    kSeries = Object.keys(series);
+    for (let ii = 0; ii < kSeries.length; ii++) {
+      let serie;
+      serieId = kSeries[ii];
+      if (serieId.search(serieIdFind) !== -1) {
+        if (!global.projects[projectId].series.existsSync(serieId)) {
+          console.log('Database integrity error - ', projectId, serieId);
+          process.exit(1);
+        }
+        serie = global.projects[projectId].series.readSync(serieId);
+        let newSerieId = serieId.replace(serieIdFind, serieIdReplace);
+        if (serie.infos)
+          serie.infos = serie.infos.replace(serieInfosFind, serieInfosReplace);
+        console.log(projectId, 'Benchmark.series converting "', serieId, '" into "', newSerieId, '"');
+        global.projects[projectId].series.writeSync(newSerieId, serie);
+        global.projects[projectId].series.deleteSync(serieId);
+        series[newSerieId] = series[serieId];
+        delete series[serieId];
       }
-      serie = global.projects[projectId].series.readSync(serieId);
-      let newSerieId = serieId.replace(serieIdFind, serieIdReplace);
-      if (serie.infos)
-        serie.infos = serie.infos.replace(serieInfosFind, serieInfosReplace);
-      console.log(projectId, 'Benchmark.series converting', serieId, 'in', newSerieId);
-      global.projects[projectId].series.writeSync(newSerieId, serie);
-      global.projects[projectId].series.deleteSync(serieId);
-      series[newSerieId] = series[serieId];
-      delete series[serieId];
     }
+    series = global.projects[projectId].infos
+      .writeSync('benchmarks.series', series);
   }
-  series = global.projects[projectId].infos
-    .writeSync('benchmarks.series', series);
 
   let k = Object.keys(global.comparesConfig);
   for (let ii = 0; ii < k.length; ii++) {
@@ -137,9 +136,9 @@ for (var ii = 0; ii < kProjects.length; ii++) {
     kSeries = Object.keys(compare);
     for (let ii = 0; ii < kSeries.length; ii++) {
       serieId = kSeries[ii];
-      if (serieId.indexOf(serieIdFind) !== -1) {
+      if (serieId.search(serieIdFind) !== -1) {
         let newSerieId = serieId.replace(serieIdFind, serieIdReplace)
-        console.log(projectId, 'Compares Converting', serieId, 'in', newSerieId);
+        console.log(projectId, 'Compares Converting "', serieId, '" into "', newSerieId, '"');
         compare[newSerieId] = compare[serieId];
         delete compare[serieId];
       }

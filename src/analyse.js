@@ -414,12 +414,16 @@ function benchmarkAnalyse(serie, sortedBuildIds, indexStart, indexStop) {
   let reduceBaseTo;
   if (serie.analyseResult.summary.status === 'similar') {
     if (serie.analyseResult.averages.length === 1) {
-      if (sortedBuildIds.length > 50) {
+      if (sortedBuildIds.length > indexStart + 50) {
         reduceBaseTo = sortedBuildIds[sortedBuildIds.length - 50];
       }
     }
   }
   serie.analyseResult.summary.reduceBaseTo = reduceBaseTo;
+
+  if (global.debug) {
+    console.log('benchmarkAnalyse -- analyseResult', serie.analyseResult)
+  }
 }
 
 function analyse(serie) {

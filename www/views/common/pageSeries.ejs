@@ -102,6 +102,9 @@
               <button id='btnShowImproved' type="button" class="btn btn-primary btn-xs">Improved</button>
             </li>
             <li>
+              <button id='btnShowActive' type="button" class="btn btn-primary btn-xs">Active</button>
+            </li>
+            <li>
               <button id='btnShowAll' type="button" class="btn btn-primary btn-xs">All</button>
             </li>
           </ul>
@@ -187,9 +190,11 @@
         builds,
         compares,
         projects;
+      var largestBuildId;
       var graphBuilds = [];
       var dataTableObject;
       var numSeries;
+      var numActive;
       var numSeriesSimilar;
       var numSeriesImproved;
       var numSeriesRegression;
@@ -216,6 +221,8 @@
             k.sort(function(a, b) {
               return b * 1 - a * 1
             });
+            if (k.length)
+              largestBuildId = Number(k[0]);
             var l = 50;
             if (k.length < 50)
               l = k.length;
@@ -275,6 +282,10 @@
               continue;
 
           numSeries++;
+
+          if (s.status.lastBuildId + 10 > largestBuildId)
+            numActive++;
+
           if (s.status.error) {
             numSeriesUndefined++;
           } else {
@@ -329,6 +340,9 @@
         $('#topBanner_numSeriesUndefined').html(numSeriesUndefined);
         var p = numSeriesUndefined / numSeries * 100;
         $('#topBanner_numSeriesUndefined_percent').html(p.toFixed(2) + "%");
+
+        if (numActive === numSeries)
+          $('#btnShowActive').hide();
 
         if ((numSeriesUndefined === numSeries) || (numSeriesRegression === numSeries) || (numSeriesSimilar === numSeries) || (numSeriesImproved === numSeries)) {
           $('#btnShowAll').hide();
@@ -392,6 +406,7 @@
           $('#btnShowUndefined').removeClass('active')
           $('#btnShowSimilar').addClass('active')
           $('#btnShowRegressions').removeClass('active')
+          $('#btnShowActive').removeClass('active')
           $('#btnShowAll').removeClass('active')
           showTable('similar');
         })
@@ -400,6 +415,7 @@
           $('#btnShowUndefined').removeClass('active')
           $('#btnShowSimilar').removeClass('active')
           $('#btnShowRegressions').addClass('active')
+          $('#btnShowActive').removeClass('active')
           $('#btnShowAll').removeClass('active')
           showTable('regression')
         })
@@ -408,6 +424,7 @@
           $('#btnShowUndefined').addClass('active')
           $('#btnShowSimilar').removeClass('active')
           $('#btnShowRegressions').removeClass('active')
+          $('#btnShowActive').removeClass('active')
           $('#btnShowAll').removeClass('active')
           showTable('undefined')
         })
@@ -416,14 +433,25 @@
           $('#btnShowUndefined').removeClass('active')
           $('#btnShowSimilar').removeClass('active')
           $('#btnShowRegressions').removeClass('active')
+          $('#btnShowActive').removeClass('active')
           $('#btnShowAll').removeClass('active')
           showTable('improvement')
+        })
+        $('#btnShowActive').click(function() {
+          $('#btnShowImproved').removeClass('active')
+          $('#btnShowUndefined').removeClass('active')
+          $('#btnShowSimilar').removeClass('active')
+          $('#btnShowRegressions').removeClass('active')
+          $('#btnShowActive').addClass('active')
+          $('#btnShowAll').removeClass('active')
+          showTable('active')
         })
         $('#btnShowAll').click(function() {
           $('#btnShowImproved').removeClass('active')
           $('#btnShowUndefined').removeClass('active')
           $('#btnShowSimilar').removeClass('active')
           $('#btnShowRegressions').removeClass('active')
+          $('#btnShowActive').removeClass('active')
           $('#btnShowAll').addClass('active')
           showTable('all')
         })
@@ -794,10 +822,16 @@
           if (mode === 'undefined') {
             if (!s.status.error)
               continue;
-          }
-          if ((mode !== 'all') && (mode !== 'undefined'))
+          } else if (mode === 'active') {
+            if (s.status.lastBuildId + 10 <= largestBuildId)
+              continue;
+          } else if (mode !== 'all') {
             if (s.state.indexOf(mode) === -1)
               continue;
+            // For similar benchmarks, also filter out inactive ones.
+            if (mode === 'similar' && s.status.lastBuildId + 10 <= largestBuildId)
+              continue;
+          }
 
           h += '<tr id="row_' + ii + '">';
           h += getRow(k[ii], ii)
@@ -949,7 +983,7 @@
           clickCallback: function(e, x, pts) {
             if (debug)
               console.log("Click", this, e, x, pts);
-            window.open("/serie?" + projectId + '?' + graph.serieId, "_blank");
+            window.open("/serie?" + projectId + '?' + encodeURIComponent(graph.serieId), "_blank");
           }
         });
 
@@ -1078,7 +1112,7 @@
         report += '\r\n\r\n';
         report += 'Links:';
         report += '\r\n';
-        report += '- benchmark: ' + danaUrl + '/serie?' + projectId + '?' + encodeURI(serieId);
+        report += '- benchmark: ' + danaUrl + '/serie?' + projectId + '?' + encodeURIComponent(serieId);
         report += '\r\n';
         report += '- project benchmark status: ' + danaUrl + '/' + projectId + '/statusSeries';
         report += '\r\n';
@@ -1124,7 +1158,7 @@
 
       function openEditSerie(serieId) {
         console.log('openEditSerie', projectId, serieId)
-        window.open("/serie?" + projectId + '?' + serieId, "_blank");
+        window.open("/serie?" + projectId + '?' + encodeURIComponent(serieId), "_blank");
       }
 
       function openSpongelink(serieId) {

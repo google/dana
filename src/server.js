@@ -221,7 +221,7 @@ function sendDailyReport(projectId) {
             s.status.failingSince,
             s.status.lastExecuted,
             '<a href=' + danaUrl +
-            '/serie?' + projectId + '?' + encodeURI(k[ii]) + '>View</a>'
+            '/serie?' + projectId + '?' + encodeURIComponent(k[ii]) + '>View</a>'
           ]);
         }
       }
@@ -271,7 +271,7 @@ function sendDailyReport(projectId) {
             s.status.current.average * 1,
             s.status.current.ratio * 1,
             '<a href=' + danaUrl +
-            '/serie?' + projectId + '?' + encodeURI(dataBenchmarksNew[ii].serieId) + '>View</a>'
+            '/serie?' + projectId + '?' + encodeURIComponent(dataBenchmarksNew[ii].serieId) + '>View</a>'
           ]);
         }
         moduleHtmlBuilder.bodyTableEnd();
@@ -333,7 +333,7 @@ function sendDailyReport(projectId) {
             s.result.compareValue * 1,
             ratio,
             '<a href=' + danaUrl +
-            '/serie?' + projectId + '?' + encodeURI(dataCompareNew[jj].serieId) + '>View</a>'
+            '/serie?' + projectId + '?' + encodeURIComponent(dataCompareNew[jj].serieId) + '>View</a>'
           ]);
         }
         moduleHtmlBuilder.bodyTableEnd();
@@ -499,12 +499,27 @@ function apiAddSerie(apiData, hdl) {
     serie.infos = apiData.infos;
   }
 
-  // serie.analyse set if not exist otherwise keep the active one in the system
-  serie.analyse = apiData.analyse;
+  // Override serie.analyse data using the API call payload.
+  // This is done per field to avoid discarding existing data if not supplied
+  // in the payload.
+  if (serie.analyse === undefined) {
+    serie.analyse = {}
+  }
+  if (analyse.base) {
+    serie.analyse.base = analyse.base;
+  }
+  if (analyse.benchmark) {
+    serie.analyse.benchmark = analyse.benchmark;
+  }
+  if (analyse.test) {
+    serie.analyse.test = analyse.test;
+  }
 
   if (serie.assignee === undefined) {
     serie.assignee = {};
   }
+
+  if (global.debug) console.log('apiAddSerie update', serieId, 'to', serie)
 
   global.projects[projectId].series.writeSync(serieId, serie);
 
@@ -900,6 +915,7 @@ function apiAddSample(apiData, hdl) {
     }
   }
 
+  if (global.debug) console.log('apiAddSample update', serieId, 'to', serie)
   global.projects[projectId].series.writeSync(serieId, serie);
 
   if (!global.admin.existsSync('globalStats')) {
@@ -1118,7 +1134,9 @@ const session = require("express-session");
 const sessionMiddleware = session({
   secret: global.config.sessionSecret,
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: { secure: global.config.secureCookie }
+
 });
 app.use(sessionMiddleware);
 
@@ -1521,7 +1539,7 @@ app.get('/serie',
       return;
     }
     let serieId = r[1];
-    serieId = decodeURI(serieId);
+    serieId = decodeURIComponent(serieId);
 
     if (global.debug) {
       console.log('/serie projectId', projectId, 'serieId', serieId);
@@ -1749,6 +1767,7 @@ io.on('connection', function(socket) {
       return;
     }
     req.serie = global.projects[projectId].series.readSync(serieId);
+    if (global.debug) console.log('getOneSerie query', serieId, 'result', req.serie)
 
     req.serie.comments = global.projects[projectId].comments.readSync(serieId);
     socket.emit('receiveOneSerie', req);
@@ -1757,6 +1776,8 @@ io.on('connection', function(socket) {
   // serieUpdateAnalyse (projectId, serieId, analyse)
   // -> receiveUpdateAnalyseDone (projectId, serieId, analyse)
   socket.on('serieUpdateAnalyse', function(req) {
+    if (global.debug) console.log('serieUpdateAnalyse', req);
+
     let projectId = req.projectId;
     let serieId = req.serieId;
 
@@ -1769,7 +1790,6 @@ io.on('connection', function(socket) {
 
     let analyse = req.analyse;
     let comment = req.comment;
-    if (global.debug) console.log('serieUpdateAnalyse', req);
     if (comment === undefined) {
       let e = 'socket serieUpdateAnalyse comment undefined';
       console.error(e);

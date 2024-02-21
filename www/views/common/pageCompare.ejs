@@ -629,7 +629,7 @@ implied. * See the License for the specific language governing permissions and *
         report += '\r\n\r\n';
         report += 'Links:';
         report += '\r\n';
-        report += '- benchmark: ' + danaUrl + '/serie?' + projectId + '?' + encodeURI(serieId);
+        report += '- benchmark: ' + danaUrl + '/serie?' + projectId + '?' + encodeURIComponent(serieId);
         report += '\r\n';
         report += '- project benchmark status: ' + danaUrl + '/' + projectId + '/statusSeries';
         report += '\r\n';
@@ -674,7 +674,7 @@ implied. * See the License for the specific language governing permissions and *
 
       function openEditSerie(serieId) {
         console.log('openEditSerie', projectId, serieId)
-        window.open("/serie?" + projectId + '?' + serieId, "_blank");
+        window.open("/serie?" + projectId + '?' + encodeURIComponent(serieId), "_blank");
       }
 
       function openSpongelink(serieId) {

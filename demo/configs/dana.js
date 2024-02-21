@@ -15,15 +15,14 @@
  */
 
 module.exports = {
+  server: {
+    ip: 'localhost',
+    port: 7000
+  },
   adminUser: {
     username: 'admin',
     password: 'admin',
     email: 'yourEmail@yourDomain.com'
   },
-  server: {
-    ip: 'localhost',
-    port: 7000
-  },
-  sessionSecret: "some random string",
-  apiToken: "some token"
+  secureCookie: false
 }
